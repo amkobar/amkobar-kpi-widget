@@ -27,17 +27,10 @@ export default async function handler(req, res) {
     data.results.forEach((page) => {
       const props = page.properties;
 
-      if (props["Total Pendapatan"]?.rollup?.number)
-        revenue = props["Total Pendapatan"].rollup.number || 0;
-
-      if (props["Total Outstanding"]?.rollup?.number)
-        outstanding = props["Total Outstanding"].rollup.number || 0;
-
-      if (props["Count Project Aktif"]?.rollup?.number)
-        active = props["Count Project Aktif"].rollup.number || 0;
-
-      if (props["Count Queue"]?.rollup?.number)
-        queue = props["Count Queue"].rollup.number || 0;
+      revenue = props["Total Pendapatan"]?.rollup?.number || revenue;
+      outstanding = props["Total Outstanding"]?.rollup?.number || outstanding;
+      active = props["Count Project Aktif"]?.rollup?.number || active;
+      queue = props["Count Queue"]?.rollup?.number || queue;
     });
   } catch (error) {
     console.error(error);
@@ -51,26 +44,20 @@ export default async function handler(req, res) {
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   </head>
-  <body style="margin:0;padding:0;background:transparent;">
+  <body style="margin:0;padding:0;background:#0f172a;">
     
     <div style="
-      width:100%;
-      padding:26px 40px;
-      box-sizing:border-box;
       display:flex;
-      justify-content:space-between;
-      align-items:center;
+      gap:20px;
+      padding:20px;
+      box-sizing:border-box;
       font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial;
-      color:#E5E7EB;
-      background:rgba(17,24,39,0.65);
-      border:1px solid rgba(59,130,246,0.35);
-      backdrop-filter:blur(6px);
     ">
 
-      ${card("TOTAL REVENUE", "Rp " + revenue.toLocaleString("id-ID"))}
-      ${card("OUTSTANDING", "Rp " + outstanding.toLocaleString("id-ID"))}
-      ${card("ACTIVE", active)}
-      ${card("QUEUE", queue)}
+      ${card("Total Revenue", "Rp " + revenue.toLocaleString("id-ID"))}
+      ${card("Outstanding", "Rp " + outstanding.toLocaleString("id-ID"))}
+      ${card("Active", active)}
+      ${card("Queue", queue)}
 
     </div>
 
@@ -80,13 +67,17 @@ export default async function handler(req, res) {
 
   function card(label, value) {
     return `
-      <div style="min-width:120px;">
+      <div style="
+        flex:1;
+        padding:22px;
+        border-radius:12px;
+        background:#111827;
+        border:1px solid #1f2937;
+      ">
         <div style="
-          font-size:12px;
-          letter-spacing:1px;
-          text-transform:uppercase;
-          color:#60A5FA;
-          margin-bottom:8px;
+          font-size:13px;
+          color:#60a5fa;
+          margin-bottom:10px;
         ">
           ${label}
         </div>
