@@ -45,12 +45,11 @@ export default async function handler(req, res) {
     <div style="
       display:flex;
       align-items:center;
-      padding:26px 48px;
+      padding:24px 44px;
       font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial;
-      background:#14161b;
-      border-radius:16px;
-      border:1px solid rgba(255,255,255,0.04);
-      box-shadow:0 0 0 1px rgba(59,130,246,0.08);
+      background:#121417;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,0.035);
     ">
 
       ${section("Total Revenue", "Rp " + revenue.toLocaleString("id-ID"))}
@@ -72,15 +71,15 @@ export default async function handler(req, res) {
       <div style="flex:1;">
         <div style="
           font-size:11px;
-          letter-spacing:1.2px;
+          letter-spacing:1.1px;
           text-transform:uppercase;
-          color:#6ea8ff;
-          margin-bottom:12px;
+          color:#5da2ff;
+          margin-bottom:10px;
         ">
           ${label}
         </div>
         <div style="
-          font-size:40px;
+          font-size:38px;
           font-weight:600;
           color:white;
           line-height:1;
@@ -95,9 +94,9 @@ export default async function handler(req, res) {
     return `
       <div style="
         width:1px;
-        height:48px;
-        margin:0 36px;
-        background:rgba(255,255,255,0.06);
+        height:42px;
+        margin:0 34px;
+        background:rgba(255,255,255,0.05);
       "></div>
     `;
   }
