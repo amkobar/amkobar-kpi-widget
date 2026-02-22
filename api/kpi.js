@@ -27,21 +27,17 @@ export default async function handler(req, res) {
     data.results.forEach((page) => {
       const props = page.properties;
 
-      if (props["Total Pendapatan"]?.rollup?.number) {
+      if (props["Total Pendapatan"]?.rollup?.number)
         revenue = props["Total Pendapatan"].rollup.number || 0;
-      }
 
-      if (props["Total Outstanding"]?.rollup?.number) {
+      if (props["Total Outstanding"]?.rollup?.number)
         outstanding = props["Total Outstanding"].rollup.number || 0;
-      }
 
-      if (props["Count Project Aktif"]?.rollup?.number) {
+      if (props["Count Project Aktif"]?.rollup?.number)
         active = props["Count Project Aktif"].rollup.number || 0;
-      }
 
-      if (props["Count Queue"]?.rollup?.number) {
+      if (props["Count Queue"]?.rollup?.number)
         queue = props["Count Queue"].rollup.number || 0;
-      }
     });
   } catch (error) {
     console.error(error);
@@ -59,55 +55,49 @@ export default async function handler(req, res) {
     
     <div style="
       width:100%;
-      padding:22px 40px;
+      padding:26px 40px;
       box-sizing:border-box;
       display:flex;
       justify-content:space-between;
       align-items:center;
       font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial;
-      color:white;
-      background:#1E3A8A;
+      color:#E5E7EB;
+      background:rgba(17,24,39,0.65);
+      border:1px solid rgba(59,130,246,0.35);
+      backdrop-filter:blur(6px);
     ">
 
-      <div>
-        <div style="font-size:13px;opacity:0.75;letter-spacing:0.5px;">
-          TOTAL REVENUE
-        </div>
-        <div style="font-size:28px;font-weight:600;margin-top:6px;">
-          Rp ${revenue.toLocaleString("id-ID")}
-        </div>
-      </div>
-
-      <div>
-        <div style="font-size:13px;opacity:0.75;letter-spacing:0.5px;">
-          OUTSTANDING
-        </div>
-        <div style="font-size:28px;font-weight:600;margin-top:6px;">
-          Rp ${outstanding.toLocaleString("id-ID")}
-        </div>
-      </div>
-
-      <div>
-        <div style="font-size:13px;opacity:0.75;letter-spacing:0.5px;">
-          ACTIVE
-        </div>
-        <div style="font-size:28px;font-weight:600;margin-top:6px;">
-          ${active}
-        </div>
-      </div>
-
-      <div>
-        <div style="font-size:13px;opacity:0.75;letter-spacing:0.5px;">
-          QUEUE
-        </div>
-        <div style="font-size:28px;font-weight:600;margin-top:6px;">
-          ${queue}
-        </div>
-      </div>
+      ${card("TOTAL REVENUE", "Rp " + revenue.toLocaleString("id-ID"))}
+      ${card("OUTSTANDING", "Rp " + outstanding.toLocaleString("id-ID"))}
+      ${card("ACTIVE", active)}
+      ${card("QUEUE", queue)}
 
     </div>
 
   </body>
   </html>
   `);
+
+  function card(label, value) {
+    return `
+      <div style="min-width:120px;">
+        <div style="
+          font-size:12px;
+          letter-spacing:1px;
+          text-transform:uppercase;
+          color:#60A5FA;
+          margin-bottom:8px;
+        ">
+          ${label}
+        </div>
+        <div style="
+          font-size:30px;
+          font-weight:600;
+          color:white;
+        ">
+          ${value}
+        </div>
+      </div>
+    `;
+  }
 }
