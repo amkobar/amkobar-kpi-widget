@@ -48,16 +48,20 @@ export default async function handler(req, res) {
     
     <div style="
       display:flex;
-      gap:18px;
-      padding:18px 24px;
-      box-sizing:border-box;
+      padding:28px 40px;
       font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial;
+      background:#111827;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,0.06);
     ">
 
-      ${card("Total Revenue", "Rp " + revenue.toLocaleString("id-ID"))}
-      ${card("Outstanding", "Rp " + outstanding.toLocaleString("id-ID"))}
-      ${card("Active", active)}
-      ${card("Queue", queue)}
+      ${section("Total Revenue", "Rp " + revenue.toLocaleString("id-ID"))}
+      ${divider()}
+      ${section("Outstanding", "Rp " + outstanding.toLocaleString("id-ID"))}
+      ${divider()}
+      ${section("Active", active)}
+      ${divider()}
+      ${section("Queue", queue)}
 
     </div>
 
@@ -65,45 +69,36 @@ export default async function handler(req, res) {
   </html>
   `);
 
-  function card(label, value) {
+  function section(label, value) {
     return `
-      <div style="
-        flex:1;
-        padding:20px 22px;
-        border-radius:10px;
-        background:#111827;
-        border:1px solid rgba(255,255,255,0.05);
-        position:relative;
-      ">
+      <div style="flex:1;">
         <div style="
-          position:absolute;
-          top:0;
-          left:0;
-          right:0;
-          height:3px;
-          background:#3B82F6;
-          border-top-left-radius:10px;
-          border-top-right-radius:10px;
-        "></div>
-
-        <div style="
-          font-size:12px;
-          letter-spacing:0.8px;
+          font-size:11px;
+          letter-spacing:1px;
           text-transform:uppercase;
-          color:#93C5FD;
+          color:#60A5FA;
           margin-bottom:10px;
         ">
           ${label}
         </div>
-
         <div style="
-          font-size:32px;
+          font-size:36px;
           font-weight:600;
           color:white;
         ">
           ${value}
         </div>
       </div>
+    `;
+  }
+
+  function divider() {
+    return `
+      <div style="
+        width:1px;
+        margin:0 28px;
+        background:rgba(255,255,255,0.08);
+      "></div>
     `;
   }
 }
