@@ -40,42 +40,19 @@ export default async function handler(req, res) {
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   </head>
-  <body style="margin:0;background:#0f1115;overflow:hidden;">
+  <body style="margin:0;background:#0f1115;">
 
     <div style="
-      width:100%;
-      max-width:100%;
-      box-sizing:border-box;
-      padding:24px 28px;
+      display:flex;
+      gap:24px;
+      padding:28px;
       font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial;
     ">
 
-      <div style="
-        display:flex;
-        justify-content:space-between;
-        align-items:center;
-        gap:32px;
-
-        background:linear-gradient(135deg,#0c1b2f,#0e2440);
-        border-radius:16px;
-        padding:28px 32px;
-
-        border:1px solid rgba(255,255,255,0.04);
-        box-shadow:0 15px 40px rgba(0,0,0,0.5);
-
-        width:100%;
-        box-sizing:border-box;
-      ">
-
-        ${card("Total Revenue", "Rp " + revenue.toLocaleString("id-ID"))}
-        ${divider()}
-        ${card("Outstanding", "Rp " + outstanding.toLocaleString("id-ID"))}
-        ${divider()}
-        ${card("Active", active)}
-        ${divider()}
-        ${card("Queue", queue)}
-
-      </div>
+      ${card("Total Revenue", "Rp " + revenue.toLocaleString("id-ID"))}
+      ${card("Outstanding", "Rp " + outstanding.toLocaleString("id-ID"))}
+      ${card("Active", active)}
+      ${card("Queue", queue)}
 
     </div>
 
@@ -85,13 +62,28 @@ export default async function handler(req, res) {
 
   function card(label, value) {
     return `
-      <div style="flex:1;text-align:left;">
+      <div style="
+        flex:1;
+        padding:26px 28px;
+        border-radius:18px;
+
+        background:linear-gradient(145deg,#0c1b2f,#0e2440);
+
+        border:1px solid rgba(255,255,255,0.05);
+
+        box-shadow:
+          0 18px 45px rgba(0,0,0,0.55),
+          0 0 0 1px rgba(93,162,255,0.05);
+
+        transition:all 0.3s ease;
+      ">
+
         <div style="
           font-size:11px;
-          letter-spacing:1.2px;
+          letter-spacing:1.3px;
           text-transform:uppercase;
           color:#5da2ff;
-          margin-bottom:8px;
+          margin-bottom:12px;
         ">
           ${label}
         </div>
@@ -103,17 +95,8 @@ export default async function handler(req, res) {
         ">
           ${value}
         </div>
-      </div>
-    `;
-  }
 
-  function divider() {
-    return `
-      <div style="
-        width:1px;
-        height:40px;
-        background:rgba(255,255,255,0.08);
-      "></div>
+      </div>
     `;
   }
 }
