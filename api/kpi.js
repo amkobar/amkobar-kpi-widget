@@ -16,24 +16,20 @@ export default async function handler(req, res) {
   try {
     const response = await fetch(
       `https://api.notion.com/v1/databases/${databaseId}/query`,
-      {
-        method: "POST",
-        headers: headers,
-      }
+      { method: "POST", headers }
     );
 
     const data = await response.json();
 
     data.results.forEach((page) => {
       const props = page.properties;
-
       revenue = props["Total Pendapatan"]?.rollup?.number || revenue;
       outstanding = props["Total Outstanding"]?.rollup?.number || outstanding;
       active = props["Count Project Aktif"]?.rollup?.number || active;
       queue = props["Count Queue"]?.rollup?.number || queue;
     });
-  } catch (error) {
-    console.error(error);
+  } catch (err) {
+    console.error(err);
   }
 
   res.setHeader("Content-Type", "text/html");
@@ -44,15 +40,17 @@ export default async function handler(req, res) {
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   </head>
-  <body style="margin:0;padding:0;background:#0B1220;">
-    
+  <body style="margin:0;padding:0;background:#0f1115;">
+
     <div style="
       display:flex;
-      padding:28px 40px;
+      align-items:center;
+      padding:26px 48px;
       font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial;
-      background:#111827;
-      border-radius:14px;
-      border:1px solid rgba(255,255,255,0.06);
+      background:#14161b;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,0.04);
+      box-shadow:0 0 0 1px rgba(59,130,246,0.08);
     ">
 
       ${section("Total Revenue", "Rp " + revenue.toLocaleString("id-ID"))}
@@ -74,17 +72,18 @@ export default async function handler(req, res) {
       <div style="flex:1;">
         <div style="
           font-size:11px;
-          letter-spacing:1px;
+          letter-spacing:1.2px;
           text-transform:uppercase;
-          color:#60A5FA;
-          margin-bottom:10px;
+          color:#6ea8ff;
+          margin-bottom:12px;
         ">
           ${label}
         </div>
         <div style="
-          font-size:36px;
+          font-size:40px;
           font-weight:600;
           color:white;
+          line-height:1;
         ">
           ${value}
         </div>
@@ -96,8 +95,9 @@ export default async function handler(req, res) {
     return `
       <div style="
         width:1px;
-        margin:0 28px;
-        background:rgba(255,255,255,0.08);
+        height:48px;
+        margin:0 36px;
+        background:rgba(255,255,255,0.06);
       "></div>
     `;
   }
