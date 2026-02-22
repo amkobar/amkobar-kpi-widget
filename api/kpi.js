@@ -43,49 +43,33 @@ export default async function handler(req, res) {
   <body style="margin:0;padding:0;background:#0f1115;">
 
     <div style="
-      display:flex;
-      gap:32px;
-      padding:32px 48px;
+      width:100%;
+      padding:36px 52px;
       font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial;
-      background:#121417;
-      border-radius:16px;
-      border:1px solid rgba(255,255,255,0.035);
     ">
 
-      <!-- HERO REVENUE -->
-      <div style="flex:1.3;">
-        <div style="
-          font-size:12px;
-          letter-spacing:1.2px;
-          text-transform:uppercase;
-          color:#5da2ff;
-          margin-bottom:14px;
-        ">
-          Total Revenue
-        </div>
-
-        <div style="
-          font-size:54px;
-          font-weight:700;
-          color:white;
-          line-height:1;
-        ">
-          Rp ${revenue.toLocaleString("id-ID")}
-        </div>
-      </div>
-
-      <!-- SUPPORTING METRICS -->
       <div style="
-        flex:1;
         display:flex;
-        flex-direction:column;
+        align-items:center;
         justify-content:space-between;
-        gap:24px;
+        gap:40px;
+
+        background:linear-gradient(145deg,#0c1626,#0f1e34);
+        border-radius:18px;
+
+        padding:42px 48px;
+
+        box-shadow:
+          0 20px 60px rgba(0,0,0,0.55),
+          inset 0 1px 0 rgba(255,255,255,0.04);
+
+        border:1px solid rgba(255,255,255,0.04);
       ">
 
-        ${mini("Outstanding", "Rp " + outstanding.toLocaleString("id-ID"))}
-        ${mini("Active", active)}
-        ${mini("Queue", queue)}
+        ${card("Total Revenue", "Rp " + revenue.toLocaleString("id-ID"))}
+        ${card("Outstanding", "Rp " + outstanding.toLocaleString("id-ID"))}
+        ${card("Active", active)}
+        ${card("Queue", queue)}
 
       </div>
 
@@ -95,25 +79,28 @@ export default async function handler(req, res) {
   </html>
   `);
 
-  function mini(label, value) {
+  function card(label, value) {
     return `
-      <div>
+      <div style="flex:1; text-align:left; position:relative;">
+
         <div style="
-          font-size:11px;
-          letter-spacing:1px;
+          font-size:12px;
+          letter-spacing:1.4px;
           text-transform:uppercase;
           color:#5da2ff;
-          margin-bottom:6px;
+          margin-bottom:14px;
         ">
           ${label}
         </div>
+
         <div style="
-          font-size:26px;
+          font-size:40px;
           font-weight:600;
-          color:white;
+          color:#ffffff;
         ">
           ${value}
         </div>
+
       </div>
     `;
   }
