@@ -44,21 +44,50 @@ export default async function handler(req, res) {
 
     <div style="
       display:flex;
-      align-items:center;
-      padding:24px 44px;
+      gap:32px;
+      padding:32px 48px;
       font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial;
       background:#121417;
-      border-radius:14px;
+      border-radius:16px;
       border:1px solid rgba(255,255,255,0.035);
     ">
 
-      ${section("Total Revenue", "Rp " + revenue.toLocaleString("id-ID"))}
-      ${divider()}
-      ${section("Outstanding", "Rp " + outstanding.toLocaleString("id-ID"))}
-      ${divider()}
-      ${section("Active", active)}
-      ${divider()}
-      ${section("Queue", queue)}
+      <!-- HERO REVENUE -->
+      <div style="flex:1.3;">
+        <div style="
+          font-size:12px;
+          letter-spacing:1.2px;
+          text-transform:uppercase;
+          color:#5da2ff;
+          margin-bottom:14px;
+        ">
+          Total Revenue
+        </div>
+
+        <div style="
+          font-size:54px;
+          font-weight:700;
+          color:white;
+          line-height:1;
+        ">
+          Rp ${revenue.toLocaleString("id-ID")}
+        </div>
+      </div>
+
+      <!-- SUPPORTING METRICS -->
+      <div style="
+        flex:1;
+        display:flex;
+        flex-direction:column;
+        justify-content:space-between;
+        gap:24px;
+      ">
+
+        ${mini("Outstanding", "Rp " + outstanding.toLocaleString("id-ID"))}
+        ${mini("Active", active)}
+        ${mini("Queue", queue)}
+
+      </div>
 
     </div>
 
@@ -66,38 +95,26 @@ export default async function handler(req, res) {
   </html>
   `);
 
-  function section(label, value) {
+  function mini(label, value) {
     return `
-      <div style="flex:1;">
+      <div>
         <div style="
           font-size:11px;
-          letter-spacing:1.1px;
+          letter-spacing:1px;
           text-transform:uppercase;
           color:#5da2ff;
-          margin-bottom:10px;
+          margin-bottom:6px;
         ">
           ${label}
         </div>
         <div style="
-          font-size:38px;
+          font-size:26px;
           font-weight:600;
           color:white;
-          line-height:1;
         ">
           ${value}
         </div>
       </div>
-    `;
-  }
-
-  function divider() {
-    return `
-      <div style="
-        width:1px;
-        height:42px;
-        margin:0 34px;
-        background:rgba(255,255,255,0.05);
-      "></div>
     `;
   }
 }
