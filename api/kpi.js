@@ -40,33 +40,72 @@ export default async function handler(req, res) {
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <style>
-      html, body {
+      * { box-sizing: border-box; }
+
+      body {
         margin:0;
-        padding:0;
+        padding:24px 14px;
         background:#191919;
+        font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial;
+        overflow-x:hidden;
+      }
+
+      .kpi-row {
+        display:grid;
+        gap:18px;
+      }
+
+      .card {
+        padding:22px;
+        border-radius:18px;
+        background:#21252b;
+        border:1px solid rgba(56,125,201,0.12);
+        box-shadow:
+          0 10px 20px rgba(0,0,0,0.35),
+          0 3px 8px rgba(0,0,0,0.25),
+          inset 0 1px 0 rgba(255,255,255,0.04);
+      }
+
+      .label {
+        font-size:10px;
+        letter-spacing:1.4px;
+        text-transform:uppercase;
+        color:#387dc9;
+        margin-bottom:10px;
+      }
+
+      .value {
+        font-size:24px;
+        font-weight:600;
+        color:#ffffff;
+        word-break: break-word;
       }
     </style>
   </head>
   <body>
 
-    <div style="
-      font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial;
-      padding:40px 20px;
-    ">
-
-      <div style="
-        display:flex;
-        gap:24px;
-      ">
-
-        ${card("Total Revenue", "Rp " + revenue.toLocaleString("id-ID"))}
-        ${card("Outstanding", "Rp " + outstanding.toLocaleString("id-ID"))}
-        ${card("Active", active)}
-        ${card("Queue", queue)}
-
-      </div>
-
+    <div class="kpi-row" id="kpiGrid">
+      ${card("Total Revenue", "Rp " + revenue.toLocaleString("id-ID"))}
+      ${card("Outstanding", "Rp " + outstanding.toLocaleString("id-ID"))}
+      ${card("Active", active)}
+      ${card("Queue", queue)}
     </div>
+
+    <script>
+      function setColumns() {
+        const width = window.innerWidth;
+        const grid = document.getElementById("kpiGrid");
+
+        if (width <= 800) {
+          grid.style.gridTemplateColumns = "repeat(2, 1fr)";
+        } else {
+          grid.style.gridTemplateColumns = "repeat(4, 1fr)";
+        }
+      }
+
+      setColumns();
+      window.addEventListener("resize", setColumns);
+    </script>
 
   </body>
   </html>
@@ -74,36 +113,9 @@ export default async function handler(req, res) {
 
   function card(label, value) {
     return `
-      <div style="
-        flex:1;
-        padding:32px;
-        border-radius:18px;
-        background:#21252b;
-        border:1px solid rgba(56,125,201,0.12);
-        box-shadow:
-          0 12px 22px rgba(0,0,0,0.35),
-          0 3px 8px rgba(0,0,0,0.25),
-          inset 0 1px 0 rgba(255,255,255,0.04);
-      ">
-
-        <div style="
-          font-size:11px;
-          letter-spacing:1.4px;
-          text-transform:uppercase;
-          color:#387dc9;
-          margin-bottom:16px;
-        ">
-          ${label}
-        </div>
-
-        <div style="
-          font-size:34px;
-          font-weight:600;
-          color:#ffffff;
-        ">
-          ${value}
-        </div>
-
+      <div class="card">
+        <div class="label">${label}</div>
+        <div class="value">${value}</div>
       </div>
     `;
   }
