@@ -44,38 +44,20 @@ export default async function handler(req, res) {
         margin:0;
         padding:0;
         background:#191919;
+        font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial;
       }
-    </style>
-  </head>
-  <body>
 
-    <div style="
-      font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial;
-      padding:40px 20px;
-    ">
+      .wrapper {
+        padding:40px 20px;
+      }
 
-      <div style="
-        display:flex;
+      .kpi-row {
+        display:grid;
+        grid-template-columns: repeat(4, 1fr);
         gap:24px;
-      ">
+      }
 
-        ${card("Total Revenue", "Rp " + revenue.toLocaleString("id-ID"))}
-        ${card("Outstanding", "Rp " + outstanding.toLocaleString("id-ID"))}
-        ${card("Active", active)}
-        ${card("Queue", queue)}
-
-      </div>
-
-    </div>
-
-  </body>
-  </html>
-  `);
-
-  function card(label, value) {
-    return `
-      <div style="
-        flex:1;
+      .card {
         padding:32px;
         border-radius:18px;
         background:#21252b;
@@ -84,26 +66,66 @@ export default async function handler(req, res) {
           0 12px 22px rgba(0,0,0,0.35),
           0 3px 8px rgba(0,0,0,0.25),
           inset 0 1px 0 rgba(255,255,255,0.04);
-      ">
+      }
 
-        <div style="
-          font-size:11px;
-          letter-spacing:1.4px;
-          text-transform:uppercase;
-          color:#387dc9;
-          margin-bottom:16px;
-        ">
-          ${label}
-        </div>
+      .label {
+        font-size:11px;
+        letter-spacing:1.4px;
+        text-transform:uppercase;
+        color:#387dc9;
+        margin-bottom:16px;
+      }
 
-        <div style="
-          font-size:34px;
-          font-weight:600;
-          color:#ffffff;
-        ">
-          ${value}
-        </div>
+      .value {
+        font-size:34px;
+        font-weight:600;
+        color:#ffffff;
+      }
 
+      /* Tablet */
+      @media (max-width: 1024px) {
+        .kpi-row {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+
+      /* Mobile */
+      @media (max-width: 600px) {
+        .kpi-row {
+          grid-template-columns: 1fr;
+        }
+
+        .card {
+          padding:24px;
+        }
+
+        .value {
+          font-size:30px;
+        }
+      }
+
+    </style>
+  </head>
+  <body>
+
+    <div class="wrapper">
+      <div class="kpi-row">
+        ${card("Total Revenue", "Rp " + revenue.toLocaleString("id-ID"))}
+        ${card("Outstanding", "Rp " + outstanding.toLocaleString("id-ID"))}
+        ${card("Active", active)}
+        ${card("Queue", queue)}
+      </div>
+    </div>
+
+  </body>
+  </html>
+  `);
+
+  function card(label, value) {
+    return `
+      <div class="card">
+        <div class="label">${label}</div>
+        <div class="value">${value}</div>
       </div>
     `;
   }
