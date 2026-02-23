@@ -51,15 +51,12 @@ export default async function handler(req, res) {
 
     <div style="
       font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial;
-      padding:50px 40px;
-      max-width:1400px;
-      margin:auto;
+      padding:40px 20px;
     ">
 
-      <!-- 4 CARD ROW -->
       <div style="
         display:flex;
-        gap:30px;
+        gap:24px;
       ">
 
         ${card("Total Revenue", "Rp " + revenue.toLocaleString("id-ID"))}
@@ -79,28 +76,28 @@ export default async function handler(req, res) {
     return `
       <div style="
         flex:1;
-        padding:38px;
-        border-radius:22px;
+        padding:32px;
+        border-radius:18px;
         background:#21252b;
-        border:1px solid rgba(56,125,201,0.14);
+        border:1px solid rgba(56,125,201,0.12);
         box-shadow:
-          0 18px 35px rgba(0,0,0,0.4),
-          0 4px 12px rgba(0,0,0,0.3),
+          0 12px 22px rgba(0,0,0,0.35),
+          0 3px 8px rgba(0,0,0,0.25),
           inset 0 1px 0 rgba(255,255,255,0.04);
       ">
 
         <div style="
-          font-size:12px;
-          letter-spacing:1.5px;
+          font-size:11px;
+          letter-spacing:1.4px;
           text-transform:uppercase;
           color:#387dc9;
-          margin-bottom:18px;
+          margin-bottom:16px;
         ">
           ${label}
         </div>
 
         <div style="
-          font-size:36px;
+          font-size:34px;
           font-weight:600;
           color:#ffffff;
         ">
