@@ -63,8 +63,9 @@ export default async function handler(req, res) {
         background:#232830;
         border:1px solid rgba(56,125,201,0.18);
         box-shadow:
-          0 20px 40px rgba(0,0,0,0.45),
-          0 5px 15px rgba(0,0,0,0.35);
+  0 20px 40px rgba(0,0,0,0.45),
+  0 5px 15px rgba(0,0,0,0.35),
+  inset 0 1px 0 rgba(255,255,255,0.05);
         margin-bottom:40px;
       ">
 
@@ -115,8 +116,9 @@ export default async function handler(req, res) {
         background:#21252b;
         border:1px solid rgba(56,125,201,0.14);
         box-shadow:
-          0 18px 35px rgba(0,0,0,0.4),
-          0 4px 12px rgba(0,0,0,0.3);
+  0 18px 35px rgba(0,0,0,0.4),
+  0 4px 12px rgba(0,0,0,0.3),
+  inset 0 1px 0 rgba(255,255,255,0.04);
       ">
 
         <div style="
