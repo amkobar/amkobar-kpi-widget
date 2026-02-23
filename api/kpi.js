@@ -40,30 +40,39 @@ export default async function handler(req, res) {
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <style>
+      * {
+        box-sizing: border-box;
+      }
+
       html, body {
         margin:0;
         padding:0;
         background:#191919;
         font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial;
+        overflow-x:hidden;
+        max-width:100%;
       }
 
       .wrapper {
-        padding:40px 20px;
+        padding:30px 16px;
+        max-width:100%;
       }
 
       .kpi-row {
         display:grid;
         grid-template-columns: repeat(4, 1fr);
-        gap:24px;
+        gap:20px;
+        width:100%;
       }
 
       .card {
-        padding:32px;
+        width:100%;
+        padding:28px;
         border-radius:18px;
         background:#21252b;
         border:1px solid rgba(56,125,201,0.12);
         box-shadow:
-          0 12px 22px rgba(0,0,0,0.35),
+          0 10px 20px rgba(0,0,0,0.35),
           0 3px 8px rgba(0,0,0,0.25),
           inset 0 1px 0 rgba(255,255,255,0.04);
       }
@@ -73,13 +82,14 @@ export default async function handler(req, res) {
         letter-spacing:1.4px;
         text-transform:uppercase;
         color:#387dc9;
-        margin-bottom:16px;
+        margin-bottom:14px;
       }
 
       .value {
-        font-size:34px;
+        font-size:30px;
         font-weight:600;
         color:#ffffff;
+        word-break: break-word;
       }
 
       /* Tablet */
@@ -100,7 +110,7 @@ export default async function handler(req, res) {
         }
 
         .value {
-          font-size:26px;
+          font-size:24px;
         }
       }
 
