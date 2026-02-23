@@ -50,7 +50,6 @@ export default async function handler(req, res) {
         background:#191919;
         font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial;
         overflow-x:hidden;
-        max-width:100%;
       }
 
       .wrapper {
@@ -60,14 +59,14 @@ export default async function handler(req, res) {
 
       .kpi-row {
         display:grid;
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
         gap:20px;
         width:100%;
       }
 
       .card {
         width:100%;
-        padding:28px;
+        padding:24px;
         border-radius:18px;
         background:#21252b;
         border:1px solid rgba(56,125,201,0.12);
@@ -82,36 +81,14 @@ export default async function handler(req, res) {
         letter-spacing:1.4px;
         text-transform:uppercase;
         color:#387dc9;
-        margin-bottom:14px;
+        margin-bottom:12px;
       }
 
       .value {
-        font-size:30px;
+        font-size:26px;
         font-weight:600;
         color:#ffffff;
         word-break: break-word;
-      }
-
-      /* Tablet */
-      @media (max-width: 1024px) {
-        .kpi-row {
-          grid-template-columns: repeat(2, 1fr);
-        }
-      }
-
-      /* Android */
-      @media (max-width: 600px) {
-        .kpi-row {
-          grid-template-columns: repeat(2, 1fr);
-        }
-
-        .card {
-          padding:22px;
-        }
-
-        .value {
-          font-size:24px;
-        }
       }
 
     </style>
