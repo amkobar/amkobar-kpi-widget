@@ -47,67 +47,77 @@ export default async function handler(req, res) {
   font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial;
 }
 
+/* DESKTOP DEFAULT (TIDAK BERUBAH) */
 .wrapper {
-  padding:20px 14px 10px 14px;
+  padding:40px 20px;
 }
 
 .kpi-row {
   display:grid;
   grid-template-columns: repeat(4, 1fr);
-  gap:18px;
+  gap:24px;
 }
 
 .card {
-  padding:20px;
-  border-radius:16px;
+  padding:32px;
+  border-radius:18px;
   background:#21252b;
-  border:1px solid rgba(56,125,201,0.10);
+  border:1px solid rgba(56,125,201,0.12);
   box-shadow:
-    0 6px 14px rgba(0,0,0,0.30),
-    0 2px 6px rgba(0,0,0,0.20),
+    0 12px 22px rgba(0,0,0,0.35),
+    0 3px 8px rgba(0,0,0,0.25),
     inset 0 1px 0 rgba(255,255,255,0.04);
 }
 
 .label {
-  font-size:10px;
-  letter-spacing:1.2px;
+  font-size:11px;
+  letter-spacing:1.4px;
   text-transform:uppercase;
   color:#387dc9;
-  margin-bottom:8px;
+  margin-bottom:16px;
 }
 
 .value {
-  font-size:22px;
+  font-size:34px;
   font-weight:600;
   color:#ffffff;
 }
 
-/* Tablet */
+/* TABLET */
 @media (max-width: 1024px) {
   .kpi-row {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
-/* Android */
+/* ANDROID ONLY */
 @media (max-width: 600px) {
 
   .wrapper {
-    padding:16px 12px 8px 12px;
+    padding:18px 14px 12px 14px;
   }
 
   .kpi-row {
     grid-template-columns: repeat(2, 1fr);
-    gap:14px;
+    gap:16px;
   }
 
   .card {
-    padding:16px;
-    border-radius:14px;
+    padding:18px;
+    border-radius:16px;
+    box-shadow:
+      0 6px 14px rgba(0,0,0,0.30),
+      0 2px 6px rgba(0,0,0,0.20),
+      inset 0 1px 0 rgba(255,255,255,0.04);
+  }
+
+  .label {
+    font-size:10px;
+    margin-bottom:10px;
   }
 
   .value {
-    font-size:20px;
+    font-size:22px;
   }
 }
 
