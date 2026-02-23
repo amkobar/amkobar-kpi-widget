@@ -38,30 +38,21 @@ export default async function handler(req, res) {
   <!DOCTYPE html>
   <html>
   <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <style>
       * { box-sizing: border-box; }
 
-      html, body {
+      body {
         margin:0;
-        padding:0;
+        padding:24px 14px;
         background:#191919;
         font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial;
-        width:100vw;
-        max-width:100vw;
         overflow-x:hidden;
-      }
-
-      .wrapper {
-        padding:24px 14px;
-        width:100%;
       }
 
       .kpi-row {
         display:grid;
-        grid-template-columns: repeat(4, 1fr);
         gap:18px;
-        width:100%;
       }
 
       .card {
@@ -89,26 +80,32 @@ export default async function handler(req, res) {
         color:#ffffff;
         word-break: break-word;
       }
-
-      /* FORCE 2x2 when screen width visually small */
-      @media screen and (max-width: 800px) {
-        .kpi-row {
-          grid-template-columns: repeat(2, 1fr);
-        }
-      }
-
     </style>
   </head>
   <body>
 
-    <div class="wrapper">
-      <div class="kpi-row">
-        ${card("Total Revenue", "Rp " + revenue.toLocaleString("id-ID"))}
-        ${card("Outstanding", "Rp " + outstanding.toLocaleString("id-ID"))}
-        ${card("Active", active)}
-        ${card("Queue", queue)}
-      </div>
+    <div class="kpi-row" id="kpiGrid">
+      ${card("Total Revenue", "Rp " + revenue.toLocaleString("id-ID"))}
+      ${card("Outstanding", "Rp " + outstanding.toLocaleString("id-ID"))}
+      ${card("Active", active)}
+      ${card("Queue", queue)}
     </div>
+
+    <script>
+      function setColumns() {
+        const width = window.innerWidth;
+        const grid = document.getElementById("kpiGrid");
+
+        if (width <= 800) {
+          grid.style.gridTemplateColumns = "repeat(2, 1fr)";
+        } else {
+          grid.style.gridTemplateColumns = "repeat(4, 1fr)";
+        }
+      }
+
+      setColumns();
+      window.addEventListener("resize", setColumns);
+    </script>
 
   </body>
   </html>
