@@ -51,26 +51,26 @@ export default async function handler(req, res) {
 
     <div style="
       font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial;
-      padding:40px 0;
+      padding:50px 0;
       max-width:1200px;
       margin:auto;
     ">
 
       <!-- HERO CARD -->
       <div style="
-        padding:38px 44px;
+        padding:42px 48px;
         border-radius:22px;
-        background:#1f1f1f;
-        border:1px solid rgba(56,125,201,0.15);
+        background:#232830;
+        border:1px solid rgba(56,125,201,0.18);
         box-shadow:
-  0 20px 40px rgba(0,0,0,0.45),
-  0 5px 15px rgba(0,0,0,0.35);
-        margin-bottom:36px;
+          0 20px 40px rgba(0,0,0,0.45),
+          0 5px 15px rgba(0,0,0,0.35);
+        margin-bottom:40px;
       ">
 
         <div style="
           font-size:12px;
-          letter-spacing:1.5px;
+          letter-spacing:1.6px;
           text-transform:uppercase;
           color:#387dc9;
           margin-bottom:18px;
@@ -79,7 +79,7 @@ export default async function handler(req, res) {
         </div>
 
         <div style="
-          font-size:52px;
+          font-size:54px;
           font-weight:700;
           color:#ffffff;
         ">
@@ -88,10 +88,10 @@ export default async function handler(req, res) {
 
       </div>
 
-      <!-- SUPPORTING ROW -->
+      <!-- SUPPORTING CARDS -->
       <div style="
         display:flex;
-        gap:28px;
+        gap:30px;
       ">
 
         ${smallCard("Outstanding", "Rp " + outstanding.toLocaleString("id-ID"))}
@@ -110,14 +110,13 @@ export default async function handler(req, res) {
     return `
       <div style="
         flex:1;
-        padding:30px;
+        padding:32px;
         border-radius:20px;
-        background:#1f1f1f;
-        border:1px solid rgba(56,125,201,0.12);
+        background:#21252b;
+        border:1px solid rgba(56,125,201,0.14);
         box-shadow:
-  0 18px 35px rgba(0,0,0,0.4),
-  0 4px 12px rgba(0,0,0,0.3);
-        transition: all 0.25s ease;
+          0 18px 35px rgba(0,0,0,0.4),
+          0 4px 12px rgba(0,0,0,0.3);
       ">
 
         <div style="
