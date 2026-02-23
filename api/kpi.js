@@ -50,22 +50,51 @@ export default async function handler(req, res) {
   <body>
 
     <div style="
-      width:100%;
-      padding:20px 8px;
-      box-sizing:border-box;
+      padding:24px 8px;
       font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial;
     ">
 
+      <!-- HERO CARD -->
+      <div style="
+        padding:34px 40px;
+        border-radius:22px;
+        background:linear-gradient(145deg,#1f1f1f,#242424);
+        border:1px solid rgba(56,125,201,0.25);
+        box-shadow:
+          0 25px 60px rgba(0,0,0,0.7),
+          0 0 40px rgba(56,125,201,0.15);
+        margin-bottom:26px;
+      ">
+
+        <div style="
+          font-size:12px;
+          letter-spacing:1.4px;
+          text-transform:uppercase;
+          color:#387dc9;
+          margin-bottom:16px;
+        ">
+          Total Revenue
+        </div>
+
+        <div style="
+          font-size:48px;
+          font-weight:700;
+          color:white;
+        ">
+          Rp ${revenue.toLocaleString("id-ID")}
+        </div>
+
+      </div>
+
+      <!-- SUPPORTING CARDS -->
       <div style="
         display:flex;
         gap:24px;
-        width:100%;
       ">
 
-        ${card("Total Revenue", "Rp " + revenue.toLocaleString("id-ID"))}
-        ${card("Outstanding", "Rp " + outstanding.toLocaleString("id-ID"))}
-        ${card("Active", active)}
-        ${card("Queue", queue)}
+        ${smallCard("Outstanding", "Rp " + outstanding.toLocaleString("id-ID"))}
+        ${smallCard("Active", active)}
+        ${smallCard("Queue", queue)}
 
       </div>
 
@@ -75,20 +104,15 @@ export default async function handler(req, res) {
   </html>
   `);
 
-  function card(label, value) {
+  function smallCard(label, value) {
     return `
       <div style="
         flex:1;
         padding:26px 28px;
         border-radius:18px;
-
         background:linear-gradient(145deg,#1f1f1f,#242424);
-
-        border:1px solid rgba(56,125,201,0.15);
-
-        box-shadow:
-          0 12px 30px rgba(0,0,0,0.6);
-
+        border:1px solid rgba(56,125,201,0.18);
+        box-shadow:0 15px 35px rgba(0,0,0,0.6);
       ">
 
         <div style="
@@ -102,7 +126,7 @@ export default async function handler(req, res) {
         </div>
 
         <div style="
-          font-size:34px;
+          font-size:28px;
           font-weight:600;
           color:white;
         ">
