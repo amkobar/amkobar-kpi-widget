@@ -43,23 +43,31 @@ export default async function handler(req, res) {
       html, body {
         margin:0;
         padding:0;
-        background:transparent;
+        background:#0f1115;
       }
     </style>
   </head>
   <body>
 
     <div style="
-      display:flex;
-      gap:24px;
-      padding:0;
+      width:100%;
+      padding:20px 8px;
+      box-sizing:border-box;
       font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial;
     ">
 
-      ${card("Total Revenue", "Rp " + revenue.toLocaleString("id-ID"))}
-      ${card("Outstanding", "Rp " + outstanding.toLocaleString("id-ID"))}
-      ${card("Active", active)}
-      ${card("Queue", queue)}
+      <div style="
+        display:flex;
+        gap:24px;
+        width:100%;
+      ">
+
+        ${card("Total Revenue", "Rp " + revenue.toLocaleString("id-ID"))}
+        ${card("Outstanding", "Rp " + outstanding.toLocaleString("id-ID"))}
+        ${card("Active", active)}
+        ${card("Queue", queue)}
+
+      </div>
 
     </div>
 
@@ -76,10 +84,10 @@ export default async function handler(req, res) {
 
         background:linear-gradient(145deg,#0c1b2f,#0e2440);
 
-        border:1px solid rgba(255,255,255,0.05);
+        border:1px solid rgba(255,255,255,0.04);
 
         box-shadow:
-          0 18px 45px rgba(0,0,0,0.55);
+          0 15px 35px rgba(0,0,0,0.55);
 
       ">
 
