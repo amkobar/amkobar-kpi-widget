@@ -63,8 +63,8 @@ export default async function handler(req, res) {
         background:#1f1f1f;
         border:1px solid rgba(56,125,201,0.15);
         box-shadow:
-          0 40px 80px rgba(0,0,0,0.7),
-          0 10px 25px rgba(0,0,0,0.6);
+  0 20px 40px rgba(0,0,0,0.45),
+  0 5px 15px rgba(0,0,0,0.35);
         margin-bottom:36px;
       ">
 
@@ -115,8 +115,8 @@ export default async function handler(req, res) {
         background:#1f1f1f;
         border:1px solid rgba(56,125,201,0.12);
         box-shadow:
-          0 30px 60px rgba(0,0,0,0.6),
-          0 8px 20px rgba(0,0,0,0.5);
+  0 18px 35px rgba(0,0,0,0.4),
+  0 4px 12px rgba(0,0,0,0.3);
         transition: all 0.25s ease;
       ">
 
