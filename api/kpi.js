@@ -38,62 +38,69 @@ export default async function handler(req, res) {
   <!DOCTYPE html>
   <html>
   <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <style>
-      * { box-sizing: border-box; }
-
       html, body {
         margin:0;
         padding:0;
         background:#191919;
         font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial;
-        width:100vw;
-        max-width:100vw;
-        overflow-x:hidden;
       }
 
       .wrapper {
-        padding:24px 14px;
-        width:100%;
+        padding:40px 20px;
       }
 
       .kpi-row {
         display:grid;
         grid-template-columns: repeat(4, 1fr);
-        gap:18px;
-        width:100%;
+        gap:24px;
       }
 
       .card {
-        padding:22px;
+        padding:32px;
         border-radius:18px;
         background:#21252b;
         border:1px solid rgba(56,125,201,0.12);
         box-shadow:
-          0 10px 20px rgba(0,0,0,0.35),
+          0 12px 22px rgba(0,0,0,0.35),
           0 3px 8px rgba(0,0,0,0.25),
           inset 0 1px 0 rgba(255,255,255,0.04);
       }
 
       .label {
-        font-size:10px;
+        font-size:11px;
         letter-spacing:1.4px;
         text-transform:uppercase;
         color:#387dc9;
-        margin-bottom:10px;
+        margin-bottom:16px;
       }
 
       .value {
-        font-size:24px;
+        font-size:34px;
         font-weight:600;
         color:#ffffff;
-        word-break: break-word;
       }
 
-      /* FORCE 2x2 when screen width visually small */
-      @media screen and (max-width: 800px) {
+      /* Tablet */
+      @media (max-width: 1024px) {
         .kpi-row {
           grid-template-columns: repeat(2, 1fr);
+        }
+      }
+
+      /* Android */
+      @media (max-width: 600px) {
+        .kpi-row {
+          grid-template-columns: repeat(2, 1fr);
+        }
+
+        .card {
+          padding:22px;
+        }
+
+        .value {
+          font-size:26px;
         }
       }
 
