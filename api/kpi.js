@@ -89,18 +89,18 @@ export default async function handler(req, res) {
         }
       }
 
-      /* Mobile */
+      /* Android */
       @media (max-width: 600px) {
         .kpi-row {
-          grid-template-columns: 1fr;
+          grid-template-columns: repeat(2, 1fr);
         }
 
         .card {
-          padding:24px;
+          padding:22px;
         }
 
         .value {
-          font-size:30px;
+          font-size:26px;
         }
       }
 
