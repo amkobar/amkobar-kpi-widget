@@ -38,35 +38,34 @@ export default async function handler(req, res) {
   <!DOCTYPE html>
   <html>
   <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
     <style>
-      * {
-        box-sizing: border-box;
-      }
+      * { box-sizing: border-box; }
 
       html, body {
         margin:0;
         padding:0;
         background:#191919;
         font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial;
+        width:100vw;
+        max-width:100vw;
         overflow-x:hidden;
       }
 
       .wrapper {
-        padding:30px 16px;
-        max-width:100%;
+        padding:24px 14px;
+        width:100%;
       }
 
       .kpi-row {
         display:grid;
-        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-        gap:20px;
+        grid-template-columns: repeat(4, 1fr);
+        gap:18px;
         width:100%;
       }
 
       .card {
-        width:100%;
-        padding:24px;
+        padding:22px;
         border-radius:18px;
         background:#21252b;
         border:1px solid rgba(56,125,201,0.12);
@@ -77,18 +76,25 @@ export default async function handler(req, res) {
       }
 
       .label {
-        font-size:11px;
+        font-size:10px;
         letter-spacing:1.4px;
         text-transform:uppercase;
         color:#387dc9;
-        margin-bottom:12px;
+        margin-bottom:10px;
       }
 
       .value {
-        font-size:26px;
+        font-size:24px;
         font-weight:600;
         color:#ffffff;
         word-break: break-word;
+      }
+
+      /* FORCE 2x2 when screen width visually small */
+      @media screen and (max-width: 800px) {
+        .kpi-row {
+          grid-template-columns: repeat(2, 1fr);
+        }
       }
 
     </style>
