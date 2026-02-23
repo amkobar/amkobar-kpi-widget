@@ -39,13 +39,20 @@ export default async function handler(req, res) {
   <html>
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <style>
+      html, body {
+        margin:0;
+        padding:0;
+        background:transparent;
+      }
+    </style>
   </head>
-  <body style="margin:0;background:#0f1115;">
+  <body>
 
     <div style="
       display:flex;
       gap:24px;
-      padding:28px;
+      padding:0;
       font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial;
     ">
 
@@ -72,10 +79,8 @@ export default async function handler(req, res) {
         border:1px solid rgba(255,255,255,0.05);
 
         box-shadow:
-          0 18px 45px rgba(0,0,0,0.55),
-          0 0 0 1px rgba(93,162,255,0.05);
+          0 18px 45px rgba(0,0,0,0.55);
 
-        transition:all 0.3s ease;
       ">
 
         <div style="
