@@ -50,46 +50,48 @@ export default async function handler(req, res) {
   <body>
 
     <div style="
-      padding:24px 8px;
       font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial;
+      padding:40px 0;
+      max-width:1200px;
+      margin:auto;
     ">
 
       <!-- HERO CARD -->
       <div style="
-        padding:34px 40px;
+        padding:38px 44px;
         border-radius:22px;
-        background:linear-gradient(145deg,#1f1f1f,#242424);
-        border:1px solid rgba(56,125,201,0.25);
+        background:#1f1f1f;
+        border:1px solid rgba(56,125,201,0.15);
         box-shadow:
-          0 25px 60px rgba(0,0,0,0.7),
-          0 0 40px rgba(56,125,201,0.15);
-        margin-bottom:26px;
+          0 40px 80px rgba(0,0,0,0.7),
+          0 10px 25px rgba(0,0,0,0.6);
+        margin-bottom:36px;
       ">
 
         <div style="
           font-size:12px;
-          letter-spacing:1.4px;
+          letter-spacing:1.5px;
           text-transform:uppercase;
           color:#387dc9;
-          margin-bottom:16px;
+          margin-bottom:18px;
         ">
           Total Revenue
         </div>
 
         <div style="
-          font-size:48px;
+          font-size:52px;
           font-weight:700;
-          color:white;
+          color:#ffffff;
         ">
           Rp ${revenue.toLocaleString("id-ID")}
         </div>
 
       </div>
 
-      <!-- SUPPORTING CARDS -->
+      <!-- SUPPORTING ROW -->
       <div style="
         display:flex;
-        gap:24px;
+        gap:28px;
       ">
 
         ${smallCard("Outstanding", "Rp " + outstanding.toLocaleString("id-ID"))}
@@ -108,11 +110,14 @@ export default async function handler(req, res) {
     return `
       <div style="
         flex:1;
-        padding:26px 28px;
-        border-radius:18px;
-        background:linear-gradient(145deg,#1f1f1f,#242424);
-        border:1px solid rgba(56,125,201,0.18);
-        box-shadow:0 15px 35px rgba(0,0,0,0.6);
+        padding:30px;
+        border-radius:20px;
+        background:#1f1f1f;
+        border:1px solid rgba(56,125,201,0.12);
+        box-shadow:
+          0 30px 60px rgba(0,0,0,0.6),
+          0 8px 20px rgba(0,0,0,0.5);
+        transition: all 0.25s ease;
       ">
 
         <div style="
@@ -120,15 +125,15 @@ export default async function handler(req, res) {
           letter-spacing:1.3px;
           text-transform:uppercase;
           color:#387dc9;
-          margin-bottom:12px;
+          margin-bottom:14px;
         ">
           ${label}
         </div>
 
         <div style="
-          font-size:28px;
+          font-size:30px;
           font-weight:600;
-          color:white;
+          color:#ffffff;
         ">
           ${value}
         </div>
