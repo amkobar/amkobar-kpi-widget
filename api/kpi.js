@@ -43,7 +43,7 @@ export default async function handler(req, res) {
       html, body {
         margin:0;
         padding:0;
-        background:#0f1115;
+        background:#191919;
       }
     </style>
   </head>
@@ -82,12 +82,12 @@ export default async function handler(req, res) {
         padding:26px 28px;
         border-radius:18px;
 
-        background:linear-gradient(145deg,#0c1b2f,#0e2440);
+        background:linear-gradient(145deg,#1f1f1f,#242424);
 
-        border:1px solid rgba(255,255,255,0.04);
+        border:1px solid rgba(56,125,201,0.15);
 
         box-shadow:
-          0 15px 35px rgba(0,0,0,0.55);
+          0 12px 30px rgba(0,0,0,0.6);
 
       ">
 
@@ -95,7 +95,7 @@ export default async function handler(req, res) {
           font-size:11px;
           letter-spacing:1.3px;
           text-transform:uppercase;
-          color:#5da2ff;
+          color:#387dc9;
           margin-bottom:12px;
         ">
           ${label}
