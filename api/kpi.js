@@ -75,4 +75,22 @@ module.exports = async function handler(req, res) {
     <div class="wrapper">
       <div class="section-label">🔵 Historical — All Time</div>
       <div class="kpi-row row-2">
-        ${card("Tota
+        ${card("Total Revenue", "Rp " + totalRevenue.toLocaleString("id-ID"))}
+        ${card("Total Project Selesai", totalSelesai)}
+      </div>
+      <div class="section-label">🟢 Monitoring Tahun Berjalan</div>
+      <div class="kpi-row row-4">
+        ${card("Revenue Tahun Ini", "Rp " + revenueTahunIni.toLocaleString("id-ID"))}
+        ${card("Selesai Tahun Ini", selesaiTahunIni)}
+        ${card("Tagihan Belum Masuk", "Rp " + outstanding.toLocaleString("id-ID"))}
+        ${card("Jumlah Antrian", antrian)}
+      </div>
+    </div>
+  </body>
+  </html>
+  `);
+
+  function card(label, value) {
+    return `<div class="card"><div class="label">${label}</div><div class="value">${value}</div></div>`;
+  }
+}
