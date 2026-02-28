@@ -28,15 +28,56 @@ module.exports = async function handler(req, res) {
       const data = await response.json();
 
       data.results.forEach((page) => {
-        const props = page.properties;
-        const status = props["Status Project"]?.select?.name || "";
-        totalRevenue += props["Revenue Closed"]?.formula?.number || 0;
-        totalSelesai += status === "Selesai" ? 1 : 0;
-        revenueTahunIni += props["Revenue Tahun Ini"]?.formula?.number || 0;
-        selesaiTahunIni += props["Selesai Tahun Ini"]?.formula?.number || 0;
-        outstanding += props["Sisa Pembayaran"]?.formula?.number || 0;
-        antrian += props["Is Antrian"]?.formula?.number || 0;
-      });
+  const props = page.properties;
+
+  const status = props["Status Project"]?.select?.name || "";
+
+  const hargaFinal = props["Harga Final"]?.rollup?.number || 0;
+  const diskon = props["Diskon Referral"]?.formula?.number || 0;
+  const hargaNetto = hargaFinal - diskon;
+
+  const dpMasuk = props["DP Masuk"]?.checkbox;
+  const tahap2Masuk = props["Tahap 2 Masuk"]?.checkbox;
+  const pelunasanMasuk = props["Pelunasan Masuk"]?.checkbox;
+
+  const skema = props["Skema Pembayaran"]?.rollup?.select?.name || "";
+
+  let totalDibayar = 0;
+
+  if (skema === "2 Tahap") {
+    if (dpMasuk) totalDibayar += hargaNetto / 2;
+    if (pelunasanMasuk) totalDibayar += hargaNetto / 2;
+  }
+
+  if (skema === "3 Tahap") {
+    if (dpMasuk) totalDibayar += hargaNetto / 3;
+    if (tahap2Masuk) totalDibayar += hargaNetto / 3;
+    if (pelunasanMasuk) totalDibayar += hargaNetto / 3;
+  }
+
+  const sisaPembayaran = Math.max(0, hargaNetto - totalDibayar);
+
+  if (status === "Selesai") {
+    totalRevenue += hargaNetto;
+    totalSelesai += 1;
+
+    const tanggalSelesai = props["Tanggal Selesai"]?.date?.start;
+    if (tanggalSelesai) {
+      const tahun = new Date(tanggalSelesai).getFullYear();
+      const tahunSekarang = new Date().getFullYear();
+      if (tahun === tahunSekarang) {
+        revenueTahunIni += hargaNetto;
+        selesaiTahunIni += 1;
+      }
+    }
+  }
+
+  if (status === "Antrian") {
+    antrian += 1;
+  }
+
+  outstanding += sisaPembayaran;
+});
 
       hasMore = data.has_more;
       cursor = data.next_cursor;
