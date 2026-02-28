@@ -124,8 +124,7 @@ module.exports = async function handler(req, res) {
 <style>
 body{
   margin:0;
-  background:transparent;
-  color:#111111;
+  background:#111111;
 }
 .wrapper{
   padding:40px 20px 60px 20px;
