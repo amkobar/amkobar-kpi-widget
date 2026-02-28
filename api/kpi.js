@@ -125,7 +125,6 @@ module.exports = async function handler(req, res) {
 body{
   margin:0;
   background:transparent;
-  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto;
   color:#111111;
 }
 .wrapper{
