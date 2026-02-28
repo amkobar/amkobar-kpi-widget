@@ -19,9 +19,6 @@ module.exports = async function handler(req, res) {
   try {
     const paketMap = {};
 
-    // =============================
-    // QUERY DATABASE PAKET
-    // =============================
     const paketResponse = await fetch(
       `https://api.notion.com/v1/databases/${paketDbId}/query`,
       { method: "POST", headers }
@@ -38,9 +35,6 @@ module.exports = async function handler(req, res) {
       paketMap[id] = { harga, skema };
     });
 
-    // =============================
-    // QUERY DATABASE PROJECT
-    // =============================
     let hasMore = true;
     let cursor = undefined;
 
@@ -124,19 +118,21 @@ module.exports = async function handler(req, res) {
 <style>
 body{
   margin:0;
-  background:#0f172a;
+  background:#191919; /* warna mendekati dark Notion */
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto;
+  color:#ffffff;
 }
 .wrapper{
-  padding:40px 20px 60px 20px;
+  padding:30px 10px 50px 10px;
   width:100%;
   box-sizing:border-box;
 }
 .section-title{
   font-size:13px;
-  letter-spacing:1.5px;
+  letter-spacing:1.4px;
   text-transform:uppercase;
-  color:#94a3b8;
-  margin:50px 0 20px 0;
+  color:#a1a1aa;
+  margin:40px 0 18px 0;
   font-weight:600;
 }
 .section-title:first-of-type{
@@ -145,29 +141,26 @@ body{
 .grid{
   display:grid;
   grid-template-columns:repeat(3,1fr);
-  gap:28px;
+  gap:22px;
 }
 .card{
-  padding:28px;
-  border-radius:18px;
-  background:linear-gradient(145deg,#111827,#0f172a);
-  border:1px solid rgba(148,163,184,0.08);
-  box-shadow:
-    0 8px 20px rgba(0,0,0,0.35);
-  transition:all .25s ease;
+  padding:26px;
+  border-radius:16px;
+  background:#111827;
+  border:1px solid rgba(255,255,255,0.05);
+  box-shadow:0 6px 18px rgba(0,0,0,0.35);
+  transition:all .2s ease;
 }
 .card:hover{
-  transform:translateY(-4px);
-  border:1px solid rgba(96,165,250,0.25);
+  transform:translateY(-3px);
 }
 .label{
   font-size:12px;
-  letter-spacing:1.2px;
   color:#9ca3af;
-  margin-bottom:16px;
+  margin-bottom:14px;
 }
 .value{
-  font-size:30px;
+  font-size:28px;
   font-weight:700;
 }
 .blue{color:#60a5fa;}
