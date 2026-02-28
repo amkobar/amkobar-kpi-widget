@@ -153,7 +153,7 @@ body{
   background:linear-gradient(145deg,#111827,#0f172a);
   border:1px solid rgba(148,163,184,0.08);
   box-shadow:
-    0 12px 28px rgba(0,0,0,0.45);
+    0 8px 20px rgba(0,0,0,0.35);
   transition:all .25s ease;
 }
 .card:hover{
