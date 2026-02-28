@@ -172,8 +172,33 @@ body{
 .yellow{color:#fbbf24;}
 .red{color:#f87171;}
 
-@media(max-width:900px){
-  .grid{grid-template-columns:repeat(2,1fr);}
+@media(max-width:600px){
+
+  .grid{
+    grid-template-columns:repeat(2,1fr);
+    gap:16px;
+  }
+
+  .card{
+    min-height:110px;
+    padding:20px;
+    border-radius:16px;
+  }
+
+  .label{
+    font-size:13px;
+    margin-bottom:12px;
+  }
+
+  .value{
+    font-size:26px;
+  }
+
+  .section-title{
+    font-size:12px;
+    margin:30px 0 14px 0;
+  }
+
 }
 </style>
 </head>
