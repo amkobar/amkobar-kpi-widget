@@ -1,6 +1,8 @@
 module.exports = async function handler(req, res) {
   const notionToken = process.env.NOTION_TOKEN;
+
   const projectDbId = "310efe1d1acf80ad861fecc7567b10c9";
+  const paketDbId = "310efe1d1acf8031b2c7f0e23435e7bb";
 
   const headers = {
     Authorization: `Bearer ${notionToken}`,
@@ -16,6 +18,33 @@ module.exports = async function handler(req, res) {
   let antrian = 0;
 
   try {
+    // =============================
+    // 1️⃣ QUERY MASTER PAKET
+    // =============================
+    const paketMap = {};
+
+    const paketResponse = await fetch(
+      `https://api.notion.com/v1/databases/${paketDbId}/query`,
+      { method: "POST", headers }
+    );
+
+    const paketData = await paketResponse.json();
+
+    paketData.results.forEach((page) => {
+      const id = page.id;
+      const harga = page.properties["Harga Paket"]?.number || 0;
+      const skema =
+        page.properties["Skema Pembayaran"]?.select?.name || "";
+
+      paketMap[id] = {
+        harga,
+        skema,
+      };
+    });
+
+    // =============================
+    // 2️⃣ QUERY DATABASE PROJECT
+    // =============================
     let hasMore = true;
     let cursor = undefined;
 
@@ -31,26 +60,22 @@ module.exports = async function handler(req, res) {
 
       data.results.forEach((page) => {
         const props = page.properties;
-        console.log(JSON.stringify(props["Harga Final"], null, 2));
         const status = props["Status Project"]?.select?.name || "";
 
-        // ===== AMBIL HARGA FINAL DARI ROLLUP (AMAN) =====
-        const hargaFinal =
-          props["Harga Final"]?.rollup?.number ??
-          props["Harga Final"]?.rollup?.array?.[0]?.number ??
-          0;
+        // ===== AMBIL RELATION PAKET =====
+        const paketRelation = props["Paket"]?.relation || [];
+        const paketId = paketRelation[0]?.id;
+
+        const paketData = paketMap[paketId] || { harga: 0, skema: "" };
+        const hargaFinal = paketData.harga;
+        const skema = paketData.skema;
 
         const diskon = props["Diskon Referral"]?.formula?.number || 0;
         const hargaNetto = hargaFinal - diskon;
 
-        // ===== CHECKBOX PEMBAYARAN =====
         const dpMasuk = props["DP Masuk"]?.checkbox || false;
         const tahap2Masuk = props["Tahap 2 Masuk"]?.checkbox || false;
         const pelunasanMasuk = props["Pelunasan Masuk"]?.checkbox || false;
-
-        // ===== SKEMA PEMBAYARAN DARI ROLLUP (AMAN) =====
-        const skema =
-          props["Skema Pembayaran"]?.rollup?.array?.[0]?.select?.name || "";
 
         let totalDibayar = 0;
 
@@ -112,16 +137,9 @@ module.exports = async function handler(req, res) {
       .kpi-row{display:grid;gap:20px}
       .row-2{grid-template-columns:repeat(2,1fr)}
       .row-4{grid-template-columns:repeat(4,1fr)}
-      .card{padding:28px;border-radius:16px;background:#21252b;border:1px solid rgba(56,125,201,0.12);box-shadow:0 12px 22px rgba(0,0,0,0.35),0 3px 8px rgba(0,0,0,0.25),inset 0 1px 0 rgba(255,255,255,0.04)}
+      .card{padding:28px;border-radius:16px;background:#21252b;border:1px solid rgba(56,125,201,0.12);box-shadow:0 12px 22px rgba(0,0,0,0.35),0 3px 8px rgba(0,0,0,0.25)}
       .label{font-size:11px;letter-spacing:1.4px;text-transform:uppercase;color:#387dc9;margin-bottom:14px}
       .value{font-size:30px;font-weight:600;color:#fff}
-      @media(max-width:768px){
-        .row-2,.row-4{grid-template-columns:repeat(2,1fr)}
-        .wrapper{padding:16px 14px}
-        .card{padding:18px}
-        .value{font-size:22px}
-        .label{font-size:10px}
-      }
     </style>
   </head>
   <body>
