@@ -1,73 +1,58 @@
-html,body{
-  margin:0;
-  padding:0;
-  background:#0b1220;
-  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto;
-}
+module.exports = async function handler(req, res) {
+  res.setHeader("Content-Type", "text/html");
 
-.wrapper{
-  padding:60px 40px;
-  max-width:1400px;
-  margin:auto;
-}
-
-.section-label{
-  font-size:14px;
-  letter-spacing:1.6px;
-  text-transform:uppercase;
-  color:#64748b;
-  margin:60px 0 24px;
-  font-weight:600;
-}
-
-.section-label:first-of-type{
-  margin-top:0;
-}
-
-.kpi-row{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:28px;
-}
-
+  const html = `
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<style>
+body{margin:0;background:#0b1220;font-family:Arial;color:#fff}
+.wrapper{padding:60px 40px;max-width:1200px;margin:auto}
+.section{margin-top:60px}
+.section:first-child{margin-top:0}
+.title{font-size:14px;letter-spacing:1.5px;color:#64748b;margin-bottom:24px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:28px}
 .card{
   padding:32px;
-  border-radius:20px;
-  background:linear-gradient(145deg,#0f1c33,#0c172a);
+  border-radius:18px;
+  background:#0f1c33;
   border:1px solid rgba(255,255,255,0.05);
-  box-shadow:
-    0 20px 40px rgba(0,0,0,0.6),
-    inset 0 1px 0 rgba(255,255,255,0.03);
-  transition:all 0.25s ease;
 }
+.label{font-size:12px;color:#94a3b8;margin-bottom:16px}
+.value{font-size:26px;font-weight:bold}
+.blue{color:#60a5fa}
+.yellow{color:#fbbf24}
+.red{color:#f87171}
+@media(max-width:900px){.grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrapper">
 
-.card:hover{
-  transform:translateY(-6px);
-  border:1px solid rgba(96,165,250,0.4);
-  box-shadow:
-    0 25px 50px rgba(0,0,0,0.7),
-    0 0 0 1px rgba(96,165,250,0.15);
-}
+<div class="section">
+<div class="title">PENCAPAIAN</div>
+<div class="grid">
+<div class="card"><div class="label">Total Pendapatan</div><div class="value blue">Rp 2.050.000</div></div>
+<div class="card"><div class="label">Total Project Selesai</div><div class="value">3</div></div>
+<div class="card"><div class="label">Pendapatan Tahun Ini</div><div class="value">Rp 2.050.000</div></div>
+</div>
+</div>
 
-.label{
-  font-size:12px;
-  letter-spacing:1.2px;
-  color:#94a3b8;
-  margin-bottom:18px;
-  font-weight:500;
-}
+<div class="section">
+<div class="title">KONTROL SAAT INI</div>
+<div class="grid">
+<div class="card"><div class="label">Tagihan Tertunda</div><div class="value yellow">Rp 450.000</div></div>
+<div class="card"><div class="label">Project Dalam Antrian</div><div class="value">0</div></div>
+<div class="card"><div class="label">Project Terlambat</div><div class="value red">0</div></div>
+</div>
+</div>
 
-.value{
-  font-size:28px;
-  font-weight:700;
-  letter-spacing:0.5px;
-}
+</div>
+</body>
+</html>
+`;
 
-@media(max-width:1000px){
-  .kpi-row{grid-template-columns:repeat(2,1fr)}
-}
-
-@media(max-width:600px){
-  .kpi-row{grid-template-columns:1fr}
-  .wrapper{padding:40px 20px}
-}
+  res.status(200).send(html);
+};
