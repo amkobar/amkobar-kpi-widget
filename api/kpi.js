@@ -13,7 +13,7 @@ export default async function handler(req, res) {
   let revenueTahunIni = 0;
   let selesaiTahunIni = 0;
   let outstanding = 0;
-  let aktif = 0;
+  let antrian = 0;
 
   try {
     const response = await fetch(
@@ -29,7 +29,7 @@ export default async function handler(req, res) {
       revenueTahunIni = props["Revenue Tahun Ini"]?.rollup?.number || revenueTahunIni;
       selesaiTahunIni = props["Project Selesai Tahun Ini"]?.rollup?.number || selesaiTahunIni;
       outstanding = props["Total Outstanding Aktif"]?.rollup?.number || outstanding;
-      aktif = props["Total Project Aktif"]?.rollup?.number || aktif;
+      antrian = props["Jumlah Antrian"]?.rollup?.number || antrian;
     });
   } catch (err) {
     console.error(err);
@@ -49,14 +49,24 @@ export default async function handler(req, res) {
         font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial;
       }
       .wrapper { padding:40px 20px; }
+      .section-label {
+        font-size:10px;
+        letter-spacing:1.6px;
+        text-transform:uppercase;
+        color:#4a5568;
+        margin-bottom:14px;
+        margin-top:28px;
+      }
+      .section-label:first-child { margin-top:0; }
       .kpi-row {
         display:grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap:24px;
+        gap:20px;
       }
+      .row-2 { grid-template-columns: repeat(2, 1fr); }
+      .row-4 { grid-template-columns: repeat(4, 1fr); }
       .card {
-        padding:32px;
-        border-radius:18px;
+        padding:28px;
+        border-radius:16px;
         background:#21252b;
         border:1px solid rgba(56,125,201,0.12);
         box-shadow:
@@ -69,34 +79,36 @@ export default async function handler(req, res) {
         letter-spacing:1.4px;
         text-transform:uppercase;
         color:#387dc9;
-        margin-bottom:16px;
+        margin-bottom:14px;
       }
       .value {
-        font-size:34px;
+        font-size:30px;
         font-weight:600;
         color:#ffffff;
       }
-      @media (max-width: 1024px) {
-        .kpi-row { grid-template-columns: repeat(2, 1fr); }
-      }
-      @media (max-width: 600px) {
-        .wrapper { padding:16px 14px 10px 14px; }
-        .kpi-row { grid-template-columns: repeat(2, 1fr); gap:16px; }
-        .card { padding:18px; border-radius:16px; }
-        .label { font-size:10px; margin-bottom:10px; }
+      @media (max-width: 768px) {
+        .row-2 { grid-template-columns: repeat(2, 1fr); }
+        .row-4 { grid-template-columns: repeat(2, 1fr); }
+        .wrapper { padding:16px 14px; }
+        .card { padding:18px; }
         .value { font-size:22px; }
+        .label { font-size:10px; }
       }
     </style>
   </head>
   <body>
     <div class="wrapper">
-      <div class="kpi-row">
+      <div class="section-label">🔵 Historical — All Time</div>
+      <div class="kpi-row row-2">
         ${card("Total Revenue", "Rp " + totalRevenue.toLocaleString("id-ID"))}
+        ${card("Total Project Selesai", totalSelesai)}
+      </div>
+      <div class="section-label">🟢 Monitoring Tahun Berjalan</div>
+      <div class="kpi-row row-4">
         ${card("Revenue Tahun Ini", "Rp " + revenueTahunIni.toLocaleString("id-ID"))}
-        ${card("Outstanding", "Rp " + outstanding.toLocaleString("id-ID"))}
-        ${card("Total Selesai", totalSelesai)}
         ${card("Selesai Tahun Ini", selesaiTahunIni)}
-        ${card("Project Aktif", aktif)}
+        ${card("Tagihan Belum Masuk", "Rp " + outstanding.toLocaleString("id-ID"))}
+        ${card("Jumlah Antrian", antrian)}
       </div>
     </div>
   </body>
