@@ -13,14 +13,10 @@ module.exports = async function handler(req, res) {
   let totalRevenue = 0;
   let totalSelesai = 0;
   let revenueTahunIni = 0;
-  let selesaiTahunIni = 0;
   let outstanding = 0;
   let antrian = 0;
 
   try {
-    // =============================
-    // 1️⃣ QUERY MASTER PAKET
-    // =============================
     const paketMap = {};
 
     const paketResponse = await fetch(
@@ -36,15 +32,9 @@ module.exports = async function handler(req, res) {
       const skema =
         page.properties["Skema Pembayaran"]?.select?.name || "";
 
-      paketMap[id] = {
-        harga,
-        skema,
-      };
+      paketMap[id] = { harga, skema };
     });
 
-    // =============================
-    // 2️⃣ QUERY DATABASE PROJECT
-    // =============================
     let hasMore = true;
     let cursor = undefined;
 
@@ -62,7 +52,6 @@ module.exports = async function handler(req, res) {
         const props = page.properties;
         const status = props["Status Project"]?.select?.name || "";
 
-        // ===== AMBIL RELATION PAKET =====
         const paketRelation = props["Paket"]?.relation || [];
         const paketId = paketRelation[0]?.id;
 
@@ -92,7 +81,6 @@ module.exports = async function handler(req, res) {
 
         const sisaPembayaran = Math.max(0, hargaNetto - totalDibayar);
 
-        // ===== KPI =====
         if (status === "Selesai") {
           totalRevenue += hargaNetto;
           totalSelesai += 1;
@@ -103,7 +91,6 @@ module.exports = async function handler(req, res) {
             const tahunSekarang = new Date().getFullYear();
             if (tahun === tahunSekarang) {
               revenueTahunIni += hargaNetto;
-              selesaiTahunIni += 1;
             }
           }
         }
@@ -125,51 +112,72 @@ module.exports = async function handler(req, res) {
 
   res.setHeader("Content-Type", "text/html");
   res.status(200).send(`
-  <!DOCTYPE html>
-  <html>
-  <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <style>
-  html,body{margin:0;padding:0;background:#191919;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial}
-  .wrapper{padding:40px 20px}
-  .section-label{font-size:10px;letter-spacing:1.6px;text-transform:uppercase;color:#4a5568;margin-bottom:14px;margin-top:28px}
-  .section-label:first-child{margin-top:0}
-  .kpi-row{display:grid;gap:20px}
-  .row-2{grid-template-columns:repeat(2,1fr)}
-  .row-4{grid-template-columns:repeat(4,1fr)}
-  .card{padding:28px;border-radius:16px;background:#21252b;border:1px solid rgba(56,125,201,0.12);box-shadow:0 12px 22px rgba(0,0,0,0.35),0 3px 8px rgba(0,0,0,0.25)}
-  .label{font-size:11px;letter-spacing:1.4px;text-transform:uppercase;color:#387dc9;margin-bottom:14px}
-  .value{font-size:20px;font-weight:600;color:#fff}
-
-  @media(max-width:768px){
-    .row-2{grid-template-columns:repeat(2,1fr)}
-    .row-4{grid-template-columns:repeat(2,1fr)}
-    .wrapper{padding:20px 16px}
-    .card{padding:20px}
-    .value{font-size:22px}
-  }
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<style>
+html,body{margin:0;padding:0;background:#0f172a;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto}
+.wrapper{padding:40px 24px}
+.section-label{font-size:12px;letter-spacing:1.4px;text-transform:uppercase;color:#64748b;margin:30px 0 16px}
+.kpi-row{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.card{
+  padding:26px;
+  border-radius:18px;
+  background:#111c2e;
+  border:1px solid rgba(255,255,255,0.04);
+  transition:0.2s ease;
+}
+.card:hover{
+  transform:translateY(-4px);
+  border:1px solid rgba(96,165,250,0.4);
+}
+.label{
+  font-size:12px;
+  letter-spacing:1px;
+  color:#94a3b8;
+  margin-bottom:12px;
+}
+.value{
+  font-size:24px;
+  font-weight:600;
+}
+@media(max-width:900px){
+  .kpi-row{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:600px){
+  .kpi-row{grid-template-columns:1fr}
+}
 </style>
-  </head>
-  <body>
-    <div class="wrapper">
-      <div class="section-label">🔵 Historical — All Time</div>
-      <div class="kpi-row row-2">
-        ${card("Total Revenue", "Rp " + totalRevenue.toLocaleString("id-ID"))}
-        ${card("Total Project Selesai", totalSelesai)}
-      </div>
-      <div class="section-label">🟢 Monitoring Tahun Berjalan</div>
-      <div class="kpi-row row-4">
-        ${card("Revenue Tahun Ini", "Rp " + revenueTahunIni.toLocaleString("id-ID"))}
-        ${card("Selesai Tahun Ini", selesaiTahunIni)}
-        ${card("Tagihan Belum Masuk", "Rp " + outstanding.toLocaleString("id-ID"))}
-        ${card("Jumlah Antrian", antrian)}
-      </div>
-    </div>
-  </body>
-  </html>
-  `);
+</head>
+<body>
+<div class="wrapper">
 
-  function card(label, value) {
-    return `<div class="card"><div class="label">${label}</div><div class="value">${value}</div></div>`;
-  }
+<div class="section-label">PENCAPAIAN</div>
+<div class="kpi-row">
+  ${card("Total Pendapatan", "Rp " + totalRevenue.toLocaleString("id-ID"), "#60a5fa")}
+  ${card("Total Project Selesai", totalSelesai, "#ffffff")}
+  ${card("Pendapatan Tahun Ini", "Rp " + revenueTahunIni.toLocaleString("id-ID"), "#ffffff")}
+</div>
+
+<div class="section-label">KONTROL SAAT INI</div>
+<div class="kpi-row">
+  ${card("Tagihan Tertunda", "Rp " + outstanding.toLocaleString("id-ID"), "#fbbf24")}
+  ${card("Project Dalam Antrian", antrian, "#ffffff")}
+  ${card("Project Terlambat", 0, "#f87171")}
+</div>
+
+</div>
+</body>
+</html>
+`);
+
+function card(label, value, color){
+  return `
+  <div class="card">
+    <div class="label">${label}</div>
+    <div class="value" style="color:${color}">${value}</div>
+  </div>
+  `;
+}
 };
