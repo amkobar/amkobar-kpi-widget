@@ -159,13 +159,13 @@ body{
   transform:translateY(-3px);
 }
 .label{
-  font-size:15px;
+  font-size:16px;
   font-weight:600;
   color:#cbd5e1;
   margin-bottom:14px;
 }
 .value{
-  font-size:45px;
+  font-size:34px;
   font-weight:700;
 }
 .blue{color:#60a5fa;}
