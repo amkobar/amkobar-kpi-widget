@@ -130,17 +130,25 @@ module.exports = async function handler(req, res) {
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <style>
-      html,body{margin:0;padding:0;background:#191919;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial}
-      .wrapper{padding:40px 20px}
-      .section-label{font-size:10px;letter-spacing:1.6px;text-transform:uppercase;color:#4a5568;margin-bottom:14px;margin-top:28px}
-      .section-label:first-child{margin-top:0}
-      .kpi-row{display:grid;gap:20px}
-      .row-2{grid-template-columns:repeat(2,1fr)}
-      .row-4{grid-template-columns:repeat(4,1fr)}
-      .card{padding:28px;border-radius:16px;background:#21252b;border:1px solid rgba(56,125,201,0.12);box-shadow:0 12px 22px rgba(0,0,0,0.35),0 3px 8px rgba(0,0,0,0.25)}
-      .label{font-size:11px;letter-spacing:1.4px;text-transform:uppercase;color:#387dc9;margin-bottom:14px}
-      .value{font-size:30px;font-weight:600;color:#fff}
-    </style>
+  html,body{margin:0;padding:0;background:#191919;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial}
+  .wrapper{padding:40px 20px}
+  .section-label{font-size:10px;letter-spacing:1.6px;text-transform:uppercase;color:#4a5568;margin-bottom:14px;margin-top:28px}
+  .section-label:first-child{margin-top:0}
+  .kpi-row{display:grid;gap:20px}
+  .row-2{grid-template-columns:repeat(2,1fr)}
+  .row-4{grid-template-columns:repeat(4,1fr)}
+  .card{padding:28px;border-radius:16px;background:#21252b;border:1px solid rgba(56,125,201,0.12);box-shadow:0 12px 22px rgba(0,0,0,0.35),0 3px 8px rgba(0,0,0,0.25)}
+  .label{font-size:11px;letter-spacing:1.4px;text-transform:uppercase;color:#387dc9;margin-bottom:14px}
+  .value{font-size:30px;font-weight:600;color:#fff}
+
+  @media(max-width:768px){
+    .row-2{grid-template-columns:repeat(2,1fr)}
+    .row-4{grid-template-columns:repeat(2,1fr)}
+    .wrapper{padding:20px 16px}
+    .card{padding:20px}
+    .value{font-size:22px}
+  }
+</style>
   </head>
   <body>
     <div class="wrapper">
