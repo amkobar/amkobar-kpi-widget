@@ -159,7 +159,7 @@ body{
   transform:translateY(-3px);
 }
 .label{
-  font-size:14px;
+  font-size:16px;
   font-weight:600;
   color:#cbd5e1;
   margin-bottom:18px;
