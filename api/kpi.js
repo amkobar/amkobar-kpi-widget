@@ -31,6 +31,7 @@ module.exports = async function handler(req, res) {
 
       data.results.forEach((page) => {
         const props = page.properties;
+        console.log(JSON.stringify(props["Harga Final"], null, 2));
         const status = props["Status Project"]?.select?.name || "";
 
         // ===== AMBIL HARGA FINAL DARI ROLLUP (AMAN) =====
