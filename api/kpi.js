@@ -21,69 +21,80 @@ module.exports = async function handler(req, res) {
 
     while (hasMore) {
       const body = cursor ? { start_cursor: cursor } : {};
+
       const response = await fetch(
         `https://api.notion.com/v1/databases/${projectDbId}/query`,
         { method: "POST", headers, body: JSON.stringify(body) }
       );
+
       const data = await response.json();
 
       data.results.forEach((page) => {
-  const props = page.properties;
+        const props = page.properties;
+        const status = props["Status Project"]?.select?.name || "";
 
-  const status = props["Status Project"]?.select?.name || "";
+        // ===== AMBIL HARGA FINAL DARI ROLLUP (AMAN) =====
+        const hargaFinal =
+          props["Harga Final"]?.rollup?.number ??
+          props["Harga Final"]?.rollup?.array?.[0]?.number ??
+          0;
 
-  const hargaFinal = props["Harga Final"]?.rollup?.number || 0;
-  const diskon = props["Diskon Referral"]?.formula?.number || 0;
-  const hargaNetto = hargaFinal - diskon;
+        const diskon = props["Diskon Referral"]?.formula?.number || 0;
+        const hargaNetto = hargaFinal - diskon;
 
-  const dpMasuk = props["DP Masuk"]?.checkbox;
-  const tahap2Masuk = props["Tahap 2 Masuk"]?.checkbox;
-  const pelunasanMasuk = props["Pelunasan Masuk"]?.checkbox;
+        // ===== CHECKBOX PEMBAYARAN =====
+        const dpMasuk = props["DP Masuk"]?.checkbox || false;
+        const tahap2Masuk = props["Tahap 2 Masuk"]?.checkbox || false;
+        const pelunasanMasuk = props["Pelunasan Masuk"]?.checkbox || false;
 
-  const skema = props["Skema Pembayaran"]?.rollup?.select?.name || "";
+        // ===== SKEMA PEMBAYARAN DARI ROLLUP (AMAN) =====
+        const skema =
+          props["Skema Pembayaran"]?.rollup?.array?.[0]?.select?.name || "";
 
-  let totalDibayar = 0;
+        let totalDibayar = 0;
 
-  if (skema === "2 Tahap") {
-    if (dpMasuk) totalDibayar += hargaNetto / 2;
-    if (pelunasanMasuk) totalDibayar += hargaNetto / 2;
-  }
+        if (skema === "2 Tahap") {
+          if (dpMasuk) totalDibayar += hargaNetto / 2;
+          if (pelunasanMasuk) totalDibayar += hargaNetto / 2;
+        }
 
-  if (skema === "3 Tahap") {
-    if (dpMasuk) totalDibayar += hargaNetto / 3;
-    if (tahap2Masuk) totalDibayar += hargaNetto / 3;
-    if (pelunasanMasuk) totalDibayar += hargaNetto / 3;
-  }
+        if (skema === "3 Tahap") {
+          if (dpMasuk) totalDibayar += hargaNetto / 3;
+          if (tahap2Masuk) totalDibayar += hargaNetto / 3;
+          if (pelunasanMasuk) totalDibayar += hargaNetto / 3;
+        }
 
-  const sisaPembayaran = Math.max(0, hargaNetto - totalDibayar);
+        const sisaPembayaran = Math.max(0, hargaNetto - totalDibayar);
 
-  if (status === "Selesai") {
-    totalRevenue += hargaNetto;
-    totalSelesai += 1;
+        // ===== KPI =====
+        if (status === "Selesai") {
+          totalRevenue += hargaNetto;
+          totalSelesai += 1;
 
-    const tanggalSelesai = props["Tanggal Selesai"]?.date?.start;
-    if (tanggalSelesai) {
-      const tahun = new Date(tanggalSelesai).getFullYear();
-      const tahunSekarang = new Date().getFullYear();
-      if (tahun === tahunSekarang) {
-        revenueTahunIni += hargaNetto;
-        selesaiTahunIni += 1;
-      }
-    }
-  }
+          const tanggalSelesai = props["Tanggal Selesai"]?.date?.start;
+          if (tanggalSelesai) {
+            const tahun = new Date(tanggalSelesai).getFullYear();
+            const tahunSekarang = new Date().getFullYear();
+            if (tahun === tahunSekarang) {
+              revenueTahunIni += hargaNetto;
+              selesaiTahunIni += 1;
+            }
+          }
+        }
 
-  if (status === "Antrian") {
-    antrian += 1;
-  }
+        if (status === "Antrian") {
+          antrian += 1;
+        }
 
-  outstanding += sisaPembayaran;
-});
+        outstanding += sisaPembayaran;
+      });
 
       hasMore = data.has_more;
       cursor = data.next_cursor;
     }
   } catch (err) {
     console.error(err);
+    return res.status(500).send("Server Error");
   }
 
   res.setHeader("Content-Type", "text/html");
@@ -132,6 +143,6 @@ module.exports = async function handler(req, res) {
   `);
 
   function card(label, value) {
-    return \`<div class="card"><div class="label">\${label}</div><div class="value">\${value}</div></div>\`;
+    return `<div class="card"><div class="label">${label}</div><div class="value">${value}</div></div>`;
   }
-}
+};
