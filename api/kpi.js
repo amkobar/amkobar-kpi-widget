@@ -174,17 +174,20 @@ body{
 
 @media(max-width:600px){
 
+  .wrapper{
+    padding:24px 18px 80px 18px; 
+  }
+
   .grid{
     grid-template-columns:repeat(2,1fr);
     gap:16px;
+    margin-bottom:50px;
   }
 
-  /* Kartu ke-3 dalam setiap section jadi full width */
+  /* kartu ke-3 tiap section full width */
   .grid .card:nth-child(3){
     grid-column:span 2;
   }
-
-}
 
   .card{
     min-height:110px;
