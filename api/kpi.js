@@ -126,7 +126,7 @@ body{
   margin:0;
   background:transparent;
   font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto;
-  color:#ffffff;
+  color:#111111;
 }
 .wrapper{
   padding:40px 20px 60px 20px;
