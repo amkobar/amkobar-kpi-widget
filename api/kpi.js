@@ -124,21 +124,21 @@ module.exports = async function handler(req, res) {
 <style>
 body{
   margin:0;
-  background:#0b1220;
+  background:transparent;
   font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto;
   color:#ffffff;
 }
 .wrapper{
-  padding:60px 60px;
+  padding:40px 20px 60px 20px;
   width:100%;
   box-sizing:border-box;
 }
 .section-title{
-  font-size:14px;
-  letter-spacing:1.6px;
+  font-size:13px;
+  letter-spacing:1.5px;
   text-transform:uppercase;
-  color:#64748b;
-  margin:60px 0 24px;
+  color:#94a3b8;
+  margin:50px 0 20px 0;
   font-weight:600;
 }
 .section-title:first-of-type{
@@ -147,41 +147,40 @@ body{
 .grid{
   display:grid;
   grid-template-columns:repeat(3,1fr);
-  gap:36px;
+  gap:28px;
 }
 .card{
-  padding:32px;
-  border-radius:20px;
-  background:linear-gradient(145deg,#0f1c33,#0c172a);
-  border:1px solid rgba(255,255,255,0.05);
+  padding:28px;
+  border-radius:18px;
+  background:linear-gradient(145deg,#111827,#0f172a);
+  border:1px solid rgba(148,163,184,0.08);
   box-shadow:
-    0 20px 40px rgba(0,0,0,0.6),
-    inset 0 1px 0 rgba(255,255,255,0.03);
-  transition:all 0.25s ease;
+    0 12px 28px rgba(0,0,0,0.45);
+  transition:all .25s ease;
 }
 .card:hover{
-  transform:translateY(-6px);
+  transform:translateY(-4px);
   border:1px solid rgba(96,165,250,0.25);
 }
 .label{
   font-size:12px;
   letter-spacing:1.2px;
-  color:#94a3b8;
-  margin-bottom:18px;
+  color:#9ca3af;
+  margin-bottom:16px;
 }
 .value{
-  font-size:32px;
+  font-size:30px;
   font-weight:700;
 }
 .blue{color:#60a5fa;}
 .yellow{color:#fbbf24;}
 .red{color:#f87171;}
+
 @media(max-width:1000px){
   .grid{grid-template-columns:repeat(2,1fr);}
 }
-@media(max-width:600px){
+@media(max-width:650px){
   .grid{grid-template-columns:1fr;}
-  .wrapper{padding:40px 20px;}
 }
 </style>
 </head>
