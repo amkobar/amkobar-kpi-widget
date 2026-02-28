@@ -144,12 +144,11 @@ body{
   gap:22px;
 }
 .card{
-  padding:26px;
-  border-radius:16px;
-  background:#111827;
+  padding:28px;
+  border-radius:18px;
+  background:#0f1b2d;   /* ini yang tadi saya maksud */
   border:1px solid rgba(255,255,255,0.05);
   box-shadow:0 6px 18px rgba(0,0,0,0.35);
-  transition:all .2s ease;
 }
 .card:hover{
   transform:translateY(-3px);
