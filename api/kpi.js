@@ -1,6 +1,6 @@
 export default async function handler(req, res) {
   const notionToken = process.env.NOTION_TOKEN;
-  const databaseId = process.env.DATABASE_ID;
+  const databaseId = "30eefe1d1acf8067b17eca5c140af538";
 
   const headers = {
     Authorization: `Bearer ${notionToken}`,
@@ -8,32 +8,34 @@ export default async function handler(req, res) {
     "Content-Type": "application/json",
   };
 
-  let revenue = 0;
+  let totalRevenue = 0;
+  let totalSelesai = 0;
+  let revenueTahunIni = 0;
+  let selesaiTahunIni = 0;
   let outstanding = 0;
-  let active = 0;
-  let queue = 0;
+  let aktif = 0;
 
   try {
     const response = await fetch(
       `https://api.notion.com/v1/databases/${databaseId}/query`,
       { method: "POST", headers }
     );
-
     const data = await response.json();
 
     data.results.forEach((page) => {
       const props = page.properties;
-      revenue = props["Total Pendapatan"]?.rollup?.number || revenue;
-      outstanding = props["Total Outstanding"]?.rollup?.number || outstanding;
-      active = props["Count Project Aktif"]?.rollup?.number || active;
-      queue = props["Count Queue"]?.rollup?.number || queue;
+      totalRevenue = props["💵 Total Revenue (All Time)"]?.rollup?.number || totalRevenue;
+      totalSelesai = props["Total Project Selesai (All Time)"]?.rollup?.number || totalSelesai;
+      revenueTahunIni = props["Revenue Tahun Ini"]?.rollup?.number || revenueTahunIni;
+      selesaiTahunIni = props["Project Selesai Tahun Ini"]?.rollup?.number || selesaiTahunIni;
+      outstanding = props["Total Outstanding Aktif"]?.rollup?.number || outstanding;
+      aktif = props["Total Project Aktif"]?.rollup?.number || aktif;
     });
   } catch (err) {
     console.error(err);
   }
 
   res.setHeader("Content-Type", "text/html");
-
   res.status(200).send(`
   <!DOCTYPE html>
   <html>
@@ -46,18 +48,12 @@ export default async function handler(req, res) {
         background:#191919;
         font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial;
       }
-
-      /* DESKTOP DEFAULT */
-      .wrapper {
-        padding:40px 20px;
-      }
-
+      .wrapper { padding:40px 20px; }
       .kpi-row {
         display:grid;
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: repeat(3, 1fr);
         gap:24px;
       }
-
       .card {
         padding:32px;
         border-radius:18px;
@@ -68,7 +64,6 @@ export default async function handler(req, res) {
           0 3px 8px rgba(0,0,0,0.25),
           inset 0 1px 0 rgba(255,255,255,0.04);
       }
-
       .label {
         font-size:11px;
         letter-spacing:1.4px;
@@ -76,64 +71,34 @@ export default async function handler(req, res) {
         color:#387dc9;
         margin-bottom:16px;
       }
-
       .value {
         font-size:34px;
         font-weight:600;
         color:#ffffff;
       }
-
-      /* TABLET */
       @media (max-width: 1024px) {
-        .kpi-row {
-          grid-template-columns: repeat(2, 1fr);
-        }
+        .kpi-row { grid-template-columns: repeat(2, 1fr); }
       }
-
-      /* ANDROID REFINEMENT */
       @media (max-width: 600px) {
-
-        .wrapper {
-          padding:16px 14px 10px 14px;
-        }
-
-        .kpi-row {
-          grid-template-columns: repeat(2, 1fr);
-          gap:16px;
-        }
-
-        .card {
-          padding:18px;
-          border-radius:16px;
-          box-shadow:
-            0 6px 14px rgba(0,0,0,0.30),
-            0 2px 6px rgba(0,0,0,0.20),
-            inset 0 1px 0 rgba(255,255,255,0.04);
-        }
-
-        .label {
-          font-size:10px;
-          margin-bottom:10px;
-        }
-
-        .value {
-          font-size:22px;
-        }
+        .wrapper { padding:16px 14px 10px 14px; }
+        .kpi-row { grid-template-columns: repeat(2, 1fr); gap:16px; }
+        .card { padding:18px; border-radius:16px; }
+        .label { font-size:10px; margin-bottom:10px; }
+        .value { font-size:22px; }
       }
-
     </style>
   </head>
   <body>
-
     <div class="wrapper">
       <div class="kpi-row">
-        ${card("Total Revenue", "Rp " + revenue.toLocaleString("id-ID"))}
+        ${card("Total Revenue", "Rp " + totalRevenue.toLocaleString("id-ID"))}
+        ${card("Revenue Tahun Ini", "Rp " + revenueTahunIni.toLocaleString("id-ID"))}
         ${card("Outstanding", "Rp " + outstanding.toLocaleString("id-ID"))}
-        ${card("Active", active)}
-        ${card("Queue", queue)}
+        ${card("Total Selesai", totalSelesai)}
+        ${card("Selesai Tahun Ini", selesaiTahunIni)}
+        ${card("Project Aktif", aktif)}
       </div>
     </div>
-
   </body>
   </html>
   `);
