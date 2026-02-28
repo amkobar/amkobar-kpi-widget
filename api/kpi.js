@@ -139,7 +139,7 @@ module.exports = async function handler(req, res) {
   .row-4{grid-template-columns:repeat(4,1fr)}
   .card{padding:28px;border-radius:16px;background:#21252b;border:1px solid rgba(56,125,201,0.12);box-shadow:0 12px 22px rgba(0,0,0,0.35),0 3px 8px rgba(0,0,0,0.25)}
   .label{font-size:11px;letter-spacing:1.4px;text-transform:uppercase;color:#387dc9;margin-bottom:14px}
-  .value{font-size:30px;font-weight:600;color:#fff}
+  .value{font-size:20px;font-weight:600;color:#fff}
 
   @media(max-width:768px){
     .row-2{grid-template-columns:repeat(2,1fr)}
