@@ -173,11 +173,10 @@ body{
 .red{color:#f87171;}
 
 @media(max-width:600px){
-
-  .grid{
-    grid-template-columns:repeat(2,1fr);
-    gap:16px;
+  .grid .card:last-child:nth-child(odd){
+    grid-column:span 2;
   }
+}
 
   .card{
     min-height:110px;
