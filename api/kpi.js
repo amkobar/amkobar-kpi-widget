@@ -173,9 +173,16 @@ body{
 .red{color:#f87171;}
 
 @media(max-width:600px){
-  .grid .card:last-child:nth-child(odd){
-    grid-column:span 2;
+
+  .wrapper{
+    padding:24px 18px 50px 18px;  /* ini kuncinya */
   }
+
+  .grid{
+    grid-template-columns:repeat(2,1fr);
+    gap:16px;
+  }
+
 }
 
   .card{
