@@ -159,10 +159,10 @@ body{
   transform:translateY(-3px);
 }
 .label{
-  font-size:20px;
+  font-size:15px;
   font-weight:600;
   color:#cbd5e1;
-  margin-bottom:18px;
+  margin-bottom:14px;
 }
 .value{
   font-size:45px;
