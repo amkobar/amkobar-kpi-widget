@@ -144,7 +144,13 @@ body{
   gap:22px;
 }
 .card{
-  min-height:130px;
+  min-height:140px;
+  padding:28px;
+  border-radius:18px;
+  background:#0f1b2d;
+  border:1px solid rgba(255,255,255,0.06);
+  box-shadow:0 6px 18px rgba(0,0,0,0.35);
+
   display:flex;
   flex-direction:column;
   justify-content:center;
