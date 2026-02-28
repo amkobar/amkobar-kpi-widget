@@ -129,9 +129,9 @@ body{
   color:#ffffff;
 }
 .wrapper{
-  padding:60px 40px;
-  max-width:1200px;
-  margin:auto;
+  padding:60px 60px;
+  width:100%;
+  box-sizing:border-box;
 }
 .section-title{
   font-size:14px;
@@ -147,7 +147,7 @@ body{
 .grid{
   display:grid;
   grid-template-columns:repeat(3,1fr);
-  gap:28px;
+  gap:36px;
 }
 .card{
   padding:32px;
