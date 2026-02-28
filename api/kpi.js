@@ -174,13 +174,14 @@ body{
 
 @media(max-width:600px){
 
-  .wrapper{
-    padding:24px 18px 50px 18px;  /* ini kuncinya */
-  }
-
   .grid{
     grid-template-columns:repeat(2,1fr);
     gap:16px;
+  }
+
+  /* Kartu ke-3 dalam setiap section jadi full width */
+  .grid .card:nth-child(3){
+    grid-column:span 2;
   }
 
 }
