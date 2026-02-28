@@ -144,22 +144,22 @@ body{
   gap:22px;
 }
 .card{
-  padding:28px;
-  border-radius:18px;
-  background:#0f1b2d;   /* ini yang tadi saya maksud */
-  border:1px solid rgba(255,255,255,0.05);
-  box-shadow:0 6px 18px rgba(0,0,0,0.35);
+  min-height:130px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
 }
 .card:hover{
   transform:translateY(-3px);
 }
 .label{
-  font-size:12px;
-  color:#9ca3af;
-  margin-bottom:14px;
+  font-size:14px;
+  font-weight:600;
+  color:#cbd5e1;
+  margin-bottom:18px;
 }
 .value{
-  font-size:32px;
+  font-size:34px;
   font-weight:700;
 }
 .blue{color:#60a5fa;}
