@@ -1,4 +1,4 @@
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   const notionToken = process.env.NOTION_TOKEN;
   const projectDbId = "310efe1d1acf80ad861fecc7567b10c9";
 
@@ -30,18 +30,12 @@ export default async function handler(req, res) {
       data.results.forEach((page) => {
         const props = page.properties;
         const status = props["Status Project"]?.select?.name || "";
-        const revClosed = props["Revenue Closed"]?.formula?.number || 0;
-        const revTahun = props["Revenue Tahun Ini"]?.formula?.number || 0;
-        const selesaiTahun = props["Selesai Tahun Ini"]?.formula?.number || 0;
-        const sisa = props["Sisa Pembayaran"]?.formula?.number || 0;
-        const isAntrian = props["Is Antrian"]?.formula?.number || 0;
-
-        totalRevenue += revClosed;
+        totalRevenue += props["Revenue Closed"]?.formula?.number || 0;
         totalSelesai += status === "Selesai" ? 1 : 0;
-        revenueTahunIni += revTahun;
-        selesaiTahunIni += selesaiTahun;
-        outstanding += sisa;
-        antrian += isAntrian;
+        revenueTahunIni += props["Revenue Tahun Ini"]?.formula?.number || 0;
+        selesaiTahunIni += props["Selesai Tahun Ini"]?.formula?.number || 0;
+        outstanding += props["Sisa Pembayaran"]?.formula?.number || 0;
+        antrian += props["Is Antrian"]?.formula?.number || 0;
       });
 
       hasMore = data.has_more;
@@ -64,4 +58,21 @@ export default async function handler(req, res) {
       .section-label:first-child { margin-top:0; }
       .kpi-row { display:grid; gap:20px; }
       .row-2 { grid-template-columns: repeat(2, 1fr); }
-      .row-4 { grid-tem
+      .row-4 { grid-template-columns: repeat(4, 1fr); }
+      .card { padding:28px; border-radius:16px; background:#21252b; border:1px solid rgba(56,125,201,0.12); box-shadow:0 12px 22px rgba(0,0,0,0.35),0 3px 8px rgba(0,0,0,0.25),inset 0 1px 0 rgba(255,255,255,0.04); }
+      .label { font-size:11px; letter-spacing:1.4px; text-transform:uppercase; color:#387dc9; margin-bottom:14px; }
+      .value { font-size:30px; font-weight:600; color:#ffffff; }
+      @media (max-width: 768px) {
+        .row-2, .row-4 { grid-template-columns: repeat(2, 1fr); }
+        .wrapper { padding:16px 14px; }
+        .card { padding:18px; }
+        .value { font-size:22px; }
+        .label { font-size:10px; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrapper">
+      <div class="section-label">🔵 Historical — All Time</div>
+      <div class="kpi-row row-2">
+        ${card("Tota
