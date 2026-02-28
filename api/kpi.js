@@ -131,7 +131,7 @@ body{
   font-size:13px;
   letter-spacing:1.4px;
   text-transform:uppercase;
-  color:#a1a1aa;
+  color:#cbd5e1;
   margin:40px 0 18px 0;
   font-weight:600;
 }
@@ -159,7 +159,7 @@ body{
   margin-bottom:14px;
 }
 .value{
-  font-size:28px;
+  font-size:32px;
   font-weight:700;
 }
 .blue{color:#60a5fa;}
