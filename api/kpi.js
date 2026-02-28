@@ -165,7 +165,7 @@ body{
   margin-bottom:18px;
 }
 .value{
-  font-size:400px;
+  font-size:45px;
   font-weight:700;
 }
 .blue{color:#60a5fa;}
