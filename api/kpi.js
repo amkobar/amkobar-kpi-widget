@@ -1,5 +1,120 @@
 module.exports = async function handler(req, res) {
-  res.setHeader("Content-Type", "text/html");
+  const notionToken = process.env.NOTION_TOKEN;
+
+  const projectDbId = "310efe1d1acf80ad861fecc7567b10c9";
+  const paketDbId = "310efe1d1acf8031b2c7f0e23435e7bb";
+
+  const headers = {
+    Authorization: `Bearer ${notionToken}`,
+    "Notion-Version": "2022-06-28",
+    "Content-Type": "application/json",
+  };
+
+  let totalRevenue = 0;
+  let totalSelesai = 0;
+  let revenueTahunIni = 0;
+  let outstanding = 0;
+  let antrian = 0;
+
+  try {
+    const paketMap = {};
+
+    // =============================
+    // QUERY DATABASE PAKET
+    // =============================
+    const paketResponse = await fetch(
+      `https://api.notion.com/v1/databases/${paketDbId}/query`,
+      { method: "POST", headers }
+    );
+
+    const paketData = await paketResponse.json();
+
+    paketData.results.forEach((page) => {
+      const id = page.id;
+      const harga = page.properties["Harga Paket"]?.number || 0;
+      const skema =
+        page.properties["Skema Pembayaran"]?.select?.name || "";
+
+      paketMap[id] = { harga, skema };
+    });
+
+    // =============================
+    // QUERY DATABASE PROJECT
+    // =============================
+    let hasMore = true;
+    let cursor = undefined;
+
+    while (hasMore) {
+      const body = cursor ? { start_cursor: cursor } : {};
+
+      const response = await fetch(
+        `https://api.notion.com/v1/databases/${projectDbId}/query`,
+        { method: "POST", headers, body: JSON.stringify(body) }
+      );
+
+      const data = await response.json();
+
+      data.results.forEach((page) => {
+        const props = page.properties;
+        const status = props["Status Project"]?.select?.name || "";
+
+        const paketRelation = props["Paket"]?.relation || [];
+        const paketId = paketRelation[0]?.id;
+
+        const paketData = paketMap[paketId] || { harga: 0, skema: "" };
+        const hargaFinal = paketData.harga;
+        const skema = paketData.skema;
+
+        const diskon = props["Diskon Referral"]?.formula?.number || 0;
+        const hargaNetto = hargaFinal - diskon;
+
+        const dpMasuk = props["DP Masuk"]?.checkbox || false;
+        const tahap2Masuk = props["Tahap 2 Masuk"]?.checkbox || false;
+        const pelunasanMasuk = props["Pelunasan Masuk"]?.checkbox || false;
+
+        let totalDibayar = 0;
+
+        if (skema === "2 Tahap") {
+          if (dpMasuk) totalDibayar += hargaNetto / 2;
+          if (pelunasanMasuk) totalDibayar += hargaNetto / 2;
+        }
+
+        if (skema === "3 Tahap") {
+          if (dpMasuk) totalDibayar += hargaNetto / 3;
+          if (tahap2Masuk) totalDibayar += hargaNetto / 3;
+          if (pelunasanMasuk) totalDibayar += hargaNetto / 3;
+        }
+
+        const sisaPembayaran = Math.max(0, hargaNetto - totalDibayar);
+
+        if (status === "Selesai") {
+          totalRevenue += hargaNetto;
+          totalSelesai += 1;
+
+          const tanggalSelesai = props["Tanggal Selesai"]?.date?.start;
+          if (tanggalSelesai) {
+            const tahun = new Date(tanggalSelesai).getFullYear();
+            const tahunSekarang = new Date().getFullYear();
+            if (tahun === tahunSekarang) {
+              revenueTahunIni += hargaNetto;
+            }
+          }
+        }
+
+        if (status === "Antrian") {
+          antrian += 1;
+        }
+
+        outstanding += sisaPembayaran;
+      });
+
+      hasMore = data.has_more;
+      cursor = data.next_cursor;
+    }
+  } catch (err) {
+    console.error(err);
+    return res.status(500).send("Server Error");
+  }
 
   const html = `
 <!DOCTYPE html>
@@ -7,46 +122,102 @@ module.exports = async function handler(req, res) {
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <style>
-body{margin:0;background:#0b1220;font-family:Arial;color:#fff}
-.wrapper{padding:60px 40px;max-width:1200px;margin:auto}
-.section{margin-top:60px}
-.section:first-child{margin-top:0}
-.title{font-size:14px;letter-spacing:1.5px;color:#64748b;margin-bottom:24px}
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:28px}
+body{
+  margin:0;
+  background:#0b1220;
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto;
+  color:#ffffff;
+}
+.wrapper{
+  padding:60px 40px;
+  max-width:1200px;
+  margin:auto;
+}
+.section-title{
+  font-size:14px;
+  letter-spacing:1.6px;
+  text-transform:uppercase;
+  color:#64748b;
+  margin:60px 0 24px;
+  font-weight:600;
+}
+.section-title:first-of-type{
+  margin-top:0;
+}
+.grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:28px;
+}
 .card{
   padding:32px;
-  border-radius:18px;
-  background:#0f1c33;
+  border-radius:20px;
+  background:linear-gradient(145deg,#0f1c33,#0c172a);
   border:1px solid rgba(255,255,255,0.05);
+  box-shadow:
+    0 20px 40px rgba(0,0,0,0.6),
+    inset 0 1px 0 rgba(255,255,255,0.03);
+  transition:all 0.25s ease;
 }
-.label{font-size:12px;color:#94a3b8;margin-bottom:16px}
-.value{font-size:26px;font-weight:bold}
-.blue{color:#60a5fa}
-.yellow{color:#fbbf24}
-.red{color:#f87171}
-@media(max-width:900px){.grid{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:600px){.grid{grid-template-columns:1fr}}
+.card:hover{
+  transform:translateY(-6px);
+  border:1px solid rgba(96,165,250,0.25);
+}
+.label{
+  font-size:12px;
+  letter-spacing:1.2px;
+  color:#94a3b8;
+  margin-bottom:18px;
+}
+.value{
+  font-size:32px;
+  font-weight:700;
+}
+.blue{color:#60a5fa;}
+.yellow{color:#fbbf24;}
+.red{color:#f87171;}
+@media(max-width:1000px){
+  .grid{grid-template-columns:repeat(2,1fr);}
+}
+@media(max-width:600px){
+  .grid{grid-template-columns:1fr;}
+  .wrapper{padding:40px 20px;}
+}
 </style>
 </head>
 <body>
 <div class="wrapper">
 
-<div class="section">
-<div class="title">PENCAPAIAN</div>
+<div class="section-title">PENCAPAIAN</div>
 <div class="grid">
-<div class="card"><div class="label">Total Pendapatan</div><div class="value blue">Rp 2.050.000</div></div>
-<div class="card"><div class="label">Total Project Selesai</div><div class="value">3</div></div>
-<div class="card"><div class="label">Pendapatan Tahun Ini</div><div class="value">Rp 2.050.000</div></div>
-</div>
+  <div class="card">
+    <div class="label">Total Pendapatan</div>
+    <div class="value blue">Rp ${totalRevenue.toLocaleString("id-ID")}</div>
+  </div>
+  <div class="card">
+    <div class="label">Total Project Selesai</div>
+    <div class="value">${totalSelesai}</div>
+  </div>
+  <div class="card">
+    <div class="label">Pendapatan Tahun Ini</div>
+    <div class="value">Rp ${revenueTahunIni.toLocaleString("id-ID")}</div>
+  </div>
 </div>
 
-<div class="section">
-<div class="title">KONTROL SAAT INI</div>
+<div class="section-title">KONTROL SAAT INI</div>
 <div class="grid">
-<div class="card"><div class="label">Tagihan Tertunda</div><div class="value yellow">Rp 450.000</div></div>
-<div class="card"><div class="label">Project Dalam Antrian</div><div class="value">0</div></div>
-<div class="card"><div class="label">Project Terlambat</div><div class="value red">0</div></div>
-</div>
+  <div class="card">
+    <div class="label">Tagihan Tertunda</div>
+    <div class="value yellow">Rp ${outstanding.toLocaleString("id-ID")}</div>
+  </div>
+  <div class="card">
+    <div class="label">Project Dalam Antrian</div>
+    <div class="value">${antrian}</div>
+  </div>
+  <div class="card">
+    <div class="label">Project Terlambat</div>
+    <div class="value red">0</div>
+  </div>
 </div>
 
 </div>
@@ -54,5 +225,6 @@ body{margin:0;background:#0b1220;font-family:Arial;color:#fff}
 </html>
 `;
 
+  res.setHeader("Content-Type", "text/html");
   res.status(200).send(html);
 };
