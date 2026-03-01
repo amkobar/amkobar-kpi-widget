@@ -31,6 +31,7 @@ module.exports = async function handler(req, res) {
       const harga = page.properties["Harga Paket"]?.number || 0;
       const skema =
         page.properties["Skema Pembayaran"]?.select?.name || "";
+
       paketMap[id] = { harga, skema };
     });
 
@@ -104,7 +105,6 @@ module.exports = async function handler(req, res) {
       hasMore = data.has_more;
       cursor = data.next_cursor;
     }
-
   } catch (err) {
     console.error(err);
     return res.status(500).send("Server Error");
@@ -116,20 +116,17 @@ module.exports = async function handler(req, res) {
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <style>
-
-html, body{
+body{
   margin:0;
-  background:#191919;
+  background:#191919; /* warna mendekati dark Notion */
   font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto;
   color:#ffffff;
 }
-
 .wrapper{
-  padding:30px 10px 60px 10px;
+  padding:30px 10px 50px 10px;
   width:100%;
   box-sizing:border-box;
 }
-
 .section-title{
   font-size:13px;
   letter-spacing:1.4px;
@@ -138,13 +135,14 @@ html, body{
   margin:40px 0 18px 0;
   font-weight:600;
 }
-
+.section-title:first-of-type{
+  margin-top:0;
+}
 .grid{
   display:grid;
   grid-template-columns:repeat(3,1fr);
   gap:22px;
 }
-
 .card{
   min-height:140px;
   padding:28px;
@@ -152,41 +150,41 @@ html, body{
   background:#0f1b2d;
   border:1px solid rgba(255,255,255,0.06);
   box-shadow:0 6px 18px rgba(0,0,0,0.35);
+
   display:flex;
   flex-direction:column;
   justify-content:center;
 }
-
+.card:hover{
+  transform:translateY(-3px);
+}
 .label{
   font-size:16px;
   font-weight:600;
   color:#cbd5e1;
   margin-bottom:14px;
 }
-
 .value{
   font-size:34px;
   font-weight:700;
 }
-
 .blue{color:#60a5fa;}
 .yellow{color:#fbbf24;}
 .red{color:#f87171;}
 
-
-/* ===== MOBILE FIX ONLY ===== */
-
 @media(max-width:600px){
 
   .wrapper{
-    padding:24px 18px 180px 18px;
+    padding:24px 18px 80px 18px; 
   }
 
   .grid{
     grid-template-columns:repeat(2,1fr);
     gap:16px;
+    margin-bottom:50px;
   }
 
+  /* kartu ke-3 tiap section full width */
   .grid .card:nth-child(3){
     grid-column:span 2;
   }
@@ -212,11 +210,9 @@ html, body{
   }
 
 }
-
 </style>
 </head>
 <body>
-
 <div class="wrapper">
 
 <div class="section-title">PENCAPAIAN</div>
@@ -252,7 +248,6 @@ html, body{
 </div>
 
 </div>
-
 </body>
 </html>
 `;
