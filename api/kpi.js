@@ -54,7 +54,7 @@ data.results.forEach((page) => {
   const status = props["Status Project"]?.select?.name || "";
 
   const riskLevel = props["Risk Level"]?.formula?.string || "";
-  if (riskLevel === "🔴 Overdue") {
+  if (riskLevel === "Overdue") {
     terlambat += 1;
   }
 
