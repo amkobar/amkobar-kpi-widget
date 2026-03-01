@@ -116,17 +116,22 @@ module.exports = async function handler(req, res) {
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <style>
-body{
+
+html, body{
   margin:0;
-  background:#191919; /* warna mendekati dark Notion */
+  min-height:100vh;
+  background:#191919;
   font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto;
   color:#ffffff;
 }
+
 .wrapper{
-  padding:30px 10px 50px 10px;
+  min-height:100vh;
+  padding:30px 10px 60px 10px;
   width:100%;
   box-sizing:border-box;
 }
+
 .section-title{
   font-size:13px;
   letter-spacing:1.4px;
@@ -135,14 +140,13 @@ body{
   margin:40px 0 18px 0;
   font-weight:600;
 }
-.section-title:first-of-type{
-  margin-top:0;
-}
+
 .grid{
   display:grid;
   grid-template-columns:repeat(3,1fr);
   gap:22px;
 }
+
 .card{
   min-height:140px;
   padding:28px;
@@ -150,41 +154,44 @@ body{
   background:#0f1b2d;
   border:1px solid rgba(255,255,255,0.06);
   box-shadow:0 6px 18px rgba(0,0,0,0.35);
-
   display:flex;
   flex-direction:column;
   justify-content:center;
 }
-.card:hover{
-  transform:translateY(-3px);
-}
+
 .label{
   font-size:16px;
   font-weight:600;
   color:#cbd5e1;
   margin-bottom:14px;
 }
+
 .value{
   font-size:34px;
   font-weight:700;
 }
+
 .blue{color:#60a5fa;}
 .yellow{color:#fbbf24;}
 .red{color:#f87171;}
 
+/* ===== MOBILE FIX ===== */
 @media(max-width:600px){
 
+  html, body{
+    min-height:100vh;
+  }
+
   .wrapper{
-    padding:24px 18px 80px 18px; 
+    min-height:100vh;
+    padding:24px 18px 140px 18px;
   }
 
   .grid{
     grid-template-columns:repeat(2,1fr);
     gap:16px;
-    margin-bottom:50px;
   }
 
-  /* kartu ke-3 tiap section full width */
   .grid .card:nth-child(3){
     grid-column:span 2;
   }
@@ -210,9 +217,11 @@ body{
   }
 
 }
+
 </style>
 </head>
 <body>
+
 <div class="wrapper">
 
 <div class="section-title">PENCAPAIAN</div>
@@ -248,6 +257,7 @@ body{
 </div>
 
 </div>
+
 </body>
 </html>
 `;
