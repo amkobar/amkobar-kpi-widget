@@ -47,18 +47,23 @@ module.exports = async function handler(req, res) {
         { method: "POST", headers, body: JSON.stringify(body) }
       );
 
-      const data = await response.json();
+const data = await response.json();
 
-      data.results.forEach((page) => {
-        const props = page.properties;
-        const status = props["Status Project"]?.select?.name || "";
+data.results.forEach((page) => {
+  const props = page.properties;
+  const status = props["Status Project"]?.select?.name || "";
 
-        const paketRelation = props["Paket"]?.relation || [];
-        const paketId = paketRelation[0]?.id;
+  const riskLevel = props["Risk Level"]?.formula?.string || "";
+  if (riskLevel === "🔴 Overdue") {
+    terlambat += 1;
+  }
 
-        const paketData = paketMap[paketId] || { harga: 0, skema: "" };
-        const hargaFinal = paketData.harga;
-        const skema = paketData.skema;
+  const paketRelation = props["Paket"]?.relation || [];
+  const paketId = paketRelation[0]?.id;
+
+  const paketData = paketMap[paketId] || { harga: 0, skema: "" };
+  const hargaFinal = paketData.harga;
+  const skema = paketData.skema;
 
         const diskon = props["Diskon Referral"]?.formula?.number || 0;
         const hargaNetto = hargaFinal - diskon;
@@ -243,9 +248,9 @@ body{
     <div class="value">${antrian}</div>
   </div>
   <div class="card">
-    <div class="label">Project Terlambat</div>
-    <div class="value red">0</div>
-  </div>
+  <div class="label">Project Terlambat</div>
+  <div class="value red">${terlambat}</div>
+</div>
 </div>
 
 </div>
