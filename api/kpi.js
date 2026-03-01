@@ -15,6 +15,7 @@ module.exports = async function handler(req, res) {
   let revenueTahunIni = 0;
   let outstanding = 0;
   let antrian = 0;
+  let terlambat = 0;
 
   try {
     const paketMap = {};
