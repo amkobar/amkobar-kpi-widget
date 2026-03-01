@@ -119,14 +119,12 @@ module.exports = async function handler(req, res) {
 
 html, body{
   margin:0;
-  min-height:100vh;
   background:#191919;
   font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto;
   color:#ffffff;
 }
 
 .wrapper{
-  min-height:100vh;
   padding:30px 10px 60px 10px;
   width:100%;
   box-sizing:border-box;
@@ -175,16 +173,13 @@ html, body{
 .yellow{color:#fbbf24;}
 .red{color:#f87171;}
 
-/* ===== MOBILE FIX ===== */
+
+/* ================= MOBILE ONLY ================= */
+
 @media(max-width:600px){
 
-  html, body{
-    min-height:100vh;
-  }
-
   .wrapper{
-    min-height:100vh;
-    padding:24px 18px 140px 18px;
+    padding:24px 18px 160px 18px; /* ruang bawah besar */
   }
 
   .grid{
