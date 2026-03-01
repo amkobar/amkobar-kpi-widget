@@ -31,7 +31,6 @@ module.exports = async function handler(req, res) {
       const harga = page.properties["Harga Paket"]?.number || 0;
       const skema =
         page.properties["Skema Pembayaran"]?.select?.name || "";
-
       paketMap[id] = { harga, skema };
     });
 
@@ -105,6 +104,7 @@ module.exports = async function handler(req, res) {
       hasMore = data.has_more;
       cursor = data.next_cursor;
     }
+
   } catch (err) {
     console.error(err);
     return res.status(500).send("Server Error");
@@ -174,12 +174,12 @@ html, body{
 .red{color:#f87171;}
 
 
-/* ================= MOBILE ONLY ================= */
+/* ===== MOBILE FIX ONLY ===== */
 
 @media(max-width:600px){
 
   .wrapper{
-    padding:24px 18px 160px 18px; /* ruang bawah besar */
+    padding:24px 18px 180px 18px;
   }
 
   .grid{
