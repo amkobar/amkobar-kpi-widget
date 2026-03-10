@@ -31,7 +31,7 @@ module.exports = async function handler(req, res) {
       const id = page.id;
       const harga = page.properties["Harga Paket Bersih"]?.number || 0;
       const skema =
-        page.properties["Skema Pembayaran"]?.select?.name || "";
+page.properties["Skema Pembayaran"]?.rollup?.array?.[0]?.select?.name || "";
 
       paketMap[id] = { harga, skema };
     });
