@@ -44,12 +44,15 @@ terlambat += 1
 }
 
 const hargaNetto =
-props["Harga Paket Bersih"]?.formula?.number || 0
+props["Harga Netto"]?.number || 0
 
 const diskon =
 props["Diskon Referral"]?.formula?.number || 0
 
 const hargaFinal = hargaNetto - diskon
+
+const selesaiTahunIni =
+props["Selesai Tahun Ini"]?.formula?.number || 0
 
 let skema = ""
 const roll = props["Skema Pembayaran"]?.rollup?.array
@@ -78,23 +81,12 @@ if (pelunasanMasuk) totalDibayar += hargaFinal / 3
 const sisaPembayaran = Math.max(0, hargaFinal - totalDibayar)
 
 if (status === "Selesai") {
-
 totalRevenue += hargaFinal
 totalSelesai += 1
-
-const tanggalObj = props["Tanggal Selesai"]?.date;
-
-if (tanggalObj) {
-
-  const tanggal = tanggalObj.start || "";
-  const tahunSelesai = tanggal.substring(0,4);
-  const tahunSekarang = new Date().getFullYear().toString();
-
-  if (tahunSelesai === tahunSekarang) {
-    revenueTahunIni += hargaNetto;
-  }
-
 }
+
+if (selesaiTahunIni === 1) {
+revenueTahunIni += hargaFinal
 }
 
 if (status === "Antrian") {
