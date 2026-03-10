@@ -1,136 +1,131 @@
 module.exports = async function handler(req, res) {
-  const notionToken = process.env.NOTION_TOKEN;
 
-  const projectDbId = "310efe1d1acf80ad861fecc7567b10c9";
-  const paketDbId = "310efe1d1acf8031b2c7f0e23435e7bb";
+const notionToken = process.env.NOTION_TOKEN
+const projectDbId = "310efe1d1acf80ad861fecc7567b10c9"
 
-  const headers = {
-    Authorization: `Bearer ${notionToken}`,
-    "Notion-Version": "2022-06-28",
-    "Content-Type": "application/json",
-  };
+const headers = {
+Authorization: `Bearer ${notionToken}`,
+"Notion-Version": "2022-06-28",
+"Content-Type": "application/json"
+}
 
-  let totalRevenue = 0;
-  let totalSelesai = 0;
-  let revenueTahunIni = 0;
-  let outstanding = 0;
-  let antrian = 0;
-  let terlambat = 0;
+let totalRevenue = 0
+let totalSelesai = 0
+let revenueTahunIni = 0
+let outstanding = 0
+let antrian = 0
+let terlambat = 0
 
-  try {
-    const paketMap = {};
+try {
 
-    const paketResponse = await fetch(
-      `https://api.notion.com/v1/databases/${paketDbId}/query`,
-      { method: "POST", headers }
-    );
+let hasMore = true
+let cursor = undefined
 
-    const paketData = await paketResponse.json();
+while (hasMore) {
 
-    paketData.results.forEach((page) => {
-      const id = page.id;
+const body = cursor ? { start_cursor: cursor } : {}
 
-      const harga =
-        page.properties["Harga Paket Bersih"]?.formula?.number || 0;
+const response = await fetch(
+`https://api.notion.com/v1/databases/${projectDbId}/query`,
+{ method: "POST", headers, body: JSON.stringify(body) }
+)
 
-      let skema = "";
-      const roll = page.properties["Skema Pembayaran"]?.rollup?.array;
+const data = await response.json()
 
-      if (roll && roll.length > 0) {
-        skema = roll[0]?.select?.name || "";
-      }
+data.results.forEach(page => {
 
-      paketMap[id] = { harga, skema };
-    });
+const props = page.properties
 
-    let hasMore = true;
-    let cursor = undefined;
+const status = props["Status Project"]?.select?.name || ""
 
-    while (hasMore) {
-      const body = cursor ? { start_cursor: cursor } : {};
+const riskLevel = props["Risk Level"]?.formula?.string || ""
+if (riskLevel === "🔴 Overdue") {
+terlambat += 1
+}
 
-      const response = await fetch(
-        `https://api.notion.com/v1/databases/${projectDbId}/query`,
-        { method: "POST", headers, body: JSON.stringify(body) }
-      );
+const hargaNetto =
+props["Harga Paket Bersih"]?.formula?.number || 0
 
-      const data = await response.json();
+const diskon =
+props["Diskon Referral"]?.formula?.number || 0
 
-      data.results.forEach((page) => {
-        const props = page.properties;
-        const status = props["Status Project"]?.select?.name || "";
+const hargaFinal = hargaNetto - diskon
 
-        const riskLevel = props["Risk Level"]?.formula?.string || "";
-        if (riskLevel === "🔴 Overdue") {
-          terlambat += 1;
-        }
+let skema = ""
+const roll = props["Skema Pembayaran"]?.rollup?.array
 
-        const paketRelation = props["Paket"]?.relation || [];
-        const paketId = paketRelation[0]?.id;
+if (roll && roll.length > 0) {
+skema = roll[0]?.select?.name || ""
+}
 
-        const paketData = paketMap[paketId] || { harga: 0, skema: "" };
-        const hargaFinal = paketData.harga;
-        const skema = paketData.skema;
+const dpMasuk = props["DP Masuk"]?.checkbox || false
+const tahap2Masuk = props["Tahap 2 Masuk"]?.checkbox || false
+const pelunasanMasuk = props["Pelunasan Masuk"]?.checkbox || false
 
-        const diskon = props["Diskon Referral"]?.formula?.number || 0;
-        const hargaNetto = hargaFinal - diskon;
+let totalDibayar = 0
 
-        const dpMasuk = props["DP Masuk"]?.checkbox || false;
-        const tahap2Masuk = props["Tahap 2 Masuk"]?.checkbox || false;
-        const pelunasanMasuk = props["Pelunasan Masuk"]?.checkbox || false;
+if (skema === "2 Tahap") {
+if (dpMasuk) totalDibayar += hargaFinal / 2
+if (pelunasanMasuk) totalDibayar += hargaFinal / 2
+}
 
-        let totalDibayar = 0;
+if (skema === "3 Tahap") {
+if (dpMasuk) totalDibayar += hargaFinal / 3
+if (tahap2Masuk) totalDibayar += hargaFinal / 3
+if (pelunasanMasuk) totalDibayar += hargaFinal / 3
+}
 
-        if (skema === "2 Tahap") {
-          if (dpMasuk) totalDibayar += hargaNetto / 2;
-          if (pelunasanMasuk) totalDibayar += hargaNetto / 2;
-        }
+const sisaPembayaran = Math.max(0, hargaFinal - totalDibayar)
 
-        if (skema === "3 Tahap") {
-          if (dpMasuk) totalDibayar += hargaNetto / 3;
-          if (tahap2Masuk) totalDibayar += hargaNetto / 3;
-          if (pelunasanMasuk) totalDibayar += hargaNetto / 3;
-        }
+if (status === "Selesai") {
 
-        const sisaPembayaran = Math.max(0, hargaNetto - totalDibayar);
+totalRevenue += hargaFinal
+totalSelesai += 1
 
-        if (status === "Selesai") {
-          totalRevenue += hargaNetto;
-          totalSelesai += 1;
+const tanggalSelesai =
+props["Tanggal Selesai"]?.date?.start
 
-          const tanggalSelesai = props["Tanggal Selesai"]?.date?.start;
+if (tanggalSelesai) {
 
-          if (tanggalSelesai) {
-            const tahun = new Date(tanggalSelesai).getFullYear();
-            const tahunSekarang = new Date().getFullYear();
+const tahun =
+new Date(tanggalSelesai).getFullYear()
 
-            if (tahun === tahunSekarang) {
-              revenueTahunIni += hargaNetto;
-            }
-          }
-        }
+const tahunSekarang =
+new Date().getFullYear()
 
-        if (status === "Antrian") {
-          antrian += 1;
-        }
+if (tahun === tahunSekarang) {
+revenueTahunIni += hargaFinal
+}
+}
+}
 
-        outstanding += sisaPembayaran;
-      });
+if (status === "Antrian") {
+antrian += 1
+}
 
-      hasMore = data.has_more;
-      cursor = data.next_cursor;
-    }
-  } catch (err) {
-    console.error(err);
-    return res.status(500).send("Server Error");
-  }
+outstanding += sisaPembayaran
 
-  const html = `
+})
+
+hasMore = data.has_more
+cursor = data.next_cursor
+
+}
+
+} catch (err) {
+
+console.error(err)
+return res.status(500).send("Server Error")
+
+}
+
+const html = `
 <!DOCTYPE html>
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <style>
+
 body{
 margin:0;
 background:#191919;
@@ -226,7 +221,9 @@ font-size:26px;
 font-size:12px;
 margin:30px 0 14px 0;
 }
+
 }
+
 </style>
 </head>
 
@@ -280,8 +277,9 @@ margin:30px 0 14px 0;
 
 </body>
 </html>
-`;
+`
 
-  res.setHeader("Content-Type", "text/html");
-  res.status(200).send(html);
-};
+res.setHeader("Content-Type", "text/html")
+res.status(200).send(html)
+
+}
