@@ -9,6 +9,14 @@ Authorization: `Bearer ${notionToken}`,
 "Content-Type": "application/json"
 }
 
+function getNumber(prop){
+if(!prop) return 0
+if(prop.number !== undefined) return prop.number
+if(prop.formula?.number !== undefined) return prop.formula.number
+if(prop.rollup?.number !== undefined) return prop.rollup.number
+return 0
+}
+
 let totalRevenue = 0
 let totalSelesai = 0
 let revenueTahunIni = 0
@@ -43,20 +51,14 @@ if (riskLevel === "🔴 Overdue") {
 terlambat += 1
 }
 
-const hargaNetto =
-props["Harga Netto"]?.number || 0
-
-const diskon =
-props["Diskon Referral"]?.formula?.number || 0
-
+const hargaNetto = getNumber(props["Harga Netto"])
+const diskon = getNumber(props["Diskon Referral"])
 const hargaFinal = hargaNetto - diskon
 
-const selesaiTahunIni =
-props["Selesai Tahun Ini"]?.formula?.number || 0
+const selesaiTahunIni = getNumber(props["Selesai Tahun Ini"])
 
 let skema = ""
 const roll = props["Skema Pembayaran"]?.rollup?.array
-
 if (roll && roll.length > 0) {
 skema = roll[0]?.select?.name || ""
 }
