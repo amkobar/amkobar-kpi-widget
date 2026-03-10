@@ -87,15 +87,13 @@ props["Tanggal Selesai"]?.date?.start
 
 if (tanggalSelesai) {
 
-const tahun =
-new Date(tanggalSelesai).getFullYear()
+const tahunSelesai = tanggalSelesai.slice(0,4)
+const tahunSekarang = new Date().getFullYear().toString()
 
-const tahunSekarang =
-new Date().getFullYear()
-
-if (tahun === tahunSekarang) {
+if (tahunSelesai === tahunSekarang) {
 revenueTahunIni += hargaFinal
 }
+
 }
 }
 
