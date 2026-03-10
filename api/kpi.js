@@ -30,8 +30,8 @@ module.exports = async function handler(req, res) {
     paketData.results.forEach((page) => {
       const id = page.id;
       const harga = page.properties["Harga Paket Bersih"]?.number || 0;
-      const skema =
-page.properties["Skema Pembayaran"]?.rollup?.array?.[0]?.select?.name || "";
+      const harga =
+page.properties["Harga Paket Bersih"]?.formula?.number || 0;
 
       paketMap[id] = { harga, skema };
     });
