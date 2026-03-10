@@ -82,17 +82,17 @@ if (status === "Selesai") {
 totalRevenue += hargaFinal
 totalSelesai += 1
 
-const tanggalSelesai =
-props["Tanggal Selesai"]?.date?.start
+const tanggalObj = props["Tanggal Selesai"]?.date;
 
-if (tanggalSelesai) {
+if (tanggalObj) {
 
-const tahunSelesai = tanggalSelesai.slice(0,4)
-const tahunSekarang = new Date().getFullYear().toString()
+  const tanggal = tanggalObj.start || "";
+  const tahunSelesai = tanggal.substring(0,4);
+  const tahunSekarang = new Date().getFullYear().toString();
 
-if (tahunSelesai === tahunSekarang) {
-revenueTahunIni += hargaFinal
-}
+  if (tahunSelesai === tahunSekarang) {
+    revenueTahunIni += hargaNetto;
+  }
 
 }
 }
