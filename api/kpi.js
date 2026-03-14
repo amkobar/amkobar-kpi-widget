@@ -36,7 +36,7 @@ try {
 
   const data = await response.json()
 
-
+console.log("ALL:", JSON.stringify(data.results[0].properties))
 console.log("RESULTS:", data.results?.length, "ERROR:", data.message)
 
 
