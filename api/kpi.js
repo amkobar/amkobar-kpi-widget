@@ -6,6 +6,7 @@ const kpiDbId = "323efe1d1acf8086b106e632903c0b96"
 const headers = {
   Authorization: `Bearer ${notionToken}`,
   "Notion-Version": "2022-06-28",
+"x-no-cache": "1",
   "Content-Type": "application/json"
 }
 
