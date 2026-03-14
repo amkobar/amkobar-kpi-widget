@@ -33,11 +33,6 @@ module.exports = async function handler(req, res) {
     return prop.date?.start || null
   }
 
-  function getCheckbox(prop) {
-    if (!prop) return false
-    return prop.checkbox === true
-  }
-
   async function fetchAllPages() {
     let allResults = []
     let hasMore = true
@@ -74,6 +69,7 @@ module.exports = async function handler(req, res) {
     for (const page of pages) {
       const props = page.properties
       const status = getStatus(props["Status Project"])
+      const totalDibayar = getFormula(props["Total Dibayar"])
       const sisaPembayaran = getFormula(props["Sisa Pembayaran"])
       const isAntrian = getFormula(props["Is Antrian"])
       const deadlineStr = getDate(props["Deadline"])
@@ -93,7 +89,7 @@ module.exports = async function handler(req, res) {
         }
       }
 
-      // Tagihan Aktif
+      // Tagihan Tertunda = sisa pembayaran dari project aktif
       if (STATUS_AKTIF.includes(status)) {
         outstanding += sisaPembayaran
       }
