@@ -75,12 +75,14 @@ module.exports = async function handler(req, res) {
       const deadlineStr = getDate(props["Deadline"])
       const tanggalSelesai = getDate(props["Tanggal Selesai"])
 
-      // Total Revenue = semua entry yang Selesai
+      // Total Pendapatan = semua entry tanpa filter status
+      totalRevenue += totalDibayar
+
+      // Total Project Selesai
       if (STATUS_SELESAI.includes(status)) {
-        totalRevenue += totalDibayar
         totalSelesai += 1
 
-        // Revenue Tahun Ini
+        // Pendapatan Tahun Ini = Selesai + Tanggal Selesai di tahun ini
         if (tanggalSelesai) {
           const tahun = new Date(tanggalSelesai).getFullYear()
           if (tahun === TAHUN_INI) {
