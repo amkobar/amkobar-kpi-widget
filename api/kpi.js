@@ -32,7 +32,7 @@ try {
   )
 
   const data = await response.json()
-
+console.log("KPI props:", JSON.stringify(Object.keys(data.results[0]?.properties || {})))
   if (data.results && data.results.length > 0) {
     const props = data.results[0].properties
 
