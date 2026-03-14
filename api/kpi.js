@@ -71,7 +71,8 @@ module.exports = async function handler(req, res) {
       const status = getStatus(props["Status Project"])
       const totalDibayar = getFormula(props["Total Dibayar"])
       const isAntrian = getFormula(props["Is Antrian"])
-      const isTerlambat = getFormula(props["Is Terlambat"])
+      const deadlineStr = getDate(props["Deadline"])
+const isTerlambat = (deadlineStr && new Date(deadlineStr) < new Date() && STATUS_AKTIF.includes(status)) ? 1 : 0
       const tanggalSelesai = getDate(props["Tanggal Selesai"])
 
       // Total Revenue = semua entry yang Selesai
@@ -97,7 +98,6 @@ module.exports = async function handler(req, res) {
       antrian += isAntrian
 
       // Terlambat
-      terlambat += isTerlambat
     }
 
   } catch (err) {
