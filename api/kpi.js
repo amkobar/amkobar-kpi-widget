@@ -39,9 +39,10 @@ try {
     const props = data.results[0].properties
 
 
-console.log("Revenue:", JSON.stringify(props["💵 Total Revenue (All Time)"]))
-console.log("Outstanding:", JSON.stringify(props["Total Outstanding Aktif"]))
-console.log("RevTahunIni:", JSON.stringify(props["Revenue Tahun Ini"]))
+const response = await fetch(
+  `https://api.notion.com/v1/databases/${kpiDbId}/query`,
+  { method: "POST", headers, body: JSON.stringify({}), cache: "no-store" }
+)
 
     
     
