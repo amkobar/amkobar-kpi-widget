@@ -219,6 +219,6 @@ margin:30px 0 14px 0;
 `
 
 res.setHeader("Content-Type", "text/html")
+res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate")
 res.status(200).send(html)
-
 }
