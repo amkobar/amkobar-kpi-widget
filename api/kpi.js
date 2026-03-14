@@ -11,12 +11,25 @@ const headers = {
 
 function getNumber(prop) {
   if (!prop) return 0
-  if (prop.number !== undefined) return prop.number
-  if (prop.formula?.number !== undefined) return prop.formula.number
-  if (prop.rollup?.number !== undefined && prop.rollup.number !== null) return prop.rollup.number
-  if (prop.rollup?.array !== undefined) {
-    return prop.rollup.array.reduce((sum, item) => sum + (item.number || 0), 0)
+
+  if (prop.number !== undefined && prop.number !== null)
+    return prop.number
+
+  if (prop.formula?.number !== undefined && prop.formula.number !== null)
+    return prop.formula.number
+
+  if (prop.rollup?.number !== undefined && prop.rollup.number !== null)
+    return prop.rollup.number
+
+  if (prop.rollup?.array) {
+    return prop.rollup.array.reduce((sum, item) => {
+      if (item.number !== undefined) return sum + item.number
+      if (item.formula?.number !== undefined) return sum + item.formula.number
+      if (item.rollup?.number !== undefined) return sum + item.rollup.number
+      return sum
+    }, 0)
   }
+
   return 0
 }
 
