@@ -42,13 +42,21 @@ let terlambat = 0
 
 try {
 
-  const response = await fetch(
-    `https://api.notion.com/v1/databases/${kpiDbId}/query`,
-    { method: "POST", headers, body: JSON.stringify({}) }
-  )
-
-  const data = await response.json()
-
+const response = await fetch(
+`https://api.notion.com/v1/databases/${kpiDbId}/query`,
+{
+method: "POST",
+headers,
+body: JSON.stringify({
+filter: {
+property: "Title",
+title: {
+equals: "KPI MASTER"
+}
+}
+})
+}
+)
   if (data.results && data.results.length > 0) {
     const props = data.results[0].properties
 
