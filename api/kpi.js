@@ -38,6 +38,8 @@ try {
   if (data.results && data.results.length > 0) {
     const props = data.results[0].properties
 
+    console.log("ALL:", JSON.stringify(props))
+
 
 const response = await fetch(
   `https://api.notion.com/v1/databases/${kpiDbId}/query`,
