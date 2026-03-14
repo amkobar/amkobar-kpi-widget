@@ -35,6 +35,11 @@ try {
   if (data.results && data.results.length > 0) {
     const props = data.results[0].properties
 
+    console.log("Revenue prop:", JSON.stringify(props["Total Revenue (All Time)"]))
+console.log("Outstanding prop:", JSON.stringify(props["Total Outstanding Aktif"]))
+
+
+    
     totalRevenue = getNumber(props["Total Revenue (All Time)"])
     totalSelesai = getNumber(props["Total Project Selesai (All Time)"])
     revenueTahunIni = getNumber(props["Revenue Tahun Ini"])
