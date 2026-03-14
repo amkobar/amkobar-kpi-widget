@@ -1,6 +1,6 @@
 module.exports = async function handler(req, res) {
   const notionToken = process.env.NOTION_TOKEN
-  const kpiDbId = "310efe1d-1acf-80ad-861f-ecc7567b10c9"
+  const kpiDbId = "319efe1d-1acf-812a-9e87-d8e6e341dfef"
   const headers = {
     Authorization: `Bearer ${notionToken}`,
     "Notion-Version": "2022-06-28",
