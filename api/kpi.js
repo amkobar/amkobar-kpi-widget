@@ -37,15 +37,14 @@ try {
   const data = await response.json()
   if (data.results && data.results.length > 0) {
     const props = data.results[0].properties
-console.log("Full props:", JSON.stringify(props))
 
     
-    totalRevenue = getNumber(props["Total Revenue (All Time)"])
-    totalSelesai = getNumber(props["Total Project Selesai (All Time)"])
-    revenueTahunIni = getNumber(props["Revenue Tahun Ini"])
-    outstanding = getNumber(props["Total Outstanding Aktif"])
-    antrian = getNumber(props["Jumlah Antrian"])
-    terlambat = getNumber(props["Project Terlambat"])
+    totalRevenue = getNumber(props["💵 Total Revenue (All Time)"])
+totalSelesai = getNumber(props["Total Project Selesai (All Time)"])
+revenueTahunIni = getNumber(props["Revenue Tahun Ini"])
+outstanding = getNumber(props["Total Outstanding Aktif"])
+antrian = getNumber(props["Jumlah Antrian"])
+terlambat = getNumber(props["Project Terlambat "])
   }
 
 } catch (err) {
