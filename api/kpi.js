@@ -13,7 +13,10 @@ function getNumber(prop) {
   if (!prop) return 0
   if (prop.number !== undefined) return prop.number
   if (prop.formula?.number !== undefined) return prop.formula.number
-  if (prop.rollup?.number !== undefined) return prop.rollup.number
+  if (prop.rollup?.number !== undefined && prop.rollup.number !== null) return prop.rollup.number
+  if (prop.rollup?.array !== undefined) {
+    return prop.rollup.array.reduce((sum, item) => sum + (item.number || 0), 0)
+  }
   return 0
 }
 
@@ -34,9 +37,6 @@ try {
   const data = await response.json()
   if (data.results && data.results.length > 0) {
     const props = data.results[0].properties
-
-    console.log("Revenue prop:", JSON.stringify(props["Total Revenue (All Time)"]))
-console.log("Outstanding prop:", JSON.stringify(props["Total Outstanding Aktif"]))
 
 
     
