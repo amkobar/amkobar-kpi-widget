@@ -40,13 +40,12 @@ try {
     const props = data.results[0].properties
 
     console.log("ALL:", JSON.stringify(props))
-
-    totalRevenue = getNumber(props["Total Revenue"])
-    totalSelesai = getNumber(props["Total Project Selesai (All Time)"])
-    revenueTahunIni = getNumber(props["Rev Tahun Ini"])
-    outstanding = getNumber(props["Outstanding Aktif"])
-    antrian = getNumber(props["Jumlah Antrian"])
-    terlambat = getNumber(props["Project Terlambat "])
+totalRevenue = getNumber(props["Total Revenue"])
+totalSelesai = getNumber(props["Total Project Selesai (All Time)"])
+revenueTahunIni = getNumber(props["Revenue Tahun Ini"])
+outstanding = getNumber(props["Outstanding Aktif"])
+antrian = getNumber(props["Jumlah Antrian"])
+terlambat = getNumber(props["Project Terlambat"])
   }
 
 } catch (err) {
