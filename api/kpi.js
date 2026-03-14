@@ -1,36 +1,59 @@
 module.exports = async function handler(req, res) {
   const notionToken = process.env.NOTION_TOKEN
-  const kpiDbId = "323efe1d1acf8086b106e632903c0b96"
+  const projectDbId = "310efe1d-1acf-80ad-861f-ecc7567b10c9"
   const headers = {
     Authorization: `Bearer ${notionToken}`,
     "Notion-Version": "2022-06-28",
     "Content-Type": "application/json"
   }
 
-  function getNumber(prop) {
+  const STATUS_AKTIF = ["Menunggu Review", "Antrian", "Diproses", "Menunggu Pelunasan", "Pendampingan"]
+  const STATUS_SELESAI = ["Selesai"]
+  const TAHUN_INI = new Date().getFullYear()
+
+  function getFormula(prop) {
     if (!prop) return 0
-    if (prop.number !== undefined && prop.number !== null) return prop.number
-    if (prop.formula?.number !== undefined && prop.formula.number !== null) return prop.formula.number
-    if (prop.rollup) {
-      if (prop.rollup.number !== undefined && prop.rollup.number !== null) return prop.rollup.number
-      if (prop.rollup.array !== undefined) {
-        return prop.rollup.array.reduce((sum, item) => {
-          if (item.number !== undefined && item.number !== null) return sum + item.number
-          if (item.formula?.number !== undefined && item.formula.number !== null) return sum + item.formula.number
-          if (item.rollup?.number !== undefined && item.rollup.number !== null) return sum + item.rollup.number
-          return sum
-        }, 0)
-      }
+    if (prop.type === "formula") {
+      if (prop.formula?.number !== undefined && prop.formula.number !== null) return prop.formula.number
+    }
+    if (prop.type === "number") {
+      if (prop.number !== undefined && prop.number !== null) return prop.number
     }
     return 0
   }
 
-  function getCount(prop) {
-    if (!prop) return 0
-    if (prop.rollup?.number !== undefined && prop.rollup.number !== null) return prop.rollup.number
-    if (prop.rollup?.array !== undefined) return prop.rollup.array.length
-    if (prop.number !== undefined && prop.number !== null) return prop.number
-    return 0
+  function getStatus(prop) {
+    if (!prop) return ""
+    return prop.select?.name || ""
+  }
+
+  function getDate(prop) {
+    if (!prop) return null
+    return prop.date?.start || null
+  }
+
+  // Fetch all pages with pagination
+  async function fetchAllPages() {
+    let allResults = []
+    let hasMore = true
+    let startCursor = undefined
+
+    while (hasMore) {
+      const body = { page_size: 100 }
+      if (startCursor) body.start_cursor = startCursor
+
+      const response = await fetch(
+        `https://api.notion.com/v1/databases/${projectDbId}/query`,
+        { method: "POST", headers, body: JSON.stringify(body) }
+      )
+      const data = await response.json()
+
+      if (data.results) allResults = allResults.concat(data.results)
+      hasMore = data.has_more
+      startCursor = data.next_cursor
+    }
+
+    return allResults
   }
 
   let totalRevenue = 0
@@ -41,21 +64,42 @@ module.exports = async function handler(req, res) {
   let terlambat = 0
 
   try {
-    const response = await fetch(
-      `https://api.notion.com/v1/databases/${kpiDbId}/query`,
-      { method: "POST", headers, body: JSON.stringify({}) }
-    )
-    const data = await response.json()
+    const pages = await fetchAllPages()
 
-    if (data.results && data.results.length > 0) {
-      const props = data.results[0].properties
-      totalRevenue = getNumber(props["Total Closed"])
-      totalSelesai = getCount(props["Project Done"])
-      revenueTahunIni = getNumber(props["Closed Tahun Ini"])
-      outstanding = getNumber(props["Tagihan Aktif"])
-      antrian = getCount(props["Antrian"])
-      terlambat = getCount(props["Terlambat"])
+    for (const page of pages) {
+      const props = page.properties
+      const status = getStatus(props["Status Project"])
+      const totalDibayar = getFormula(props["Total Dibayar"])
+      const isAntrian = getFormula(props["Is Antrian"])
+      const isTerlambat = getFormula(props["Is Terlambat"])
+      const tanggalSelesai = getDate(props["Tanggal Selesai"])
+
+      // Total Revenue = semua entry yang Selesai
+      if (STATUS_SELESAI.includes(status)) {
+        totalRevenue += totalDibayar
+        totalSelesai += 1
+
+        // Revenue Tahun Ini = Selesai + tanggal selesai di tahun ini
+        if (tanggalSelesai) {
+          const tahun = new Date(tanggalSelesai).getFullYear()
+          if (tahun === TAHUN_INI) {
+            revenueTahunIni += totalDibayar
+          }
+        }
+      }
+
+      // Tagihan Aktif = total dibayar dari project yang masih aktif
+      if (STATUS_AKTIF.includes(status)) {
+        outstanding += totalDibayar
+      }
+
+      // Antrian
+      antrian += isAntrian
+
+      // Terlambat
+      terlambat += isTerlambat
     }
+
   } catch (err) {
     console.error(err)
     return res.status(500).send("Server Error")
