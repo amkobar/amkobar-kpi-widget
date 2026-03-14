@@ -37,9 +37,6 @@ try {
 
   const data = await response.json()
 
-console.log("TC:", JSON.stringify(data.results[0].properties["Total Closed"]))
-console.log("TA:", JSON.stringify(data.results[0].properties["Tagihan Aktif"]))
-
 
   
   if (data.results && data.results.length > 0) {
