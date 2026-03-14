@@ -45,11 +45,10 @@ const response = await fetch(
 )
 
     
-    
-    totalRevenue = getNumber(props["💵 Total Revenue (All Time)"])
+   totalRevenue = getNumber(props["Total Revenue"])
 totalSelesai = getNumber(props["Total Project Selesai (All Time)"])
-revenueTahunIni = getNumber(props["Revenue Tahun Ini"])
-outstanding = getNumber(props["Total Outstanding Aktif"])
+revenueTahunIni = getNumber(props["Rev Tahun Ini"])
+outstanding = getNumber(props["Outstanding Aktif"])
 antrian = getNumber(props["Jumlah Antrian"])
 terlambat = getNumber(props["Project Terlambat "])
   }
