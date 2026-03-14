@@ -10,6 +10,7 @@ module.exports = async function handler(req, res) {
   const STATUS_AKTIF = ["Menunggu Review", "Antrian", "Diproses", "Menunggu Pelunasan", "Pendampingan"]
   const STATUS_SELESAI = ["Selesai"]
   const TAHUN_INI = new Date().getFullYear()
+  const SEKARANG = new Date()
 
   function getFormula(prop) {
     if (!prop) return 0
@@ -32,7 +33,11 @@ module.exports = async function handler(req, res) {
     return prop.date?.start || null
   }
 
-  // Fetch all pages with pagination
+  function getCheckbox(prop) {
+    if (!prop) return false
+    return prop.checkbox === true
+  }
+
   async function fetchAllPages() {
     let allResults = []
     let hasMore = true
@@ -72,7 +77,6 @@ module.exports = async function handler(req, res) {
       const totalDibayar = getFormula(props["Total Dibayar"])
       const isAntrian = getFormula(props["Is Antrian"])
       const deadlineStr = getDate(props["Deadline"])
-const isTerlambat = (deadlineStr && new Date(deadlineStr) < new Date() && STATUS_AKTIF.includes(status)) ? 1 : 0
       const tanggalSelesai = getDate(props["Tanggal Selesai"])
 
       // Total Revenue = semua entry yang Selesai
@@ -80,7 +84,7 @@ const isTerlambat = (deadlineStr && new Date(deadlineStr) < new Date() && STATUS
         totalRevenue += totalDibayar
         totalSelesai += 1
 
-        // Revenue Tahun Ini = Selesai + tanggal selesai di tahun ini
+        // Revenue Tahun Ini
         if (tanggalSelesai) {
           const tahun = new Date(tanggalSelesai).getFullYear()
           if (tahun === TAHUN_INI) {
@@ -89,7 +93,7 @@ const isTerlambat = (deadlineStr && new Date(deadlineStr) < new Date() && STATUS
         }
       }
 
-      // Tagihan Aktif = total dibayar dari project yang masih aktif
+      // Tagihan Aktif
       if (STATUS_AKTIF.includes(status)) {
         outstanding += totalDibayar
       }
@@ -97,7 +101,10 @@ const isTerlambat = (deadlineStr && new Date(deadlineStr) < new Date() && STATUS
       // Antrian
       antrian += isAntrian
 
-      // Terlambat
+      // Terlambat = deadline sudah lewat + status masih aktif
+      if (deadlineStr && new Date(deadlineStr) < SEKARANG && STATUS_AKTIF.includes(status)) {
+        terlambat += 1
+      }
     }
 
   } catch (err) {
