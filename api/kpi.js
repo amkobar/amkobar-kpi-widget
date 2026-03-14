@@ -1,20 +1,20 @@
 module.exports = async function handler(req, res) {
 
 const notionToken = process.env.NOTION_TOKEN
-const projectDbId = "310efe1d1acf80ad861fecc7567b10c9"
+const kpiDbId = "311efe1d1acf80ffb9aae62ebce68b65"
 
 const headers = {
-Authorization: `Bearer ${notionToken}`,
-"Notion-Version": "2022-06-28",
-"Content-Type": "application/json"
+  Authorization: `Bearer ${notionToken}`,
+  "Notion-Version": "2022-06-28",
+  "Content-Type": "application/json"
 }
 
-function getNumber(prop){
-if(!prop) return 0
-if(prop.number !== undefined) return prop.number
-if(prop.formula?.number !== undefined) return prop.formula.number
-if(prop.rollup?.number !== undefined) return prop.rollup.number
-return 0
+function getNumber(prop) {
+  if (!prop) return 0
+  if (prop.number !== undefined) return prop.number
+  if (prop.formula?.number !== undefined) return prop.formula.number
+  if (prop.rollup?.number !== undefined) return prop.rollup.number
+  return 0
 }
 
 let totalRevenue = 0
@@ -26,89 +26,27 @@ let terlambat = 0
 
 try {
 
-let hasMore = true
-let cursor = undefined
+  const response = await fetch(
+    `https://api.notion.com/v1/databases/${kpiDbId}/query`,
+    { method: "POST", headers, body: JSON.stringify({}) }
+  )
 
-while (hasMore) {
+  const data = await response.json()
 
-const body = cursor ? { start_cursor: cursor } : {}
+  if (data.results && data.results.length > 0) {
+    const props = data.results[0].properties
 
-const response = await fetch(
-`https://api.notion.com/v1/databases/${projectDbId}/query`,
-{ method: "POST", headers, body: JSON.stringify(body) }
-)
-
-const data = await response.json()
-
-data.results.forEach(page => {
-
-const props = page.properties
-
-const status = props["Status Project"]?.select?.name || ""
-
-const riskLevel = props["Risk Level"]?.formula?.string || ""
-if (riskLevel === "🔴 Overdue") {
-terlambat += 1
-}
-
-const hargaNetto = getNumber(props["Harga Netto"])
-const diskon = getNumber(props["Diskon Referral"])
-const hargaFinal = hargaNetto - diskon
-
-const selesaiTahunIni = getNumber(props["Selesai Tahun Ini"])
-
-let skema = ""
-const roll = props["Skema Pembayaran"]?.rollup?.array
-if (roll && roll.length > 0) {
-skema = roll[0]?.select?.name || ""
-}
-
-const dpMasuk = props["DP Masuk"]?.checkbox || false
-const tahap2Masuk = props["Tahap 2 Masuk"]?.checkbox || false
-const pelunasanMasuk = props["Pelunasan Masuk"]?.checkbox || false
-
-let totalDibayar = 0
-
-if (skema === "2 Tahap") {
-if (dpMasuk) totalDibayar += hargaFinal / 2
-if (pelunasanMasuk) totalDibayar += hargaFinal / 2
-}
-
-if (skema === "3 Tahap") {
-if (dpMasuk) totalDibayar += hargaFinal / 3
-if (tahap2Masuk) totalDibayar += hargaFinal / 3
-if (pelunasanMasuk) totalDibayar += hargaFinal / 3
-}
-
-const sisaPembayaran = Math.max(0, hargaFinal - totalDibayar)
-
-if (status === "Selesai") {
-totalRevenue += hargaFinal
-totalSelesai += 1
-}
-
-if (selesaiTahunIni === 1) {
-revenueTahunIni += hargaFinal
-}
-
-if (status === "Antrian") {
-antrian += 1
-}
-
-outstanding += sisaPembayaran
-
-})
-
-hasMore = data.has_more
-cursor = data.next_cursor
-
-}
+    totalRevenue = getNumber(props["Total Revenue (All Time)"])
+    totalSelesai = getNumber(props["Total Project Selesai (All Time)"])
+    revenueTahunIni = getNumber(props["Revenue Tahun Ini"])
+    outstanding = getNumber(props["Total Outstanding Aktif"])
+    antrian = getNumber(props["Jumlah Antrian"])
+    terlambat = getNumber(props["Project Terlambat"])
+  }
 
 } catch (err) {
-
-console.error(err)
-return res.status(500).send("Server Error")
-
+  console.error(err)
+  return res.status(500).send("Server Error")
 }
 
 const html = `
