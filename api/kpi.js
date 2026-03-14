@@ -1,7 +1,7 @@
 module.exports = async function handler(req, res) {
 
 const notionToken = process.env.NOTION_TOKEN
-const kpiDbId = "30eefe1d1acf8067b17eca5c140af538"
+const kpiDbId = "323efe1d1acf8086b106e632903c0b96"
 
 const headers = {
   Authorization: `Bearer ${notionToken}`,
@@ -11,25 +11,12 @@ const headers = {
 
 function getNumber(prop) {
   if (!prop) return 0
-
-  if (prop.number !== undefined && prop.number !== null)
-    return prop.number
-
-  if (prop.formula?.number !== undefined && prop.formula.number !== null)
-    return prop.formula.number
-
-  if (prop.rollup?.number !== undefined && prop.rollup.number !== null)
-    return prop.rollup.number
-
-  if (prop.rollup?.array) {
-    return prop.rollup.array.reduce((sum, item) => {
-      if (item.number !== undefined) return sum + item.number
-      if (item.formula?.number !== undefined) return sum + item.formula.number
-      if (item.rollup?.number !== undefined) return sum + item.rollup.number
-      return sum
-    }, 0)
+  if (prop.number !== undefined) return prop.number
+  if (prop.formula?.number !== undefined) return prop.formula.number
+  if (prop.rollup?.number !== undefined && prop.rollup.number !== null) return prop.rollup.number
+  if (prop.rollup?.array !== undefined) {
+    return prop.rollup.array.reduce((sum, item) => sum + (item.number || 0), 0)
   }
-
   return 0
 }
 
@@ -42,33 +29,22 @@ let terlambat = 0
 
 try {
 
-const response = await fetch(
-`https://api.notion.com/v1/databases/${kpiDbId}/query`,
-{
-method: "POST",
-headers,
-body: JSON.stringify({
-filter: {
-property: "Title",
-title: {
-equals: "KPI MASTER"
-}
-}
-})
-}
-)
+  const response = await fetch(
+    `https://api.notion.com/v1/databases/${kpiDbId}/query`,
+    { method: "POST", headers, body: JSON.stringify({}) }
+  )
 
-const data = await response.json()
+  const data = await response.json()
+
   if (data.results && data.results.length > 0) {
     const props = data.results[0].properties
 
-    console.log("ALL:", JSON.stringify(props))
-totalRevenue = getNumber(props["Total Revenue"])
-totalSelesai = getNumber(props["Total Project Selesai (All Time)"])
-revenueTahunIni = getNumber(props["Rev Tahun Ini"])
-outstanding = getNumber(props["Outstanding Aktif"])
-antrian = getNumber(props["Jumlah Antrian"])
-terlambat = getNumber(props["Project Terlambat "])
+    totalRevenue = getNumber(props["Total Closed"])
+    totalSelesai = getNumber(props["Project Done"])
+    revenueTahunIni = getNumber(props["Closed Tahun Ini"])
+    outstanding = getNumber(props["Tagihan Aktif"])
+    antrian = getNumber(props["Antrian"])
+    terlambat = getNumber(props["Terlambat"])
   }
 
 } catch (err) {
