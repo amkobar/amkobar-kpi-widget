@@ -65,10 +65,10 @@ const data = await response.json()
     console.log("ALL:", JSON.stringify(props))
 totalRevenue = getNumber(props["Total Revenue"])
 totalSelesai = getNumber(props["Total Project Selesai (All Time)"])
-revenueTahunIni = getNumber(props["Revenue Tahun Ini"])
+revenueTahunIni = getNumber(props["Rev Tahun Ini"])
 outstanding = getNumber(props["Outstanding Aktif"])
 antrian = getNumber(props["Jumlah Antrian"])
-terlambat = getNumber(props["Project Terlambat"])
+terlambat = getNumber(props["Project Terlambat "])
   }
 
 } catch (err) {
