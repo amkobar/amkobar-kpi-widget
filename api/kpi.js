@@ -1,61 +1,67 @@
 module.exports = async function handler(req, res) {
-
-const notionToken = process.env.NOTION_TOKEN
-const kpiDbId = "323efe1d1acf8086b106e632903c0b96"
-
-const headers = {
-  Authorization: `Bearer ${notionToken}`,
-  "Notion-Version": "2022-06-28",
-"x-no-cache": "1",
-  "Content-Type": "application/json"
-}
-
-function getNumber(prop) {
-  if (!prop) return 0
-  if (prop.number !== undefined) return prop.number
-  if (prop.formula?.number !== undefined) return prop.formula.number
-  if (prop.rollup?.number !== undefined && prop.rollup.number !== null) return prop.rollup.number
-  if (prop.rollup?.array !== undefined) {
-    return prop.rollup.array.reduce((sum, item) => sum + (item.number || 0), 0)
-  }
-  return 0
-}
-
-let totalRevenue = 0
-let totalSelesai = 0
-let revenueTahunIni = 0
-let outstanding = 0
-let antrian = 0
-let terlambat = 0
-
-try {
-
-  const response = await fetch(
-    `https://api.notion.com/v1/databases/${kpiDbId}/query`,
-    { method: "POST", headers, body: JSON.stringify({}) }
-  )
-
-  const data = await response.json()
-
-
-  
-  if (data.results && data.results.length > 0) {
-    const props = data.results[0].properties
-
-    totalRevenue = getNumber(props["Total Closed"])
-    totalSelesai = getNumber(props["Project Done"])
-    revenueTahunIni = getNumber(props["Closed Tahun Ini"])
-    outstanding = getNumber(props["Tagihan Aktif"])
-    antrian = getNumber(props["Antrian"])
-    terlambat = getNumber(props["Terlambat"])
+  const notionToken = process.env.NOTION_TOKEN
+  const kpiDbId = "323efe1d1acf8086b106e632903c0b96"
+  const headers = {
+    Authorization: `Bearer ${notionToken}`,
+    "Notion-Version": "2022-06-28",
+    "Content-Type": "application/json"
   }
 
-} catch (err) {
-  console.error(err)
-  return res.status(500).send("Server Error")
-}
+  function getNumber(prop) {
+    if (!prop) return 0
+    if (prop.number !== undefined && prop.number !== null) return prop.number
+    if (prop.formula?.number !== undefined && prop.formula.number !== null) return prop.formula.number
+    if (prop.rollup) {
+      if (prop.rollup.number !== undefined && prop.rollup.number !== null) return prop.rollup.number
+      if (prop.rollup.array !== undefined) {
+        return prop.rollup.array.reduce((sum, item) => {
+          if (item.number !== undefined && item.number !== null) return sum + item.number
+          if (item.formula?.number !== undefined && item.formula.number !== null) return sum + item.formula.number
+          if (item.rollup?.number !== undefined && item.rollup.number !== null) return sum + item.rollup.number
+          return sum
+        }, 0)
+      }
+    }
+    return 0
+  }
 
-const html = `
+  function getCount(prop) {
+    if (!prop) return 0
+    if (prop.rollup?.number !== undefined && prop.rollup.number !== null) return prop.rollup.number
+    if (prop.rollup?.array !== undefined) return prop.rollup.array.length
+    if (prop.number !== undefined && prop.number !== null) return prop.number
+    return 0
+  }
+
+  let totalRevenue = 0
+  let totalSelesai = 0
+  let revenueTahunIni = 0
+  let outstanding = 0
+  let antrian = 0
+  let terlambat = 0
+
+  try {
+    const response = await fetch(
+      `https://api.notion.com/v1/databases/${kpiDbId}/query`,
+      { method: "POST", headers, body: JSON.stringify({}) }
+    )
+    const data = await response.json()
+
+    if (data.results && data.results.length > 0) {
+      const props = data.results[0].properties
+      totalRevenue = getNumber(props["Total Closed"])
+      totalSelesai = getCount(props["Project Done"])
+      revenueTahunIni = getNumber(props["Closed Tahun Ini"])
+      outstanding = getNumber(props["Tagihan Aktif"])
+      antrian = getCount(props["Antrian"])
+      terlambat = getCount(props["Terlambat"])
+    }
+  } catch (err) {
+    console.error(err)
+    return res.status(500).send("Server Error")
+  }
+
+  const html = `
 <!DOCTYPE html>
 <html>
 <head>
@@ -99,8 +105,7 @@ body{margin:0;background:#191919;font-family:-apple-system,BlinkMacSystemFont,'S
 </body>
 </html>
 `
-
-res.setHeader("Content-Type", "text/html")
-res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate")
-res.status(200).send(html)
+  res.setHeader("Content-Type", "text/html")
+  res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate")
+  res.status(200).send(html)
 }
