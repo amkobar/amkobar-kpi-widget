@@ -1,7 +1,7 @@
 module.exports = async function handler(req, res) {
 
 const notionToken = process.env.NOTION_TOKEN
-const kpiDbId = "311efe1d1acf80ffb9aae62ebce68b65"
+const kpiDbId = "30eefe1d1acf8067b17eca5c140af538"
 
 const headers = {
   Authorization: `Bearer ${notionToken}`,
@@ -32,7 +32,6 @@ try {
   )
 
   const data = await response.json()
-console.log("KPI props:", JSON.stringify(Object.keys(data.results[0]?.properties || {})))
   if (data.results && data.results.length > 0) {
     const props = data.results[0].properties
 
