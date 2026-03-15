@@ -122,7 +122,7 @@ body{background:#191919;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',
 .adot{width:7px;height:7px;border-radius:50%;background:#f87171;flex-shrink:0}
 .alert span{font-size:12px;color:#fca5a5;font-weight:500}
 .kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px}
-.kpi{min-height:100px;padding:20px;border-radius:18px;background:#0f1b2d;border:1px solid rgba(255,255,255,.06);display:flex;flex-direction:column;justify-content:center}
+.kpi{min-height:100px;padding:20px;border-radius:18px;background:#0f1b2d;border:1px solid rgba(255,255,255,.06);border-left:3px solid #1a6bbd;display:flex;flex-direction:column;justify-content:center}.kpi.yellow{border-left-color:#fbbf24}.kpi.red{border-left-color:#f87171}
 .kpi-lbl{font-size:13px;font-weight:600;color:#cbd5e1;margin-bottom:10px}
 .kpi-val{font-size:26px;font-weight:700}
 .kpi-val.blue{color:#60a5fa}.kpi-val.yellow{color:#fbbf24}.kpi-val.red{color:#f87171}
@@ -167,8 +167,8 @@ tr:last-child td{border-bottom:none}
 ${alertBanner}
 <div class="kpi-grid">
   <div class="kpi"><div class="kpi-lbl">Total Pendapatan</div><div class="kpi-val blue">${fmt(totalPendapatan)}</div><div class="kpi-sub">Semua waktu</div></div>
-  <div class="kpi"><div class="kpi-lbl">Semester Ini</div><div class="kpi-val yellow">${fmt(pendapatanSemester)}</div><div class="kpi-sub">${semesterLabel}</div></div>
-  <div class="kpi"><div class="kpi-lbl">Tagihan Tertunda</div><div class="kpi-val red">${fmt(tagihanTertunda)}</div><div class="kpi-sub">${outstanding.length} client belum lunas</div></div>
+  <div class="kpi yellow"><div class="kpi-lbl">Semester Ini</div><div class="kpi-val yellow">${fmt(pendapatanSemester)}</div><div class="kpi-sub">${semesterLabel}</div></div>
+  <div class="kpi red"><div class="kpi-lbl">Tagihan Tertunda</div><div class="kpi-val red">${fmt(tagihanTertunda)}</div><div class="kpi-sub">${outstanding.length} client belum lunas</div></div>
 </div>
 
 <div class="layer2">
