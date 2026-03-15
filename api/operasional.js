@@ -28,6 +28,16 @@ function getProp(page,key) {
   if (p.type==='number') return p.number??0;
   if (p.type==='date') return p.date?.start||null;
   if (p.type==='formula') { const f=p.formula; if (f?.type==='number') return f.number??0; if (f?.type==='boolean') return f.boolean??false; }
+  if (p.type==='rollup') {
+    const r=p.rollup;
+    if (r?.type==='number') return r.number??0;
+    if (r?.type==='array' && r.array?.length>0) {
+      const first=r.array[0];
+      if (first?.type==='select') return first.select?.name||'—';
+      if (first?.type==='number') return first.number??0;
+      if (first?.type==='rich_text') return first.rich_text?.map(t=>t.plain_text).join('')||'—';
+    }
+  }
   return null;
 }
 
