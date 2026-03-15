@@ -75,14 +75,10 @@ module.exports = async function handler(req, res) {
       const deadlineStr = getDate(props["Deadline"])
       const tanggalSelesai = getDate(props["Tanggal Selesai"])
 
-      // Total Pendapatan = semua entry tanpa filter status
       totalRevenue += totalDibayar
 
-      // Total Project Selesai
       if (STATUS_SELESAI.includes(status)) {
         totalSelesai += 1
-
-        // Pendapatan Tahun Ini = Selesai + Tanggal Selesai di tahun ini
         if (tanggalSelesai) {
           const tahun = new Date(tanggalSelesai).getFullYear()
           if (tahun === TAHUN_INI) {
@@ -91,15 +87,12 @@ module.exports = async function handler(req, res) {
         }
       }
 
-      // Tagihan Tertunda = sisa pembayaran dari project aktif
       if (STATUS_AKTIF.includes(status)) {
         outstanding += sisaPembayaran
       }
 
-      // Antrian
       antrian += isAntrian
 
-      // Terlambat = deadline sudah lewat + status masih aktif
       if (deadlineStr && new Date(deadlineStr) < SEKARANG && STATUS_AKTIF.includes(status)) {
         terlambat += 1
       }
@@ -110,46 +103,85 @@ module.exports = async function handler(req, res) {
     return res.status(500).send("Server Error")
   }
 
+  const updatedAt = new Date().toLocaleString('id-ID',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'})
+
   const html = `
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Executive Dashboard — AMKOBAR</title>
 <style>
-body{margin:0;background:#191919;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto;color:#ffffff;}
-.wrapper{padding:30px 10px 50px 10px;width:100%;box-sizing:border-box;}
-.section-title{font-size:13px;letter-spacing:1.4px;text-transform:uppercase;color:#cbd5e1;margin:40px 0 18px 0;font-weight:600;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#f4f6f9;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:#1a1a2e;min-height:100vh;}
+.header{background:#0d2144;padding:16px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+.header-left{display:flex;align-items:center;gap:12px;}
+.logo{width:38px;height:38px;background:#1a6bbd;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;color:#fff;}
+.header-title{color:#fff;font-size:15px;font-weight:600;}
+.header-sub{color:#85B7EB;font-size:11px;margin-top:2px;}
+.header-right{font-size:11px;color:#85B7EB;text-align:right;}
+.nav{background:#0a1a36;padding:0 20px;display:flex;gap:4px;overflow-x:auto;}
+.nav a{display:inline-block;padding:10px 16px;font-size:13px;color:#85B7EB;text-decoration:none;border-bottom:2px solid transparent;white-space:nowrap;}
+.nav a.active{color:#fff;border-bottom-color:#1a6bbd;}
+.container{max-width:900px;margin:0 auto;padding:24px 16px 48px;}
+.section-title{font-size:11px;letter-spacing:1.4px;text-transform:uppercase;color:#6b7280;margin:32px 0 14px;font-weight:600;}
 .section-title:first-of-type{margin-top:0;}
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;}
-.card{min-height:140px;padding:28px;border-radius:18px;background:#0f1b2d;border:1px solid rgba(255,255,255,0.06);box-shadow:0 6px 18px rgba(0,0,0,0.35);display:flex;flex-direction:column;justify-content:center;}
-.label{font-size:16px;font-weight:600;color:#cbd5e1;margin-bottom:14px;}
-.value{font-size:34px;font-weight:700;}
-.blue{color:#60a5fa;}.yellow{color:#fbbf24;}.red{color:#f87171;}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+.card{padding:20px;border-radius:10px;background:#fff;border-left:3px solid #1a6bbd;display:flex;flex-direction:column;justify-content:center;min-height:110px;}
+.card.yellow{border-left-color:#d97706;}
+.card.red{border-left-color:#dc2626;}
+.label{font-size:12px;font-weight:500;color:#6b7280;margin-bottom:10px;}
+.value{font-size:26px;font-weight:700;color:#1a1a2e;}
+.value.blue{color:#1a6bbd;}
+.value.yellow{color:#d97706;}
+.value.red{color:#dc2626;}
 @media(max-width:600px){
-.wrapper{padding:24px 18px 80px 18px;}
-.grid{grid-template-columns:repeat(2,1fr);gap:16px;margin-bottom:50px;}
-.grid .card:nth-child(3){grid-column:span 2;}
-.card{min-height:110px;padding:20px;border-radius:16px;}
-.label{font-size:13px;margin-bottom:12px;}
-.value{font-size:26px;}
-.section-title{font-size:12px;margin:30px 0 14px 0;}
+  .grid{grid-template-columns:repeat(2,1fr);gap:10px;}
+  .grid .card:nth-child(3){grid-column:span 2;}
+  .card{min-height:90px;padding:16px;}
+  .label{font-size:11px;}
+  .value{font-size:22px;}
+  .header-right{display:none;}
+}
+@media(max-width:380px){
+  .grid{grid-template-columns:1fr;}
+  .grid .card:nth-child(3){grid-column:span 1;}
 }
 </style>
 </head>
 <body>
-<div class="wrapper">
-<div class="section-title">PENCAPAIAN</div>
-<div class="grid">
-<div class="card"><div class="label">Total Pendapatan</div><div class="value blue">Rp ${totalRevenue.toLocaleString("id-ID")}</div></div>
-<div class="card"><div class="label">Total Project Selesai</div><div class="value">${totalSelesai}</div></div>
-<div class="card"><div class="label">Pendapatan Tahun Ini</div><div class="value">Rp ${revenueTahunIni.toLocaleString("id-ID")}</div></div>
+<div class="header">
+  <div class="header-left">
+    <div class="logo">AM</div>
+    <div>
+      <div class="header-title">AMKOBAR Statistical Consulting</div>
+      <div class="header-sub">Internal Management Dashboard</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <div>Diperbarui: ${updatedAt}</div>
+    <div style="margin-top:2px">Data real-time dari Notion</div>
+  </div>
 </div>
-<div class="section-title">KONTROL SAAT INI</div>
-<div class="grid">
-<div class="card"><div class="label">Tagihan Tertunda</div><div class="value yellow">Rp ${outstanding.toLocaleString("id-ID")}</div></div>
-<div class="card"><div class="label">Project Dalam Antrian</div><div class="value">${antrian}</div></div>
-<div class="card"><div class="label">Project Terlambat</div><div class="value red">${terlambat}</div></div>
-</div>
+<nav class="nav">
+  <a href="/api/kpi" class="active">Executive</a>
+  <a href="/api/keuangan">Keuangan</a>
+  <a href="/api/operasional">Operasional</a>
+</nav>
+<div class="container">
+  <div class="section-title">PENCAPAIAN</div>
+  <div class="grid">
+    <div class="card"><div class="label">Total Pendapatan</div><div class="value blue">Rp ${totalRevenue.toLocaleString("id-ID")}</div></div>
+    <div class="card"><div class="label">Total Project Selesai</div><div class="value">${totalSelesai}</div></div>
+    <div class="card"><div class="label">Pendapatan Tahun Ini</div><div class="value">Rp ${revenueTahunIni.toLocaleString("id-ID")}</div></div>
+  </div>
+  <div class="section-title">KONTROL SAAT INI</div>
+  <div class="grid">
+    <div class="card yellow"><div class="label">Tagihan Tertunda</div><div class="value yellow">Rp ${outstanding.toLocaleString("id-ID")}</div></div>
+    <div class="card"><div class="label">Project Dalam Antrian</div><div class="value">${antrian}</div></div>
+    <div class="card red"><div class="label">Project Terlambat</div><div class="value red">${terlambat}</div></div>
+  </div>
 </div>
 </body>
 </html>
