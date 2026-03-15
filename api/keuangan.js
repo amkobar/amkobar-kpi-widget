@@ -45,7 +45,6 @@ module.exports = async (req,res) => {
     const bulanSekarang=now.getMonth()+1;
     const tahunSekarang=now.getFullYear();
     const semesterStart=bulanSekarang<=6?1:7;
-    const semesterEnd=bulanSekarang<=6?6:12;
 
     let totalPendapatan=0, pendapatanSemester=0, tagihanTertunda=0, projectTerlambat=0;
     const outstanding=[], riwayat=[], perLayanan={}, rekapBulanan={};
@@ -66,44 +65,30 @@ module.exports = async (req,res) => {
 
       totalPendapatan+=totalDibayar;
 
-      // Pendapatan semester ini (akumulasi dari awal semester sampai bulan berjalan)
       if (tanggalSelesai) {
         const tgl=new Date(tanggalSelesai);
         const bln=tgl.getMonth()+1;
         const thn=tgl.getFullYear();
-        if (thn===tahunSekarang && bln>=semesterStart && bln<=bulanSekarang) {
-          pendapatanSemester+=totalDibayar;
-        }
-        // Rekap bulanan per tanggal selesai
+        if (thn===tahunSekarang && bln>=semesterStart && bln<=bulanSekarang) pendapatanSemester+=totalDibayar;
         const mk=getMonthKey(tanggalSelesai);
         if (mk) rekapBulanan[mk]=(rekapBulanan[mk]||0)+totalDibayar;
       }
 
-      // Tagihan tertunda
       if (STATUS_AKTIF.includes(status)&&sisaPembayaran>0) {
         tagihanTertunda+=sisaPembayaran;
         const isLate=deadline&&new Date(deadline)<now;
         if (isLate) projectTerlambat++;
-        outstanding.push({
-          nama, layanan, status,
-          sisaBayar:fmt(sisaPembayaran),
-          deadline:deadline?new Date(deadline).toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'}):'—',
-          terlambat:isLate
-        });
+        outstanding.push({nama,layanan,status,sisaBayar:fmt(sisaPembayaran),deadline:deadline?new Date(deadline).toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'}):'—',terlambat:isLate});
       }
 
-      // Riwayat pembayaran
       if (dpMasuk) riwayat.push({nama,layanan,tahap:'DP',jumlah:fmt(dpVal)});
       if (tahap2Masuk) riwayat.push({nama,layanan,tahap:'Tahap 2',jumlah:'—'});
       if (pelunasanMasuk) riwayat.push({nama,layanan,tahap:'Pelunasan',jumlah:fmt(hargaNetto-dpVal)});
 
-      // Rekap per layanan
       if (!perLayanan[layanan]) perLayanan[layanan]={count:0,total:0};
-      perLayanan[layanan].count++;
-      perLayanan[layanan].total+=totalDibayar;
+      perLayanan[layanan].count++; perLayanan[layanan].total+=totalDibayar;
     }
 
-    // Rekap 6 bulan terakhir untuk tab
     const last6=[];
     for (let i=5;i>=0;i--) {
       const d=new Date(tahunSekarang,now.getMonth()-i,1);
@@ -112,7 +97,8 @@ module.exports = async (req,res) => {
     }
 
     const layananList=Object.entries(perLayanan).map(([n,v])=>({nama:n,count:v.count,total:fmt(v.total)})).sort((a,b)=>b.count-a.count);
-    const semesterLabel=`${['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Ags','Sep','Okt','Nov','Des'][semesterStart-1]}–${['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Ags','Sep','Okt','Nov','Des'][bulanSekarang-1]} ${tahunSekarang}`;
+    const bulanNames=['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Ags','Sep','Okt','Nov','Des'];
+    const semesterLabel=`${bulanNames[semesterStart-1]}–${bulanNames[bulanSekarang-1]} ${tahunSekarang}`;
 
     const alertBanner=projectTerlambat>0?`<div class="alert"><div class="adot"></div><span>${projectTerlambat} project melewati deadline — segera tindak lanjut</span></div>`:'';
 
@@ -125,7 +111,6 @@ module.exports = async (req,res) => {
       :riwayat.slice(0,8).map(r=>`<tr><td>${r.nama}</td><td>${r.layanan}</td><td class="m">${r.tahap}</td><td class="${r.jumlah==='—'?'m':'grn b'}">${r.jumlah}</td></tr>`).join('');
 
     const rekapRows=last6.map(b=>`<tr><td class="m">${b.label}</td><td class="${b.value>0?'grn b':''}">${b.value>0?fmt(b.value):'—'}</td></tr>`).join('');
-
     const layRows=layananList.map(l=>`<tr><td>${l.nama}</td><td style="text-align:center">${l.count}</td><td class="grn">${l.total}</td></tr>`).join('');
 
     const html=`<!DOCTYPE html><html lang="id"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Keuangan</title>
@@ -134,31 +119,29 @@ module.exports = async (req,res) => {
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{background:transparent;overflow-x:hidden}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:#e2e8f0;padding:16px 12px 24px}
-.alert{background:rgba(220,38,38,.15);border:1px solid rgba(220,38,38,.3);border-radius:10px;padding:8px 12px;display:flex;align-items:center;gap:8px;margin-bottom:14px}
+.alert{border-left:3px solid #f87171;padding:8px 12px;display:flex;align-items:center;gap:8px;margin-bottom:16px}
 .adot{width:7px;height:7px;border-radius:50%;background:#f87171;flex-shrink:0}
-.alert span{font-size:12px;color:#fca5a5;font-weight:500}
-.kpi-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:12px}
-.kpi{padding:16px;border-radius:12px;background:rgba(15,27,45,0.7);border-left:3px solid #378ADD;backdrop-filter:blur(4px)}
+.alert span{font-size:12px;color:#f87171;font-weight:500}
+.kpi-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:16px}
+.kpi{padding:16px;border-left:3px solid #378ADD}
 .kpi.warn{border-left-color:#EF9F27}
 .kpi.danger{border-left-color:#E24B4A}
 .kpi-lbl{font-size:11px;color:#94a3b8;margin-bottom:8px;font-weight:500}
-.kpi-val{font-size:20px;font-weight:600;color:#e2e8f0}
+.kpi-val{font-size:22px;font-weight:700;color:#e2e8f0}
 .kpi-val.blue{color:#60a5fa}
 .kpi-val.amber{color:#fbbf24}
 .kpi-val.red{color:#f87171}
 .kpi-sub{font-size:10px;color:#475569;margin-top:5px}
-.layer2{background:rgba(15,27,45,0.7);border-radius:12px;border:1px solid rgba(255,255,255,.08);padding:14px;margin-bottom:10px}
+.divider{border:none;border-top:1px solid rgba(255,255,255,.08);margin:4px 0 14px}
 .tab-bar{display:flex;gap:0;margin-bottom:12px;border-bottom:1px solid rgba(255,255,255,.08)}
 .tab{font-size:12px;padding:7px 14px;cursor:pointer;border:none;background:none;color:#64748b;border-bottom:2px solid transparent;margin-bottom:-1px}
 .tab.active{color:#e2e8f0;border-bottom-color:#378ADD;font-weight:500}
-.layer3{background:rgba(15,27,45,0.7);border-radius:12px;border:1px solid rgba(255,255,255,.08);padding:14px}
-.shdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,.08)}
-.stitle{font-size:13px;font-weight:600;color:#e2e8f0}
-.smeta{font-size:11px;color:#475569}
+.sec-title{font-size:13px;font-weight:600;color:#e2e8f0;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,.08);display:flex;justify-content:space-between}
+.sec-title span{font-size:11px;color:#475569;font-weight:400}
 .l3-inner{display:grid;grid-template-columns:180px 1fr;gap:16px;align-items:center}
 .cw{position:relative;width:100%;height:160px}
 .legend{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
-.legend span{display:flex;align-items:center;gap:5px;font-size:11px;color:#94a3b8}
+.legend-item{display:flex;align-items:center;gap:5px;font-size:11px;color:#94a3b8}
 .ldot{width:10px;height:10px;border-radius:2px;flex-shrink:0}
 table{width:100%;border-collapse:collapse;font-size:12px}
 th{font-size:10px;color:#475569;font-weight:600;text-align:left;padding:5px 8px;border-bottom:1px solid rgba(255,255,255,.06);text-transform:uppercase;letter-spacing:.04em}
@@ -176,7 +159,7 @@ tr:last-child td{border-bottom:none}
 @media(max-width:600px){
   .kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
   .kpi-grid .kpi:nth-child(3){grid-column:span 2}
-  .kpi-val{font-size:17px}
+  .kpi-val{font-size:18px}
   .l3-inner{grid-template-columns:1fr}
 }
 @media(max-width:380px){
@@ -185,49 +168,51 @@ tr:last-child td{border-bottom:none}
 }
 </style></head><body>
 ${alertBanner}
+
 <div class="kpi-grid">
   <div class="kpi"><div class="kpi-lbl">Total Pendapatan</div><div class="kpi-val blue">${fmt(totalPendapatan)}</div><div class="kpi-sub">Semua waktu</div></div>
   <div class="kpi warn"><div class="kpi-lbl">Semester Ini</div><div class="kpi-val amber">${fmt(pendapatanSemester)}</div><div class="kpi-sub">${semesterLabel}</div></div>
   <div class="kpi danger"><div class="kpi-lbl">Tagihan Tertunda</div><div class="kpi-val red">${fmt(tagihanTertunda)}</div><div class="kpi-sub">${outstanding.length} client belum lunas</div></div>
 </div>
 
-<div class="layer2">
-  <div class="tab-bar">
-    <button class="tab active" onclick="showTab('outstanding',this)">Outstanding</button>
-    <button class="tab" onclick="showTab('riwayat',this)">Riwayat</button>
-    <button class="tab" onclick="showTab('rekap',this)">Rekap Bulanan</button>
-  </div>
-  <div id="tab-outstanding">
-    <div style="overflow-x:auto">
-    <table><thead><tr><th>Nama client</th><th>Layanan</th><th>Status</th><th>Sisa bayar</th><th>Deadline</th></tr></thead>
-    <tbody>${outRows}</tbody></table>
-    </div>
-  </div>
-  <div id="tab-riwayat" class="hidden">
-    <table><thead><tr><th>Nama client</th><th>Layanan</th><th>Tahap</th><th>Jumlah</th></tr></thead>
-    <tbody>${rivRows}</tbody></table>
-  </div>
-  <div id="tab-rekap" class="hidden">
-    <table><thead><tr><th>Bulan</th><th>Pendapatan</th></tr></thead>
-    <tbody>${rekapRows}</tbody></table>
-  </div>
+<hr class="divider">
+
+<div class="tab-bar">
+  <button class="tab active" onclick="showTab('outstanding',this)">Outstanding</button>
+  <button class="tab" onclick="showTab('riwayat',this)">Riwayat</button>
+  <button class="tab" onclick="showTab('rekap',this)">Rekap Bulanan</button>
 </div>
 
-<div class="layer3">
-  <div class="shdr"><div class="stitle">Rekap per jenis layanan</div><div class="smeta">Semua waktu</div></div>
-  <div class="l3-inner">
-    <div>
-      <div class="cw"><canvas id="cD"></canvas></div>
-      <div class="legend">
-        <span><span class="ldot" style="background:#378ADD"></span>BAB IV</span>
-        <span><span class="ldot" style="background:#185FA5"></span>BAB IV–V</span>
-        <span><span class="ldot" style="background:#0C447C"></span>Full BAB I–V</span>
-        <span><span class="ldot" style="background:#85B7EB"></span>Olahdata</span>
-      </div>
-    </div>
-    <table><thead><tr><th>Layanan</th><th style="text-align:center">Project</th><th>Pendapatan</th></tr></thead>
-    <tbody>${layRows}</tbody></table>
+<div id="tab-outstanding">
+  <div style="overflow-x:auto">
+  <table><thead><tr><th>Nama client</th><th>Layanan</th><th>Status</th><th>Sisa bayar</th><th>Deadline</th></tr></thead>
+  <tbody>${outRows}</tbody></table>
   </div>
+</div>
+<div id="tab-riwayat" class="hidden">
+  <table><thead><tr><th>Nama client</th><th>Layanan</th><th>Tahap</th><th>Jumlah</th></tr></thead>
+  <tbody>${rivRows}</tbody></table>
+</div>
+<div id="tab-rekap" class="hidden">
+  <table><thead><tr><th>Bulan</th><th>Pendapatan</th></tr></thead>
+  <tbody>${rekapRows}</tbody></table>
+</div>
+
+<hr class="divider" style="margin-top:16px">
+
+<div class="sec-title">Rekap per jenis layanan <span>Semua waktu</span></div>
+<div class="l3-inner">
+  <div>
+    <div class="cw"><canvas id="cD"></canvas></div>
+    <div class="legend">
+      <div class="legend-item"><span class="ldot" style="background:#378ADD"></span>BAB IV</div>
+      <div class="legend-item"><span class="ldot" style="background:#185FA5"></span>BAB IV–V</div>
+      <div class="legend-item"><span class="ldot" style="background:#0C447C"></span>Full BAB I–V</div>
+      <div class="legend-item"><span class="ldot" style="background:#85B7EB"></span>Olahdata</div>
+    </div>
+  </div>
+  <table><thead><tr><th>Layanan</th><th style="text-align:center">Project</th><th>Pendapatan</th></tr></thead>
+  <tbody>${layRows}</tbody></table>
 </div>
 
 <script>
