@@ -35,7 +35,7 @@ module.exports = async function handler(req, res) {
       title: "Mulai pengerjaan",
       bg: "#FAEEDA", border: "#BA7517", color: "#633806",
       items: [
-        "Centang \u2192 Tahap 2 Masuk jika skema 3 tahap",
+        "Centang \u2192 Tahap 2 Masuk jika (skema 3 tahap) dan Pembayaran sudah masuk",
         "Ubah Status Project \u2192 Menunggu Pelunasan jika sudah selesai diproses",
         "Ubah dahulu \u2192 Tanggal Selesai \u2192 Status Project",
         "Dari sini lanjutkan Pekerjaan"
@@ -48,7 +48,7 @@ module.exports = async function handler(req, res) {
       items: [
         "Upload file ke folder Hasil Final di Google Drive client",
         "Kirim WA \u2192 Template: Notifikasi hasil selesai",
-        "Ubah Status Project \u2192 Pendampingan dan ceklis Pelunasan Masuk jika Pelunasan Sudah diterima"
+        "Ubah Status Project \u2192 Pendampingan dan ceklis \u2192 Pelunasan Masuk jika Pelunasan Sudah diterima"
       ]
     },
     selesai: {
