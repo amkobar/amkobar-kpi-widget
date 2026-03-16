@@ -1,13 +1,14 @@
 module.exports = async function handler(req, res) {
 
   const guides = {
-    Client: {
-      num: "TAHAP 1",
-      title: "Hanya Tampilan Semua Client",
+    Overdue: {
+      num: "PERHATIAN",
+      title: "Project Melewati Deadline",
       bg: "#F1EFE8", border: "#888780", color: "#444441",
       items: [
-        "Ini hanya tampilan untuk semua client",
-        "Langsung Ke View \u2192 Menunggu Review"
+        "Cek client mana yang deadlinenya sudah lewat",
+        "Segera selesaikan atau hubungi client untuk update progress",
+        "Pertimbangkan ubah Deadline jika ada kendala"
       ]
     },
     review: {
@@ -84,7 +85,7 @@ module.exports = async function handler(req, res) {
   };
 
   const tabs = [
-    { key: "Client", label: "All Client" },
+    { key: "Overdue", label: "Overdue" },
     { key: "review", label: "Menunggu Review" },
     { key: "antrian", label: "Antrian" },
     { key: "diproses", label: "Diproses" },
