@@ -16,7 +16,7 @@ module.exports = async function handler(req, res) {
       bg: "#E6F1FB", border: "#378ADD", color: "#0C447C",
       items: [
         "Pastikan kolom \u2192 Paket \u2192 Jenis Layanan \u2192 Aplikasi sudah terisi",
-        "Jika sudah benar ganti Status Project \u2192 Antrian",
+        "Jika sudah benar ganti Status Project \u2192 Antrian \u2192  Tanggal DP",
         "Kirim WA \u2192 Template: Konfirmasi registrasi diterima copy dari email"
       ]
     },
@@ -25,8 +25,8 @@ module.exports = async function handler(req, res) {
       title: "DP masuk",
       bg: "#EAF3DE", border: "#639922", color: "#27500A",
       items: [
-        "Isi Tanggal DP di database di bawah",
-        "Ubah Status Project \u2192 Antrian di database di bawah",
+        "Isi Deadline \u219 jika sudah ditentukan",
+        "Ubah Status Project \u2192 Antrian jika akan di proses",
         "Kirim WA \u2192 Template: Konfirmasi DP diterima"
       ]
     },
@@ -35,8 +35,8 @@ module.exports = async function handler(req, res) {
       title: "Mulai pengerjaan",
       bg: "#FAEEDA", border: "#BA7517", color: "#633806",
       items: [
-        "Ubah Status Project \u2192 Diproses di database di bawah",
-        "Isi Deadline di database di bawah"
+        "Ubah Status Project \u2192 Diproses ",
+        "Dari sini lanjutkan Pekerjaan"
       ]
     },
     pelunasan: {
@@ -45,31 +45,29 @@ module.exports = async function handler(req, res) {
       bg: "#FAECE7", border: "#D85A30", color: "#993C1D",
       items: [
         "Upload file ke folder Hasil Final di Google Drive client",
-        "Ubah Status Project \u2192 Menunggu Pelunasan di database di bawah",
+        "Ubah Status Project \u2192 Menunggu Pelunasan",
         "Kirim WA \u2192 Template: Notifikasi hasil selesai"
       ]
     },
-    pendampingan: {
+    selesai: {
       num: "TAHAP 6",
+      title: "Pelunasan masuk & Pendampingan",
+      bg: "#EAF3DE", border: "#639922", color: "#27500A",
+      items: [
+        "Centang Pelunasan Masuk (+ Tahap 2 jika skema 3 tahap)",
+        "Buka akses folder Hasil Final di Google Drive dan Isi Tanggal Selesai",
+        "Ubah Status Project \u2192 Menunggu Pelunasan \u2192 Pendampingan",
+        "Kirim WA \u2192 Template: Konfirmasi pelunasan"
+      ]
+    },
+     pendampingan: {
+      num: "TAHAP 7",
       title: "Pendampingan",
       bg: "#EEEDFE", border: "#7F77DD", color: "#3C3489",
       items: [
         "Jadwalkan sesi GMeet/Zoom dengan client",
         "Kirim link meeting ke client via WA",
-        "Lakukan sesi pendampingan/pembelajaran hasil analisis",
         "Ubah Status Project \u2192 Selesai setelah sesi selesai"
-      ]
-    },
-    selesai: {
-      num: "TAHAP 7",
-      title: "Pelunasan masuk & Selesai",
-      bg: "#EAF3DE", border: "#639922", color: "#27500A",
-      items: [
-        "Centang Pelunasan Masuk (+ Tahap 2 jika skema 3 tahap)",
-        "Isi Tanggal Selesai di database di bawah",
-        "Buka akses folder Hasil Final di Google Drive client",
-        "Ubah Status Project \u2192 Selesai",
-        "Kirim WA \u2192 Template: Konfirmasi pelunasan & selesai"
       ]
     },
     refund: {
@@ -78,7 +76,6 @@ module.exports = async function handler(req, res) {
       bg: "#FCEBEB", border: "#E24B4A", color: "#A32D2D",
       items: [
         "Ubah Status Project \u2192 Refund atau Dibatalkan di database di bawah",
-        "Catat alasan pembatalan di kolom catatan jika ada",
         "Proses pengembalian dana jika berlaku",
         "Pastikan akses Google Drive client sudah dicabut"
       ]
