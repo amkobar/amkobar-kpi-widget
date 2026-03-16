@@ -26,7 +26,7 @@ module.exports = async function handler(req, res) {
       bg: "#EAF3DE", border: "#639922", color: "#27500A",
       items: [
         "Isi Deadline \u2192 jika sudah ditentukan",
-        "Ubah Status Project \u2192 Proses jika akan di kerjakan",
+        "Ubah Status Project \u2192 Diproses jika akan di kerjakan",
         "Kirim WA \u2192 Template: Konfirmasi DP diterima"
       ]
     },
@@ -35,7 +35,8 @@ module.exports = async function handler(req, res) {
       title: "Mulai pengerjaan",
       bg: "#FAEEDA", border: "#BA7517", color: "#633806",
       items: [
-        "Ubah Status Project \u2192 Diproses",
+        "Ubah Status Project \u2192 Menunggu Pelunasan jika sudah selesai diproses",
+        "Ubah dahulu \u2192 Tanggal Selesai \u2192 Status Project",
         "Dari sini lanjutkan Pekerjaan"
       ]
     },
@@ -88,8 +89,8 @@ module.exports = async function handler(req, res) {
     { key: "antrian", label: "Antrian" },
     { key: "diproses", label: "Diproses" },
     { key: "pelunasan", label: "Menunggu Pelunasan" },
-    { key: "selesai", label: "Selesai" },
     { key: "pendampingan", label: "Pendampingan" },
+    { key: "selesai", label: "Selesai" },
     { key: "refund", label: "Refund & Dibatalkan" },
   ];
 
