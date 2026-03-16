@@ -38,8 +38,7 @@ module.exports = async function handler(req, res) {
       items: [
         "Centang \u2192 Tahap 2 Masuk jika (skema 3 tahap) dan Pembayaran sudah masuk",
         "Ubah Status Project \u2192 Menunggu Pelunasan jika sudah selesai diproses",
-        "Ubah dahulu \u2192 Tanggal Selesai \u2192 Status Project",
-        "Dari sini lanjutkan Pekerjaan"
+        "Ubah dahulu \u2192 Tanggal Selesai \u2192 Status Project"
       ]
     },
     pelunasan: {
