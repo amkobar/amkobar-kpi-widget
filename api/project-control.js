@@ -1,7 +1,7 @@
 module.exports = async function handler(req, res) {
 
   const guides = {
-    all: {
+    review: {
       num: "TAHAP 1",
       title: "Client baru masuk",
       bg: "#E6F1FB", border: "#378ADD", color: "#0C447C",
@@ -30,22 +30,61 @@ module.exports = async function handler(req, res) {
         "Isi Deadline di database di bawah"
       ]
     },
-    selesai: {
-      num: "TAHAP 4 & 5",
-      title: "Hasil selesai & Pelunasan",
+    pelunasan: {
+      num: "TAHAP 4",
+      title: "Hasil selesai",
       bg: "#FAECE7", border: "#D85A30", color: "#993C1D",
       items: [
         "Upload file ke folder Hasil Final di Google Drive client",
         "Ubah Status Project \u2192 Menunggu Pelunasan di database di bawah",
-        "Kirim WA \u2192 Template: Notifikasi hasil selesai",
+        "Kirim WA \u2192 Template: Notifikasi hasil selesai"
+      ]
+    },
+    pendampingan: {
+      num: "TAHAP 5",
+      title: "Pendampingan",
+      bg: "#EEEDFE", border: "#7F77DD", color: "#3C3489",
+      items: [
+        "Jadwalkan sesi GMeet/Zoom dengan client",
+        "Kirim link meeting ke client via WA",
+        "Lakukan sesi pendampingan/pembelajaran hasil analisis",
+        "Ubah Status Project \u2192 Selesai setelah sesi selesai"
+      ]
+    },
+    selesai: {
+      num: "TAHAP 6",
+      title: "Pelunasan masuk & Selesai",
+      bg: "#EAF3DE", border: "#639922", color: "#27500A",
+      items: [
         "Centang Pelunasan Masuk (+ Tahap 2 jika skema 3 tahap)",
         "Isi Tanggal Selesai di database di bawah",
         "Buka akses folder Hasil Final di Google Drive client",
         "Ubah Status Project \u2192 Selesai",
         "Kirim WA \u2192 Template: Konfirmasi pelunasan & selesai"
       ]
+    },
+    refund: {
+      num: "PERHATIAN",
+      title: "Refund & Dibatalkan",
+      bg: "#FCEBEB", border: "#E24B4A", color: "#A32D2D",
+      items: [
+        "Ubah Status Project \u2192 Refund atau Dibatalkan di database di bawah",
+        "Catat alasan pembatalan di kolom catatan jika ada",
+        "Proses pengembalian dana jika berlaku",
+        "Pastikan akses Google Drive client sudah dicabut"
+      ]
     }
   };
+
+  const tabs = [
+    { key: "review", label: "Menunggu Review" },
+    { key: "antrian", label: "Antrian" },
+    { key: "diproses", label: "Diproses" },
+    { key: "pelunasan", label: "Menunggu Pelunasan" },
+    { key: "pendampingan", label: "Pendampingan" },
+    { key: "selesai", label: "Selesai" },
+    { key: "refund", label: "Refund & Dibatalkan" },
+  ];
 
   function guideHtml(key) {
     const g = guides[key];
@@ -54,6 +93,12 @@ module.exports = async function handler(req, res) {
     ).join("");
     return `<div id="g-${key}" style="display:none;background:${g.bg};border-left:3px solid ${g.border};border-radius:0 8px 8px 0;padding:16px 18px"><div style="font-size:11px;font-weight:600;color:${g.border};margin-bottom:4px;letter-spacing:.05em">${g.num}</div><div style="font-size:15px;font-weight:500;color:${g.color};margin-bottom:12px">${g.title}</div>${items}</div>`;
   }
+
+  const tabHtml = tabs.map((t, i) =>
+    `<div class="tab${i===0?' active':''}" onclick="sw('${t.key}',this)">${t.label}</div>`
+  ).join("");
+
+  const guidesHtml = tabs.map(t => guideHtml(t.key)).join("");
 
   const html = `<!DOCTYPE html>
 <html>
@@ -71,19 +116,11 @@ body{padding:1.25rem}
 </style>
 </head>
 <body>
-<div class="tabs">
-  <div class="tab active" onclick="sw('all',this)">All Client</div>
-  <div class="tab" onclick="sw('antrian',this)">Antrian</div>
-  <div class="tab" onclick="sw('diproses',this)">Diproses</div>
-  <div class="tab" onclick="sw('selesai',this)">Selesai</div>
-</div>
-${guideHtml("all")}
-${guideHtml("antrian")}
-${guideHtml("diproses")}
-${guideHtml("selesai")}
+<div class="tabs">${tabHtml}</div>
+${guidesHtml}
 <script>
 function sw(key,el){document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.querySelectorAll('[id^="g-"]').forEach(g=>g.style.display='none');el.classList.add('active');document.getElementById('g-'+key).style.display='block';}
-sw('all',document.querySelector('.tab.active'));
+sw('review',document.querySelector('.tab.active'));
 </script>
 </body>
 </html>`;
