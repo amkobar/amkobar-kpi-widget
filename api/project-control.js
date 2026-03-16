@@ -6,9 +6,8 @@ module.exports = async function handler(req, res) {
       title: "Hanya Tampilan Semua Client",
       bg: "#E6F1FB", border: "#378ADD", color: "#0C447C",
       items: [
-        "Cek entry baru sudah masuk otomatis di database PROJECT di bawah",
-        "Pastikan kolom Paket, Jenis Layanan, Aplikasi sudah terisi",
-        "Kirim WA \u2192 Template: Konfirmasi registrasi diterima"
+        "Ini hanya tampilan untuk semua client",
+        "Langsung View Menunggu Riview"
       ]
     },
     review: {
