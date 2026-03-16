@@ -85,9 +85,9 @@ module.exports = async function handler(req, res) {
   };
 
   const tabs = [
-    { key: "Overdue", label: "Overdue" },
     { key: "review", label: "Menunggu Review" },
     { key: "antrian", label: "Antrian" },
+    { key: "Overdue", label: "Overdue" },
     { key: "diproses", label: "Diproses" },
     { key: "pelunasan", label: "Menunggu Pelunasan" },
     { key: "pendampingan", label: "Pendampingan" },
