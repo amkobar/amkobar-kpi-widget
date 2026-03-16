@@ -46,8 +46,8 @@ module.exports = async function handler(req, res) {
       bg: "#FAECE7", border: "#D85A30", color: "#993C1D",
       items: [
         "Upload file ke folder Hasil Final di Google Drive client",
-        "Ubah Status Project \u2192 Menunggu Pelunasan",
-        "Kirim WA \u2192 Template: Notifikasi hasil selesai"
+        "Kirim WA \u2192 Template: Notifikasi hasil selesai",
+        "Ubah Status Project \u2192 Pendampingan jika Pelunasan Sudah diterima"
       ]
     },
     selesai: {
