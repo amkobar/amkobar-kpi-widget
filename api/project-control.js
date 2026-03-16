@@ -56,10 +56,9 @@ module.exports = async function handler(req, res) {
       title: "Pelunasan masuk & Pendampingan",
       bg: "#E1F5EE", border: "#1D9E75", color: "#085041",
       items: [
-        "Centang Pelunasan Masuk (+ Tahap 2 jika skema 3 tahap)",
-        "Buka akses folder Hasil Final di Google Drive dan Isi Tanggal Selesai",
-        "Ubah Status Project \u2192 Menunggu Pelunasan \u2192 Pendampingan",
-        "Kirim WA \u2192 Template: Konfirmasi pelunasan"
+        "Ubah Status Project \u2192 Refund dan Dibatalkan jika ini terjasi",
+        "Jika Refund dan Dibatalkan maka DP di anggap Hangus"
+        
       ]
     },
     pendampingan: {
