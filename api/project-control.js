@@ -7,17 +7,17 @@ module.exports = async function handler(req, res) {
       bg: "#E6F1FB", border: "#378ADD", color: "#0C447C",
       items: [
         "Ini hanya tampilan untuk semua client",
-        "Langsung View Menunggu Riview"
+        "Langsung Ke View \u2192 Menunggu Riview"
       ]
     },
     review: {
       num: "TAHAP 2",
-      title: "Client baru masuk",
+      title: "Pastikan Data Benar",
       bg: "#E6F1FB", border: "#378ADD", color: "#0C447C",
       items: [
-        "Cek entry baru sudah masuk otomatis di database PROJECT di bawah",
-        "Pastikan kolom Paket, Jenis Layanan, Aplikasi sudah terisi",
-        "Kirim WA \u2192 Template: Konfirmasi registrasi diterima"
+        "Pastikan kolom \u2192 Paket \u2192 Jenis Layanan \u2192 Aplikasi sudah terisi",
+        "Jika sudah benar ganti Status Project \u2192 Antrian",
+        "Kirim WA \u2192 Template: Konfirmasi registrasi diterima copy dari email"
       ]
     },
     antrian: {
