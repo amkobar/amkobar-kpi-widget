@@ -35,7 +35,7 @@ module.exports = async function handler(req, res) {
       title: "Mulai pengerjaan",
       bg: "#FAEEDA", border: "#BA7517", color: "#633806",
       items: [
-        "Centang Pelunasan Tahap 2 jika skema 3 tahap",
+        "Centang \u2192 Tahap 2 Masuk jika skema 3 tahap",
         "Ubah Status Project \u2192 Menunggu Pelunasan jika sudah selesai diproses",
         "Ubah dahulu \u2192 Tanggal Selesai \u2192 Status Project",
         "Dari sini lanjutkan Pekerjaan"
