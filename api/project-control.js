@@ -67,9 +67,9 @@ module.exports = async function handler(req, res) {
       title: "Pendampingan",
       bg: "#EEEDFE", border: "#7F77DD", color: "#3C3489",
       items: [
-        "Jadwalkan sesi GMeet/Zoom dengan client",
-        "Kirim link meeting ke client via WA",
-        "Ubah Status Project \u2192 Selesai setelah sesi selesai"
+        "Jadwalkan sesi GMeet/Zoom dengan client dan Isi \u2192 Tanggal Sesi",
+        "Kirim link meeting ke client via WA sesuai tanggal yang telah disepakati",
+        "Ubah Status Project \u2192 Selesai (setelah sesi belajar selesai)"
       ]
     },
     refund: {
