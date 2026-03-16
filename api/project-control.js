@@ -17,7 +17,7 @@ module.exports = async function handler(req, res) {
       bg: "#E6F1FB", border: "#378ADD", color: "#0C447C",
       items: [
         "Pastikan kolom \u2192 Paket \u2192 Jenis Layanan \u2192 Aplikasi sudah terisi",
-        "Jika sudah benar ganti Status Project \u2192 Antrian \u2192 Tanggal DP",
+        "Jika sudah benar ganti Status Project \u2192 Antrian \u2192 Isi Tanggal DP",
         "Kirim WA \u2192 Template: Konfirmasi registrasi diterima copy dari email"
       ]
     },
