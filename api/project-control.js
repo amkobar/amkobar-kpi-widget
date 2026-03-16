@@ -77,8 +77,8 @@ module.exports = async function handler(req, res) {
       bg: "#FCEBEB", border: "#E24B4A", color: "#A32D2D",
       items: [
         "Ubah Status Project \u2192 Refund atau Dibatalkan",
-        "Proses pengembalian dana jika berlaku",
-        "Pastikan akses Google Drive client sudah dicabut"
+        "Hapus Kode Akses atau ganti kode akses",
+        "Ganti Status menjadi terbatas di Google Drive atas nama client"
       ]
     }
   };
