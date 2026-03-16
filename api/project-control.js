@@ -4,10 +4,10 @@ module.exports = async function handler(req, res) {
     Client: {
       num: "TAHAP 1",
       title: "Hanya Tampilan Semua Client",
-      bg: "#E6F1FB", border: "#378ADD", color: "#0C447C",
+      bg: "#F1EFE8", border: "#888780", color: "#444441",
       items: [
         "Ini hanya tampilan untuk semua client",
-        "Langsung Ke View \u2192 Menunggu Riview"
+        "Langsung Ke View \u2192 Menunggu Review"
       ]
     },
     review: {
@@ -16,7 +16,7 @@ module.exports = async function handler(req, res) {
       bg: "#E6F1FB", border: "#378ADD", color: "#0C447C",
       items: [
         "Pastikan kolom \u2192 Paket \u2192 Jenis Layanan \u2192 Aplikasi sudah terisi",
-        "Jika sudah benar ganti Status Project \u2192 Antrian \u2192  Tanggal DP",
+        "Jika sudah benar ganti Status Project \u2192 Antrian \u2192 Tanggal DP",
         "Kirim WA \u2192 Template: Konfirmasi registrasi diterima copy dari email"
       ]
     },
@@ -35,7 +35,7 @@ module.exports = async function handler(req, res) {
       title: "Mulai pengerjaan",
       bg: "#FAEEDA", border: "#BA7517", color: "#633806",
       items: [
-        "Ubah Status Project \u2192 Diproses ",
+        "Ubah Status Project \u2192 Diproses",
         "Dari sini lanjutkan Pekerjaan"
       ]
     },
@@ -52,7 +52,7 @@ module.exports = async function handler(req, res) {
     selesai: {
       num: "TAHAP 6",
       title: "Pelunasan masuk & Pendampingan",
-      bg: "#EAF3DE", border: "#639922", color: "#27500A",
+      bg: "#E1F5EE", border: "#1D9E75", color: "#085041",
       items: [
         "Centang Pelunasan Masuk (+ Tahap 2 jika skema 3 tahap)",
         "Buka akses folder Hasil Final di Google Drive dan Isi Tanggal Selesai",
@@ -60,7 +60,7 @@ module.exports = async function handler(req, res) {
         "Kirim WA \u2192 Template: Konfirmasi pelunasan"
       ]
     },
-     pendampingan: {
+    pendampingan: {
       num: "TAHAP 7",
       title: "Pendampingan",
       bg: "#EEEDFE", border: "#7F77DD", color: "#3C3489",
@@ -75,7 +75,7 @@ module.exports = async function handler(req, res) {
       title: "Refund & Dibatalkan",
       bg: "#FCEBEB", border: "#E24B4A", color: "#A32D2D",
       items: [
-        "Ubah Status Project \u2192 Refund atau Dibatalkan di database di bawah",
+        "Ubah Status Project \u2192 Refund atau Dibatalkan",
         "Proses pengembalian dana jika berlaku",
         "Pastikan akses Google Drive client sudah dicabut"
       ]
@@ -88,8 +88,8 @@ module.exports = async function handler(req, res) {
     { key: "antrian", label: "Antrian" },
     { key: "diproses", label: "Diproses" },
     { key: "pelunasan", label: "Menunggu Pelunasan" },
-    { key: "pendampingan", label: "Pendampingan" },
     { key: "selesai", label: "Selesai" },
+    { key: "pendampingan", label: "Pendampingan" },
     { key: "refund", label: "Refund & Dibatalkan" },
   ];
 
@@ -127,7 +127,7 @@ body{padding:1.25rem}
 ${guidesHtml}
 <script>
 function sw(key,el){document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.querySelectorAll('[id^="g-"]').forEach(g=>g.style.display='none');el.classList.add('active');document.getElementById('g-'+key).style.display='block';}
-sw('review',document.querySelector('.tab.active'));
+sw('Client',document.querySelector('.tab.active'));
 </script>
 </body>
 </html>`;
