@@ -1,8 +1,18 @@
 module.exports = async function handler(req, res) {
 
   const guides = {
-    review: {
+    Client: {
       num: "TAHAP 1",
+      title: "Hanya Tampilan Semua Client",
+      bg: "#E6F1FB", border: "#378ADD", color: "#0C447C",
+      items: [
+        "Cek entry baru sudah masuk otomatis di database PROJECT di bawah",
+        "Pastikan kolom Paket, Jenis Layanan, Aplikasi sudah terisi",
+        "Kirim WA \u2192 Template: Konfirmasi registrasi diterima"
+      ]
+    },
+    review: {
+      num: "TAHAP 2",
       title: "Client baru masuk",
       bg: "#E6F1FB", border: "#378ADD", color: "#0C447C",
       items: [
@@ -12,7 +22,7 @@ module.exports = async function handler(req, res) {
       ]
     },
     antrian: {
-      num: "TAHAP 2",
+      num: "TAHAP 3",
       title: "DP masuk",
       bg: "#EAF3DE", border: "#639922", color: "#27500A",
       items: [
@@ -22,7 +32,7 @@ module.exports = async function handler(req, res) {
       ]
     },
     diproses: {
-      num: "TAHAP 3",
+      num: "TAHAP 4",
       title: "Mulai pengerjaan",
       bg: "#FAEEDA", border: "#BA7517", color: "#633806",
       items: [
@@ -31,7 +41,7 @@ module.exports = async function handler(req, res) {
       ]
     },
     pelunasan: {
-      num: "TAHAP 4",
+      num: "TAHAP 5",
       title: "Hasil selesai",
       bg: "#FAECE7", border: "#D85A30", color: "#993C1D",
       items: [
@@ -41,7 +51,7 @@ module.exports = async function handler(req, res) {
       ]
     },
     pendampingan: {
-      num: "TAHAP 5",
+      num: "TAHAP 6",
       title: "Pendampingan",
       bg: "#EEEDFE", border: "#7F77DD", color: "#3C3489",
       items: [
@@ -52,7 +62,7 @@ module.exports = async function handler(req, res) {
       ]
     },
     selesai: {
-      num: "TAHAP 6",
+      num: "TAHAP 7",
       title: "Pelunasan masuk & Selesai",
       bg: "#EAF3DE", border: "#639922", color: "#27500A",
       items: [
@@ -77,6 +87,7 @@ module.exports = async function handler(req, res) {
   };
 
   const tabs = [
+    { key: "Client", label: "All Client" },
     { key: "review", label: "Menunggu Review" },
     { key: "antrian", label: "Antrian" },
     { key: "diproses", label: "Diproses" },
