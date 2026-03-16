@@ -56,7 +56,7 @@ module.exports = async function handler(req, res) {
       title: "Pelunasan masuk & Pendampingan",
       bg: "#E1F5EE", border: "#1D9E75", color: "#085041",
       items: [
-        "Ubah Status Project \u2192 Refund dan Dibatalkan jika ini terjasi",
+        "Ubah Status Project \u2192 Refund dan Dibatalkan jika ini terjadi",
         "Jika Refund dan Dibatalkan maka DP di anggap Hangus"
         
       ]
