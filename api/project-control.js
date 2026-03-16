@@ -26,7 +26,7 @@ module.exports = async function handler(req, res) {
       bg: "#EAF3DE", border: "#639922", color: "#27500A",
       items: [
         "Isi Deadline \u2192 jika sudah ditentukan",
-        "Ubah Status Project \u2192 Antrian jika akan di proses",
+        "Ubah Status Project \u2192 Proses jika akan di kerjakan",
         "Kirim WA \u2192 Template: Konfirmasi DP diterima"
       ]
     },
