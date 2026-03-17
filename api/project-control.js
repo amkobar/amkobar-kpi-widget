@@ -1,166 +1,133 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Dashboard Generator Pesan WA AMKOBAR</title>
-  <style>
-    * {box-sizing: border-box; margin: 0; padding: 0;}
-    html, body {
-      background: #191919;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      padding: 20px;
-      color: #ddd;
-    }
-    .tabs {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-bottom: 20px;
-    }
-    .tab {
-      padding: 8px 16px;
-      cursor: pointer;
-      border-radius: 8px;
-      border: 1px solid #555;
-      background: transparent;
-      color: #888;
-      user-select: none;
-      transition: all 0.3s ease;
-      font-weight: 500;
-    }
-    .tab.active {
-      color: white;
-      border-color: #1D9E75;
-      background-color: #0f1b2d;
-      font-weight: 700;
-    }
-    .guide {
-      background-color: #0f1b2d;
-      border-radius: 8px;
-      padding: 16px;
-      max-width: 480px;
-    }
-    h1 {
-      margin-bottom: 20px;
-      color: #1D9E75;
-    }
-    label {
-      display: block;
-      margin-bottom: 8px;
-      font-weight: 600;
-      color: #1D9E75;
-    }
-    select, input[type="text"], textarea {
-      width: 100%;
-      padding: 10px 12px;
-      margin-bottom: 15px;
-      border-radius: 6px;
-      border: none;
-      font-size: 14px;
-      background-color: #191919;
-      color: white;
-      border: 1px solid #444;
-    }
-    select:focus, input[type="text"]:focus, textarea:focus {
-      outline: none;
-      border-color: #1D9E75;
-      background-color: #0f1b2d;
-    }
-    button {
-      background-color: #1D9E75;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      padding: 12px 0;
-      width: 100%;
-      cursor: pointer;
-      font-weight: 600;
-      font-size: 15px;
-      transition: background-color 0.3s ease;
-    }
-    button:active {
-      background-color: #14785b;
-    }
-    .message-preview {
-      background-color: #0f1b2d;
-      border-radius: 8px;
-      padding: 14px;
-      min-height: 100px;
-      white-space: pre-wrap;
-      font-family: monospace;
-      font-size: 14px;
-      opacity: 0.8;
-      margin-bottom: 15px;
-    }
-    .message-preview.active {
-      opacity: 1;
-    }
-    .confirmation {
-      margin-bottom: 12px;
-      font-size: 13px;
-      opacity: 0.7;
-      color: #1d9e75;
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Generator Pesan WA AMKOBAR</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background-color: #191919; font-family: Arial, sans-serif; color: #ddd; padding: 20px; }
+  .tabs { display: flex; gap: 10px; margin-bottom: 20px; }
+  .tab {
+    background: transparent; border: 1px solid #555;
+    padding: 8px 16px; border-radius: 6px; cursor: pointer; user-select: none;
+    color: #888; font-weight: 500; transition: all 0.3s ease;
+  }
+  .tab.active {
+    background-color: #0f1b2d;
+    border-color: #1D9E75;
+    color: #fff;
+    font-weight: 700;
+  }
+  .guide {
+    background-color: #0f1b2d;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 480px;
+  }
+  label {
+    font-weight: 600;
+    margin-bottom: 6px;
+    display: block;
+    color: #1D9E75;
+  }
+  select, textarea {
+    width: 100%;
+    padding: 10px;
+    border-radius: 6px;
+    border: none;
+    font-size: 14px;
+    background-color: #191919;
+    color: #ddd;
+    border: 1px solid #444;
+    margin-bottom: 15px;
+  }
+  select:focus, textarea:focus {
+    outline: none;
+    border-color: #1D9E75;
+    background-color: #0f1b2d;
+  }
+  textarea {
+    min-height: 140px;
+    white-space: pre-wrap;
+    font-family: monospace;
+  }
+  button {
+    width: 100%;
+    background-color: #1D9E75;
+    border: none;
+    padding: 12px;
+    border-radius: 6px;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+  }
+  button:active {
+    background-color: #14785b;
+  }
+  .confirmation {
+    margin-bottom: 12px;
+    font-size: 13px;
+    color: #1D9E75;
+  }
+</style>
 </head>
 <body>
 
-  <h1>Generator Pesan WA AMKOBAR</h1>
+<h1>Generator Pesan WA AMKOBAR</h1>
 
-  <div class="tabs" role="tablist" aria-label="Navigasi status project">
-    <div class="tab active" data-tab="review" role="tab" aria-selected="true" tabindex="0">Menunggu Review</div>
-    <div class="tab" data-tab="antrian" role="tab" tabindex="-1">Antrian</div>
-    <div class="tab" data-tab="pelunasan" role="tab" tabindex="-1">Menunggu Pelunasan</div>
-    <div class="tab" data-tab="pendampingan" role="tab" tabindex="-1">Pendampingan</div>
-    <div class="tab" data-tab="selesai" role="tab" tabindex="-1">Selesai</div>
-  </div>
+<div class="tabs" role="tablist" aria-label="Navigasi status project">
+  <div class="tab active" data-tab="Menunggu Review" role="tab" aria-selected="true" tabindex="0">Menunggu Review</div>
+  <div class="tab" data-tab="Antrian" role="tab" tabindex="-1">Antrian</div>
+  <div class="tab" data-tab="Diproses" role="tab" tabindex="-1">Diproses</div>
+  <div class="tab" data-tab="Menunggu Pelunasan" role="tab" tabindex="-1">Menunggu Pelunasan</div>
+  <div class="tab" data-tab="Pendampingan" role="tab" tabindex="-1">Pendampingan</div>
+  <div class="tab" data-tab="Selesai" role="tab" tabindex="-1">Selesai</div>
+</div>
 
-  <div class="guide" id="generator-area">
+<div class="guide" id="generator-area">
+  <label for="clientSelect">Pilih Client</label>
+  <select id="clientSelect" aria-describedby="clientConfirm">
+    <option value="">Pilih client...</option>
+  </select>
+  <div id="clientConfirm" class="confirmation" aria-live="polite" aria-atomic="true"></div>
 
-    <label for="clientSelect">Pilih Client</label>
-    <select id="clientSelect" aria-describedby="confirmClient">
-      <option value="">Pilih client...</option>
-    </select>
-    <div id="confirmClient" class="confirmation" aria-live="polite" aria-atomic="true"></div>
+  <label for="messagePreview">Preview Pesan WA</label>
+  <textarea id="messagePreview" readonly>Silakan pilih client untuk generate pesan...</textarea>
 
-    <label for="messagePreview">Preview Pesan WA</label>
-    <div id="messagePreview" class="message-preview" aria-live="polite" aria-atomic="true">
-      Silakan pilih client untuk generate pesan...
-    </div>
+  <button id="copyBtn" aria-label="Copy pesan WA">📋 Copy Pesan WA</button>
+</div>
 
-    <button id="copyBtn" aria-label="Copy pesan WA">📋 Copy Pesan WA</button>
-
-  </div>
-
-  <script>
-    // Data Template Pesan WA (sudah pakai unicode emoji)
-    const templates = {
-      "review_kerjasama": `Halo {nama} 👋
+<script>
+  // Template Pesan WA sesuai kebutuhan Anda (bisa disesuaikan)
+  const templates = {
+    "Menunggu Review_kerjasama": `Halo {nama} 👋
 
 🙏🏻Terima kasih sudah menggunakan jasa kami
 ✅Pembayaran DP sudah kami terima dengan baik
 ✅ Untuk melanjutkan, silakan lakukan registrasi melalui link berikut:
 🔗 https://tally.so/r/jaBkzY?kh=khk
 
-Isi data dengan lengkap dan benar , karena informasi tersebut akan langsung masuk ke sistem kami untuk memulai proses pengerjaan. Jika ada pertanyaan, Silahkan menghubungi kami 😊
+Isi data dengan lengkap dan benar, karena informasi tersebut akan langsung masuk ke sistem kami untuk memulai proses pengerjaan. Jika ada pertanyaan, Silahkan menghubungi kami 😊
 
 Salam,
 Tim AMKOBAR 🎓`,
 
-      "review_umum": `Halo {nama} 👋
+    "Menunggu Review_umum": `Halo {nama} 👋
 
 🙏🏻Terima kasih sudah menggunakan jasa kami
 ✅Pembayaran DP sudah kami terima dengan baik
 ✅ Untuk melanjutkan, silakan lakukan registrasi melalui link berikut:
 🔗 https://tally.so/r/MeOabY?kh=khu
 
-Isi data dengan lengkap dan benar , karena informasi tersebut akan langsung masuk ke sistem kami untuk memulai proses pengerjaan. Jika ada pertanyaan, Silahkan menghubungi kami 😊
+Isi data dengan lengkap dan benar, karena informasi tersebut akan langsung masuk ke sistem kami untuk memulai proses pengerjaan. Jika ada pertanyaan, Silahkan menghubungi kami 😊
 
 Salam,
 Tim AMKOBAR 🎓`,
 
-      "antrian": `Halo {nama} 👋
+    "Antrian": `Halo {nama} 👋
 
 Terima kasih sudah melakukan Registrasi
 
@@ -176,7 +143,14 @@ Masukkan Kode Akses untuk login ya! 😊
 Salam,
 Tim AMKOBAR 🎓`,
 
-      "pelunasan": `Halo {nama} 👋
+    "Diproses": `Halo {nama} 👋
+
+Status project Anda sedang dalam tahap pengerjaan.
+
+Salam,
+Tim AMKOBAR 🎓`,
+
+    "Menunggu Pelunasan": `Halo {nama} 👋
 
 1️⃣ Pengerjaan project sudah selesai 🎉
 2️⃣ File hasil sudah kami upload ke folder Google Drive dengan nama Hasil Final.
@@ -191,7 +165,7 @@ Terima kasih! 🙏
 Salam,
 Tim AMKOBAR 🎓`,
 
-      "pendampingan": `Halo {nama} 👋
+    "Pendampingan": `Halo {nama} 👋
 
 👉 Sesi pendampingan & pembelajaran akan kami informasikan melalui group
 👉 Sesi pertama akan dijadwalkan oleh kami. Untuk sesi berikutnya, bisa request waktu yang diinginkan — kami akan konfirmasi ketersediaan jadwal kami.
@@ -202,7 +176,7 @@ Mohon pastikan sudah siap pada waktu yang sudah disepakati 🙏
 Salam,
 Tim AMKOBAR 🎓`,
 
-      "selesai": `Halo {nama} 👋
+    "Selesai": `Halo {nama} 👋
 
 Sesi pendampingan sudah selesai, terima kasih! 🙏
 
@@ -215,192 +189,150 @@ Sukses selalu untuk skripsinya! 💪🎓
 
 Salam,
 Tim AMKOBAR 🎓`
-    };
+  };
 
-    // Mapping tab ke status project Notion
-    const statusByTab = {
-      "review": "Menunggu Review",
-      "antrian": "Antrian",
-      "pelunasan": "Menunggu Pelunasan",
-      "pendampingan": "Pendampingan",
-      "selesai": "Selesai"
-    };
+  // Simpan data client dari API
+  let clients = [];
 
-    // Array client data, akan di-fetch dari API
-    let clientData = [];
+  // Elemen DOM
+  const tabs = document.querySelectorAll('.tab');
+  const clientSelect = document.getElementById('clientSelect');
+  const messagePreview = document.getElementById('messagePreview');
+  const clientConfirm = document.getElementById('clientConfirm');
+  const copyBtn = document.getElementById('copyBtn');
 
-    // Simulasi fetch data client, ganti URL jika perlu
-    // Data client diharapkan memiliki property:
-    // nama, nim, jenis, aplikasi, kodeAkses, sisa, statusProject
-    async function fetchClients() {
-      // Ganti URL sesuai endpoint API Anda di Vercel
-      try {
-        const response = await fetch('/api/project-control?action=clients');
-        if (!response.ok) throw new Error('API fetch gagal');
-        const data = await response.json();
-        clientData = data;
-        updateDropdown(currentTab);
-      } catch (e) {
-        console.error('Gagal fetch client:', e);
-        clientData = [];
-        updateDropdown(currentTab);
-      }
-    }
+  // Tab aktif default
+  let currentTab = 'Menunggu Review';
 
-    // DOM element refs
-    const tabs = document.querySelectorAll('.tab');
-    const clientSelect = document.getElementById('clientSelect');
-    const messagePreview = document.getElementById('messagePreview');
-    const confirmClient = document.getElementById('confirmClient');
-    const copyBtn = document.getElementById('copyBtn');
-
-    // Track current active tab (id)
-    let currentTab = "review";
-
-    // Fungsi switch tab dan update UI
-    function switchTab(tabId) {
-      currentTab = tabId;
-      // active class tab
-      tabs.forEach(t => {
-        if (t.dataset.tab === tabId) {
-          t.classList.add('active');
-          t.setAttribute('aria-selected', 'true');
-          t.setAttribute('tabindex', '0');
-        } else {
-          t.classList.remove('active');
-          t.setAttribute('aria-selected', 'false');
-          t.setAttribute('tabindex', '-1');
-        }
-      });
-
-      // bersihkan dropdown dan preview jika perlu
-      updateDropdown(tabId);
-      resetPreview();
-    }
-
-    // Update dropdown client sesuai filter status project per tab
-    function updateDropdown(tabId) {
-      clientSelect.innerHTML = '<option value="">Pilih client...</option>';
-      confirmClient.textContent = '';
-      messagePreview.textContent = 'Silakan pilih client untuk generate pesan...';
-      messagePreview.classList.remove('active');
-
-      const statusFilter = statusByTab[tabId];
-      if (!statusFilter) return; // Tab tanpa generator (tidak pakai dropdown)
-
-      // Filter client yang statusProject-nya cocok dengan tab yang dipilih
-      const filteredClients = clientData.filter(client => {
-        // Periksa properti statusProject case sensitive sesuai Notion
-        return client.statusProject === statusFilter;
-      });
-
-      if (filteredClients.length === 0) {
-        const option = document.createElement('option');
-        option.textContent = 'Tidak ada client dengan status "' + statusFilter + '"';
-        option.value = '';
-        clientSelect.appendChild(option);
-        return;
-      }
-
-      filteredClients.forEach(client => {
-        const option = document.createElement('option');
-        option.value = client.nama; // identifier client pakai nama (bisa diganti NIM jika mau)
-        option.textContent = `${client.nama} - ${client.nim}`;
-        clientSelect.appendChild(option);
-      });
-    }
-
-    // Reset preview pesan WA
-    function resetPreview() {
-      messagePreview.classList.remove('active');
-      messagePreview.textContent = 'Silakan pilih client untuk generate pesan...';
-      confirmClient.textContent = '';
-    }
-
-    // Generate pesan WA berdasarkan tab, client terpilih
-    function generateMessage() {
-      const selectedClientName = clientSelect.value;
-      if (!selectedClientName) {
-        resetPreview();
-        return;
-      }
-      // Temukan data client dari nama
-      const client = clientData.find(c => c.nama === selectedClientName);
-      if (!client) {
-        resetPreview();
-        return;
-      }
-
-      // Mapping kode template WA
-      // Khusus tab 'review' ada 2 tipe template: kerjasama / umum: 
-      // asumsi kategori ini ditandai di properti "Jenis Layanan" client
-      let keyTemplate = currentTab;
-      if (currentTab === 'review') {
-        if (client.jenis && client.jenis.toLowerCase().includes('kerjasama')) {
-          keyTemplate = 'review_kerjasama';
-        } else {
-          keyTemplate = 'review_umum';
-        }
-      }
-
-      let template = templates[keyTemplate];
-      if (!template) {
-        messagePreview.textContent = 'Template pesan untuk tab ini belum tersedia.';
-        return;
-      }
-
-      // Replace placeholder
-      const message = template
-        .replace('{nama}', client.nama)
-        .replace('{jenis}', client.jenis || '')
-        .replace('{aplikasi}', client.aplikasi || '')
-        .replace('{kodeAkses}', client.kodeAkses || '')
-        .replace('{sisa}', typeof client.sisa === 'number' ? client.sisa.toLocaleString('id-ID') : client.sisa || '0');
-
-      // Tampilkan pesan di preview
-      messagePreview.textContent = message;
-      messagePreview.classList.add('active');
-
-      // Konfirmasi info client di bawah dropdown
-      confirmClient.textContent = `✓ ${client.nama} | NIM: ${client.nim} | ${client.jenis} | ${client.aplikasi}`;
-    }
-
-    // Copy pesan WA ke clipboard
-    function copyMessage() {
-      if (!messagePreview.classList.contains('active')) {
-        alert('Silakan pilih client terlebih dahulu untuk generate pesan.');
-        return;
-      }
-      const msg = messagePreview.textContent;
-      navigator.clipboard.writeText(msg).then(() => {
-        copyBtn.textContent = '✅ Pesan Tersalin!';
-        setTimeout(() => { copyBtn.textContent = '📋 Copy Pesan WA'; }, 2000);
-      }).catch(() => {
-        alert('Gagal menyalin pesan ke clipboard.');
-      });
-    }
-
-    // Event Listener
+  // Fungsi switch tab
+  function switchTab(tabName, el) {
+    currentTab = tabName;
     tabs.forEach(tab => {
-      tab.addEventListener('click', () => {
-        switchTab(tab.dataset.tab);
-      });
-      tab.addEventListener('keydown', e => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          switchTab(tab.dataset.tab);
-          tab.focus();
-        }
-      });
+      tab.classList.toggle('active', tab.dataset.tab === tabName);
+      tab.setAttribute('aria-selected', tab.dataset.tab === tabName ? 'true' : 'false');
+      tab.tabIndex = tab.dataset.tab === tabName ? 0 : -1;
     });
+    // Setelah ganti tab, isi dropdown sesuai dengan status project (tabName)
+    updateDropdownClients();
+    resetMessage();
+  }
 
-    clientSelect.addEventListener('change', generateMessage);
-    copyBtn.addEventListener('click', copyMessage);
+  // Update dropdown client berdasarkan tab (status project)
+  function updateDropdownClients() {
+    clientSelect.innerHTML = '<option value="">Pilih client...</option>';
+    clientConfirm.textContent = '';
+    resetMessage();
 
-    // Inisialisasi halaman
-    switchTab(currentTab);
-    fetchClients();
+    // Filter client yang statusProject-nya sama persis dengan currentTab
+    const filtered = clients.filter(client => client.statusProject === currentTab);
 
-  </script>
+    if (filtered.length === 0) {
+      const emptyOption = document.createElement('option');
+      emptyOption.value = '';
+      emptyOption.textContent = `Tidak ada client dengan status "${currentTab}"`;
+      clientSelect.appendChild(emptyOption);
+      return;
+    }
+
+    filtered.forEach(client => {
+      const option = document.createElement('option');
+      option.value = client.nama;
+      option.textContent = `${client.nama} - ${client.nim || '-'}`;
+      clientSelect.appendChild(option);
+    });
+  }
+
+  // Reset area pesan WA
+  function resetMessage() {
+    messagePreview.value = 'Silakan pilih client untuk generate pesan...';
+  }
+
+  // Generate pesan WA berdasarkan tab dan client yang dipilih
+  function generateMessage() {
+    const selectedName = clientSelect.value;
+    if (!selectedName) {
+      resetMessage();
+      clientConfirm.textContent = '';
+      return;
+    }
+    const client = clients.find(c => c.nama === selectedName);
+    if (!client) {
+      resetMessage();
+      clientConfirm.textContent = '';
+      return;
+    }
+    clientConfirm.textContent = `✓ ${client.nama} | NIM: ${client.nim || '-'} | ${client.jenis || '-'} | ${client.aplikasi || '-'}`;
+
+    // Khusus "Menunggu Review" tab pilih template kerjasama atau umum berdasar jenis layanan
+    let templateKey = currentTab;
+    if (currentTab === 'Menunggu Review') {
+      if (client.jenis && client.jenis.toLowerCase().includes('kerjasama')) {
+        templateKey += '_kerjasama';
+      } else {
+        templateKey += '_umum';
+      }
+    }
+
+    let template = templates[templateKey];
+    if (!template) {
+      messagePreview.value = 'Template pesan tidak tersedia untuk status ini.';
+      return;
+    }
+
+    let msg = template;
+    msg = msg.replace(/\{nama\}/g, client.nama || '');
+    msg = msg.replace(/\{nim\}/g, client.nim || '');
+    msg = msg.replace(/\{jenis\}/g, client.jenis || '');
+    msg = msg.replace(/\{aplikasi\}/g, client.aplikasi || '');
+    msg = msg.replace(/\{kodeAkses\}/g, client.kodeAkses || '');
+    msg = msg.replace(/\{sisa\}/g, client.sisa !== undefined && client.sisa !== null ? Number(client.sisa).toLocaleString('id-ID') : '0');
+    messagePreview.value = msg;
+  }
+
+  // Copy pesan WA ke clipboard
+  function copyMessage() {
+    if (messagePreview.value.trim() === '' || messagePreview.value.includes('Silakan pilih client')) {
+      alert('Silakan pilih client terlebih dahulu untuk generate pesan.');
+      return;
+    }
+    navigator.clipboard.writeText(messagePreview.value).then(() => {
+      copyBtn.textContent = '✅ Pesan Tersalin!';
+      setTimeout(() => {
+        copyBtn.textContent = '📋 Copy Pesan WA';
+      }, 2000);
+    }).catch(() => {
+      alert('Gagal menyalin pesan ke clipboard.');
+    });
+  }
+
+  // Fetch client data dari API (pastikan endpoint sesuai dengan backend Anda)
+  async function fetchClients() {
+    try {
+      const res = await fetch('/api/project-control?action=clients');
+      if (!res.ok) throw new Error('Gagal mengambil data client');
+      const data = await res.json();
+      clients = data;
+      updateDropdownClients();
+    } catch (error) {
+      console.error(error);
+      clients = [];
+      updateDropdownClients();
+    }
+  }
+
+  // Event Listener
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => switchTab(tab.dataset.tab, tab));
+  });
+
+  clientSelect.addEventListener('change', generateMessage);
+  copyBtn.addEventListener('click', copyMessage);
+
+  // Initial setup
+  switchTab(currentTab);
+  fetchClients();
+
+</script>
+
 </body>
 </html>
