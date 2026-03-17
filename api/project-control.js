@@ -317,7 +317,7 @@ function sw(key,el){
   el.classList.add('active');
   document.getElementById('g-'+key).style.display='block';
 }
-sw('review',document.querySelector('.tab.active'));
+document.addEventListener('DOMContentLoaded',function(){sw('review',document.querySelector('.tab.active'));});
 </script>
 </body>
 </html>`;
