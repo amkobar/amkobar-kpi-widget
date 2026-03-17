@@ -161,7 +161,7 @@ body{padding:1.25rem;color:#fff}
     const conf = document.getElementById('confirm-' + status);
     if (prev) {
       prev.className = 'prev';
-      prev.textContent = `Pilih client untuk generate pesan...`;
+      prev.textContent = 'Pilih client untuk generate pesan...';
     }
     if (conf) {
       conf.textContent = "";
