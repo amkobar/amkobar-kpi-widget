@@ -157,7 +157,7 @@ module.exports = async function handler(req, res) {
     if (key === "review") {
       return `
       <div style="margin-top:14px;border-top:0.5px solid ${g.border};padding-top:14px">
-        <div style="font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:${g.border};margin-bottom:10px">Generator Pesan WA — Sebelum Registrasi</div>
+        <div style="font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:${g.border};margin-bottom:10px">Generator Pesan WA &#8212; Sebelum Registrasi</div>
         <div style="display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap">
           <input id="gen-review-nama" type="text" placeholder="Ketik nama client..."
             style="flex:1;min-width:140px;background:#00000022;border:0.5px solid ${g.border};border-radius:6px;color:${g.color};font-size:12px;padding:7px 10px;outline:none"
@@ -171,7 +171,7 @@ module.exports = async function handler(req, res) {
         <div id="prev-review" style="background:#00000022;border:0.5px solid ${g.border};border-radius:8px;padding:12px;margin-bottom:8px;min-height:60px;font-size:12px;color:${g.color};line-height:1.7;white-space:pre-wrap;font-style:italic;opacity:.6">Ketik nama client untuk generate pesan...</div>
         <button onclick="copyMsg('review')" id="btn-review"
           style="width:100%;padding:8px;background:#00000033;border:0.5px solid ${g.border};border-radius:6px;color:${g.color};font-size:12px;font-weight:500;cursor:pointer">
-          📋 Copy Pesan
+          &#128203; Copy Pesan
         </button>
       </div>`;
     }
@@ -186,7 +186,7 @@ module.exports = async function handler(req, res) {
       <div id="prev-${key}" style="background:#00000022;border:0.5px solid ${g.border};border-radius:8px;padding:12px;margin-bottom:8px;min-height:60px;font-size:12px;color:${g.color};line-height:1.7;white-space:pre-wrap;font-style:italic;opacity:.6">Pilih client untuk generate pesan...</div>
       <button onclick="copyMsg('${key}')" id="btn-${key}"
         style="width:100%;padding:8px;background:#00000033;border:0.5px solid ${g.border};border-radius:6px;color:${g.color};font-size:12px;font-weight:500;cursor:pointer">
-        📋 Copy Pesan
+        &#128203; Copy Pesan
       </button>
     </div>`;
   }
