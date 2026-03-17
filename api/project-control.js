@@ -74,8 +74,150 @@ module.exports = async function handler(req, res) {
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <style>
-  /* ... CSS sama seperti sebelum nya ... */
-  /* Anda bisa copy css dari jawaban sebelumnya jika perlu */
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  html, body {
+    background: #191919;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    color: #eee;
+  }
+  body {
+    padding: 1.25rem;
+  }
+  .tabs {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+  }
+  .tab {
+    font-size: 12px;
+    padding: 5px 14px;
+    border-radius: 6px;
+    border: 0.5px solid #333;
+    color: #888;
+    cursor: pointer;
+    background: transparent;
+    user-select: none;
+    transition: color 0.2s, background 0.2s;
+  }
+  .tab.active {
+    background: #0f1b2d;
+    color: #fff;
+    border-color: #1a6bbd;
+    font-weight: 500;
+  }
+  .tab:hover:not(.active) {
+    color: #bbb;
+  }
+  .guide {
+    border-left: 3px solid;
+    border-radius: 0 8px 8px 0;
+    padding: 16px 18px;
+    display: none;
+    background: #222;
+  }
+  .guide.active {
+    display: block;
+  }
+  .todo {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 13px;
+    line-height: 1.6;
+    margin-bottom: 6px;
+    color: #ccc;
+  }
+  .box {
+    width: 15px;
+    height: 15px;
+    border-radius: 3px;
+    border: 1.5px solid currentColor;
+    flex-shrink: 0;
+    margin-top: 3px;
+    opacity: 0.5;
+  }
+  .gen {
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 0.5px solid currentColor;
+  }
+  .lbl {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .inp {
+    width: 100%;
+    background: #00000033;
+    border: 0.5px solid currentColor;
+    border-radius: 6px;
+    font-size: 12px;
+    padding: 7px 10px;
+    outline: none;
+    margin-bottom: 8px;
+    color: inherit;
+  }
+  .row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  .row .inp {
+    margin-bottom: 0;
+  }
+  .conf {
+    font-size: 11px;
+    margin-bottom: 8px;
+    min-height: 16px;
+    opacity: 0.8;
+  }
+  .prev {
+    background: #00000033;
+    border: 0.5px solid currentColor;
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 8px;
+    min-height: 60px;
+    font-size: 12px;
+    line-height: 1.7;
+    white-space: pre-wrap;
+    font-style: italic;
+    opacity: 0.6;
+    color: #aaa;
+  }
+  .prev.on {
+    font-style: normal;
+    opacity: 1;
+    color: #eee;
+  }
+  .btn {
+    width: 100%;
+    padding: 8px;
+    background: #00000033;
+    border: 0.5px solid currentColor;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    color: inherit;
+    transition: background-color 0.2s, border-color 0.2s;
+  }
+  .btn.ok {
+    background: #0f3d1f !important;
+    border-color: #27500a !important;
+    color: #cfffcf;
+  }
+  .btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
 </style>
 </head>
 <body>
@@ -89,10 +231,17 @@ module.exports = async function handler(req, res) {
   <div class="tab" onclick="sw('selesai', this)">Selesai</div>
   <div class="tab" onclick="sw('refund', this)">Refund & Dibatalkan</div>
 </div>
-<!-- Konten tab mirip jawaban sebelumnya, tidak saya potong agar lengkap -->
+
+<!-- Tab content containers (gunakan id 'g-' + tab name) -->
+<div id="g-review" class="guide active">
+  <!-- Isi konten tab review di sini, sesuai kebutuhan -->
+</div>
+<!-- Tambahkan juga div dengan id g-antrian, g-overdue, g-diproses, dst -->
+
 <script>
+  // Template pesan WA (gunakan backticks untuk multiline)
   var M = {
-    review_kerjasama: \`Halo {nama} 👋
+    review_kerjasama: `Halo {nama} 👋
 
 🙏🏻Terima kasih sudah menggunakan jasa kami
 ✅Pembayaran DP sudah kami terima dengan baik
@@ -102,8 +251,8 @@ module.exports = async function handler(req, res) {
 Isi data dengan lengkap dan benar , karena informasi tersebut akan langsung masuk ke sistem kami untuk memulai proses pengerjaan. Jika ada pertanyaan, Silahkan menghubungi kami 😊
 
 Salam,
-Tim AMKOBAR 🎓\`,
-    review_umum: \`Halo {nama} 👋
+Tim AMKOBAR 🎓`,
+    review_umum: `Halo {nama} 👋
 
 🙏🏻Terima kasih sudah menggunakan jasa kami
 ✅Pembayaran DP sudah kami terima dengan baik
@@ -113,8 +262,8 @@ Tim AMKOBAR 🎓\`,
 Isi data dengan lengkap dan benar , karena informasi tersebut akan langsung masuk ke sistem kami untuk memulai proses pengerjaan. Jika ada pertanyaan, Silahkan menghubungi kami 😊
 
 Salam,
-Tim AMKOBAR 🎓\`,
-    antrian: \`Halo {nama} 👋
+Tim AMKOBAR 🎓`,
+    antrian: `Halo {nama} 👋
 
 Terima kasih sudah melakukan Registrasi
 
@@ -128,8 +277,8 @@ https://amkobar-portal.vercel.app
 Masukkan Kode Akses untuk login ya! 😊
 
 Salam,
-Tim AMKOBAR 🎓\`,
-    pelunasan: \`Halo {nama} 👋
+Tim AMKOBAR 🎓`,
+    pelunasan: `Halo {nama} 👋
 
 1️⃣Pengerjaan project sudah selesai 🎉
 2️⃣File hasil sudah kami upload ke folder Google Drive dengan nama Hasil Final.
@@ -142,8 +291,8 @@ Setelah pelunasan diterima dan terkonfirmasi, folder Hasil Final akan segera kam
 Terima kasih! 🙏
 
 Salam,
-Tim AMKOBAR 🎓\`,
-    pendampingan: \`Halo {nama} 👋
+Tim AMKOBAR 🎓`,
+    pendampingan: `Halo {nama} 👋
 
 👉 Sesi pendampingan & pembelajaran akan kami informasikan melalui group
 👉 Sesi pertama akan dijadwalkan oleh kami. Untuk sesi berikutnya, bisa request waktu yang diinginkan — kami akan konfirmasi ketersediaan jadwal kami.
@@ -152,8 +301,8 @@ Link meeting akan dikirimkan menjelang sesi berlangsung.
 Mohon pastikan sudah siap pada waktu yang sudah disepakati 🙏
 
 Salam,
-Tim AMKOBAR 🎓\`,
-    selesai: \`Halo {nama} 👋
+Tim AMKOBAR 🎓`,
+    selesai: `Halo {nama} 👋
 
 Sesi pendampingan sudah selesai, terima kasih! 🙏
 
@@ -165,7 +314,7 @@ Kami sangat menghargai jika berkenan memberikan testimoni atas layanan kami:
 Sukses selalu untuk skripsinya! 💪🎓
 
 Salam,
-Tim AMKOBAR 🎓\`
+Tim AMKOBAR 🎓`
   };
 
   var C = [];
