@@ -1,14 +1,15 @@
 const fetch = require('node-fetch');
 
 module.exports = async function handler(req, res) {
-  if (req.query.action === 'clients') {
+  if (req.query && req.query.action === 'clients') {
     try {
       const notionToken = process.env.NOTION_TOKEN;
+      const projectDbId = "310efe1d-1acf-80ad-861f-ecc7567b10c9";
+
       if (!notionToken) {
-        res.status(500).json({ error: 'NOTION_TOKEN is missing in environment variables.' });
+        res.status(500).json({ error: "NOTION_TOKEN environment variable is missing." });
         return;
       }
-      const projectDbId = "310efe1d-1acf-80ad-861f-ecc7567b10c9";
 
       const headers = {
         Authorization: `Bearer ${notionToken}`,
@@ -20,11 +21,25 @@ module.exports = async function handler(req, res) {
         const p = page.properties[key];
         if (!p) return "";
         if (p.type === "title") return (p.title || []).map(t => t.plain_text).join("") || "";
-        if (p.type === "select") return (p.select && p.select.name) || "";
         if (p.type === "rich_text") return (p.rich_text || []).map(t => t.plain_text).join("") || "";
+        if (p.type === "select") return (p.select && p.select.name) || "";
         if (p.type === "number") return p.number != null ? p.number : 0;
         if (p.type === "checkbox") return p.checkbox || false;
         if (p.type === "date") return (p.date && p.date.start) || "";
+        if (p.type === "formula") {
+          const f = p.formula;
+          if (f.type === "number") return f.number != null ? f.number : 0;
+          if (f.type === "string") return f.string || "";
+        }
+        if (p.type === "rollup") {
+          const r = p.rollup;
+          if (r.type === "number") return r.number != null ? r.number : 0;
+          if (r.type === "array" && r.array && r.array[0]) {
+            const first = r.array[0];
+            if (first.type === "select") return (first.select && first.select.name) || "";
+            if (first.type === "number") return first.number != null ? first.number : 0;
+          }
+        }
         return "";
       }
 
@@ -37,13 +52,13 @@ module.exports = async function handler(req, res) {
 
         const response = await fetch(`https://api.notion.com/v1/databases/${projectDbId}/query`, {
           method: "POST",
-          headers,
+          headers: headers,
           body: JSON.stringify(body)
         });
 
         if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(`Notion API error: ${response.status} - ${errorText}`);
+          const errText = await response.text();
+          throw new Error(`Notion API error ${response.status}: ${errText}`);
         }
 
         const data = await response.json();
@@ -51,7 +66,6 @@ module.exports = async function handler(req, res) {
         all = all.concat(data.results || []);
 
         if (!data.has_more) break;
-
         cursor = data.next_cursor;
       }
 
@@ -68,9 +82,10 @@ module.exports = async function handler(req, res) {
       res.setHeader("Content-Type", "application/json");
       res.setHeader("Access-Control-Allow-Origin", "*");
       res.status(200).json(clients);
-    } catch (e) {
-      console.error(e);
-      res.status(500).json({ error: "Internal Server Error", message: e.message });
+
+    } catch (error) {
+      console.error("API handler error:", error);
+      res.status(500).json({ error: "Internal Server Error", message: error.message });
     }
   } else {
     res.status(400).json({ error: "Bad Request" });
