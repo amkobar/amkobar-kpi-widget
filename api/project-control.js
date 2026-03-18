@@ -52,27 +52,52 @@ module.exports = async function handler(req, res) {
     return;
   }
 
-  var html = `<!DOCTYPE html>
-<html>
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+  var html = `<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:#191919;font-family:sans-serif;padding:20px;color:#fff}
-.inp{width:100%;padding:8px;margin-bottom:10px}
-.prev{white-space:pre-wrap;margin-bottom:10px}
-.btn{padding:8px;width:100%}
+html,body{background:#191919;font-family:sans-serif}
+body{padding:1.25rem;color:#fff}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1rem}
+.tab{font-size:12px;padding:5px 14px;border-radius:6px;border:1px solid #333;color:#888;cursor:pointer}
+.tab.active{background:#0f1b2d;color:#fff}
+.guide{display:none}
+.guide.active{display:block}
+.inp{width:100%;padding:8px;margin-bottom:8px}
+.prev{white-space:pre-wrap;margin-bottom:8px}
+.btn{width:100%;padding:8px}
 </style>
-</head>
-<body>
+</head><body>
 
-<select id="sel-antrian" class="inp" onchange="gM('antrian',this.value)">
-<option value="">Pilih client...</option>
-</select>
+<div class="tabs">
+<div class="tab active" onclick="sw('antrian',this)">Antrian</div>
+<div class="tab" onclick="sw('pelunasan',this)">Pelunasan</div>
+<div class="tab" onclick="sw('pendampingan',this)">Pendampingan</div>
+<div class="tab" onclick="sw('selesai',this)">Selesai</div>
+</div>
 
+<div id="g-antrian" class="guide active">
+<select id="sel-antrian" class="inp" onchange="gM('antrian',this.value)"></select>
 <div id="prev-antrian" class="prev"></div>
-<button class="btn" onclick="cp('antrian')">Copy Pesan</button>
+<button class="btn" onclick="cp('antrian')">Copy</button>
+</div>
+
+<div id="g-pelunasan" class="guide">
+<select id="sel-pelunasan" class="inp" onchange="gM('pelunasan',this.value)"></select>
+<div id="prev-pelunasan" class="prev"></div>
+<button class="btn" onclick="cp('pelunasan')">Copy</button>
+</div>
+
+<div id="g-pendampingan" class="guide">
+<select id="sel-pendampingan" class="inp" onchange="gM('pendampingan',this.value)"></select>
+<div id="prev-pendampingan" class="prev"></div>
+<button class="btn" onclick="cp('pendampingan')">Copy</button>
+</div>
+
+<div id="g-selesai" class="guide">
+<select id="sel-selesai" class="inp" onchange="gM('selesai',this.value)"></select>
+<div id="prev-selesai" class="prev"></div>
+<button class="btn" onclick="cp('selesai')">Copy</button>
+</div>
 
 <script>
 var C=[],R={};
@@ -95,28 +120,41 @@ fetch('/api/project-control?action=clients')
     selesai:"Selesai"
   };
 
-  var s=document.getElementById('sel-antrian');
+  Object.keys(mapStatus).forEach(function(t){
 
-  d.forEach(function(c){
+    var s=document.getElementById('sel-'+t);
+    if(!s)return;
 
-    if((c.status||'').toLowerCase()!==mapStatus.antrian.toLowerCase()) return;
+    s.innerHTML='<option value="">Pilih client...</option>';
 
-    var o=document.createElement('option');
-    o.value=c.nama;
-    o.textContent=c.nama+' - '+c.nim;
-    s.appendChild(o);
+    d.forEach(function(c){
+
+      if((c.status||'').toLowerCase()!==mapStatus[t].toLowerCase()) return;
+
+      var o=document.createElement('option');
+      o.value=c.nama;
+      o.textContent=c.nama+' - '+c.nim;
+      s.appendChild(o);
+
+    });
 
   });
 
 });
 
-function gM(tab,nama){
-  var p=document.getElementById('prev-antrian');
+function sw(k,el){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.guide').forEach(g=>g.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('g-'+k).classList.add('active');
+}
 
+function gM(tab,nama){
+  var p=document.getElementById('prev-'+tab);
   var c=C.find(x=>x.nama===nama);
   if(!c)return;
 
-  var msg="Halo "+c.nama+"\\nProject Anda sedang diproses";
+  var msg="Halo "+c.nama+"\\nStatus: "+c.status;
 
   R[tab]=msg;
   p.textContent=decodeText(msg);
@@ -129,8 +167,7 @@ function cp(tab){
 }
 </script>
 
-</body>
-</html>`;
+</body></html>`;
 
   res.setHeader("Content-Type","text/html");
   res.status(200).send(html);
