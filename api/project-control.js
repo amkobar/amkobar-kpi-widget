@@ -89,14 +89,67 @@ module.exports = async function handler(req, res) {
 
   filtered.forEach(function(c){
 
-    var o = document.createElement('option');
-    o.value = c.nama;
-    o.textContent = c.nama + ' - ' + c.nim;
-    s.appendChild(o)
+var o = document.createElement('option');
+o.value = c.nama;
+o.textContent = c.nama + ' - ' + c.nim;
+s.appendChild(o);
+
+    });
 
   });
-  ;\n  });\n}).catch(function(){});\nfunction sw(k,el){\n  document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active');});\n  document.querySelectorAll('.guide').forEach(function(g){g.classList.remove('active');});\n  el.classList.add('active');\n  document.getElementById('g-'+k).classList.add('active');\n}\nfunction gR(){\n  var n=document.getElementById('inp-nama').value.trim();\n  var k=document.getElementById('inp-kat').value;\n  var p=document.getElementById('prev-review');\n  if(!n){p.className='prev';p.textContent='Ketik nama client untuk generate pesan...';R.review='';return;}\n  var msg=(M['review_'+k]||'').replace('{nama}',n);\n  R.review=msg;p.className='prev on';p.textContent=msg;\n}\nfunction gM(tab,nama){\n  var p=document.getElementById('prev-'+tab);\n  var conf=document.getElementById('confirm-'+tab);\n  if(!nama){p.className='prev';p.textContent='Pilih client untuk generate pesan...';conf.textContent='';R[tab]='';return;}\n  var c=C.find(function(x){return x.nama===nama;});\n  if(!c)return;\n  conf.textContent='\u2713 '+c.nama+' | NIM: '+c.nim+' | '+c.jenis+' | '+c.aplikasi;\n  var sisa=typeof c.sisa==='number'?Math.round(c.sisa).toLocaleString('id-ID'):(c.sisa||'0');\n  var msg=(M[tab]||'').replace('{nama}',c.nama).replace('{jenis}',c.jenis).replace('{aplikasi}',c.aplikasi).replace('{kodeAkses}',c.kodeAkses).replace('{sisa}',sisa);\n  R[tab]=msg;p.className='prev on';p.textContent=msg;\n}\nfunction cp(tab){\n  var msg=R[tab];\n  if(!msg)return;\n  navigator.clipboard.writeText(msg).then(function(){\n    var b=document.getElementById('btn-'+tab);\n    var o=b.textContent;\n    b.textContent='\u2705 Pesan Tersalin!';b.classList.add('ok');\n    setTimeout(function(){b.textContent=o;b.classList.remove('ok');},2000);\n  });\n}</script></body></html>";
-  res.setHeader("Content-Type", "text/html");
-  res.setHeader("Cache-Control", "s-maxage=60");
-  res.status(200).send(html);
+
+})
+.catch(function(){});
+
+function sw(k,el){
+  document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active');});
+  document.querySelectorAll('.guide').forEach(function(g){g.classList.remove('active');});
+  el.classList.add('active');
+  document.getElementById('g-'+k).classList.add('active');
+}
+function gR(){
+  var n=document.getElementById('inp-nama').value.trim();
+  var k=document.getElementById('inp-kat').value;
+  var p=document.getElementById('prev-review');
+  if(!n){p.className='prev';p.textContent='Ketik nama client untuk generate pesan...';R.review='';return;}
+  var msg=(M['review_'+k]||'').replace('{nama}',n);
+  R.review=msg;p.className='prev on';p.textContent=msg;
+}
+
+function gM(tab,nama){
+  var p=document.getElementById('prev-'+tab);
+  var conf=document.getElementById('confirm-'+tab);
+  if(!nama){p.className='prev';p.textContent='Pilih client untuk generate pesan...';conf.textContent='';R[tab]='';return;}
+  var c=C.find(function(x){return x.nama===nama;});
+  if(!c)return;
+  conf.textContent='✓ '+c.nama+' | NIM: '+c.nim+' | '+c.jenis+' | '+c.aplikasi;
+  var sisa=typeof c.sisa==='number'?Math.round(c.sisa).toLocaleString('id-ID'):(c.sisa||'0');
+  var msg=(M[tab]||'')
+    .replace('{nama}',c.nama)
+    .replace('{jenis}',c.jenis)
+    .replace('{aplikasi}',c.aplikasi)
+    .replace('{kodeAkses}',c.kodeAkses)
+    .replace('{sisa}',sisa);
+  R[tab]=msg;p.className='prev on';p.textContent=msg;
+}
+
+function cp(tab){
+  var msg=R[tab];
+  if(!msg)return;
+  navigator.clipboard.writeText(msg).then(function(){
+    var b=document.getElementById('btn-'+tab);
+    var o=b.textContent;
+    b.textContent='✓ Pesan Tersalin!';
+    b.classList.add('ok');
+    setTimeout(function(){
+      b.textContent=o;
+      b.classList.remove('ok');
+    },2000);
+  });
+}
+</script></body></html>";
+
+res.setHeader("Content-Type", "text/html");
+res.setHeader("Cache-Control", "s-maxage=60");
+res.status(200).send(html);
 };
