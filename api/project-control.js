@@ -99,7 +99,7 @@ module.exports = async function handler(req, res) {
   
   
   
-  }</script></body></html>";
+  </script></body></html>";
 
   res.setHeader("Content-Type", "text/html");
   res.setHeader("Cache-Control", "s-maxage=60");
