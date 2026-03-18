@@ -12,17 +12,30 @@ module.exports = async function handler(req, res) {
     };
 
     function getProp(page, key) {
+
       const p = page.properties[key];
       if (!p) return "";
 
-      if (p.type === "title") return (p.title || []).map(t => t.plain_text).join("");
-      if (p.type === "rich_text") return (p.rich_text || []).map(t => t.plain_text).join("");
-      if (p.type === "select") return p.select ? p.select.name : "";
-      if (p.type === "status") return p.status ? p.status.name : "";
-      if (p.type === "number") return p.number ?? 0;
-      if (p.type === "checkbox") return p.checkbox ?? false;
+      if (p.type === "title")
+        return (p.title || []).map(t => t.plain_text).join("");
 
-      if (p.type === "date") return p.date ? p.date.start : "";
+      if (p.type === "rich_text")
+        return (p.rich_text || []).map(t => t.plain_text).join("");
+
+      if (p.type === "select")
+        return p.select ? p.select.name : "";
+
+      if (p.type === "status")
+        return p.status ? p.status.name : "";
+
+      if (p.type === "number")
+        return p.number ?? 0;
+
+      if (p.type === "checkbox")
+        return p.checkbox ?? false;
+
+      if (p.type === "date")
+        return p.date ? p.date.start : "";
 
       if (p.type === "formula") {
         const f = p.formula;
@@ -33,12 +46,6 @@ module.exports = async function handler(req, res) {
       if (p.type === "rollup") {
         const r = p.rollup;
         if (r.type === "number") return r.number ?? 0;
-
-        if (r.type === "array" && r.array && r.array[0]) {
-          const first = r.array[0];
-          if (first.type === "select") return first.select?.name ?? "";
-          if (first.type === "number") return first.number ?? 0;
-        }
       }
 
       return "";
@@ -90,7 +97,9 @@ module.exports = async function handler(req, res) {
       res.status(200).json(clients);
 
     } catch (e) {
+
       res.status(200).json([]);
+
     }
 
     return;
@@ -102,51 +111,73 @@ module.exports = async function handler(req, res) {
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+body{
+background:#191919;
+color:white;
+font-family:sans-serif;
+padding:20px
+}
+select{
+padding:6px;
+margin:6px
+}
+</style>
 </head>
 
-<body style="background:#191919;color:white;font-family:sans-serif">
+<body>
+
+<h3>Project Control</h3>
+
+<div>
+<select id="sel-antrian"><option>Pilih client...</option></select>
+<select id="sel-pelunasan"><option>Pilih client...</option></select>
+<select id="sel-pendampingan"><option>Pilih client...</option></select>
+<select id="sel-selesai"><option>Pilih client...</option></select>
+</div>
 
 <script>
 
-var C = [];
+var C=[];
 
 fetch('/api/project-control?action=clients')
-.then(r => r.json())
-.then(d => {
+.then(r=>r.json())
+.then(d=>{
 
-  C = d;
+C=d;
 
-  ['antrian','pelunasan','pendampingan','selesai'].forEach(function(t){
+['antrian','pelunasan','pendampingan','selesai'].forEach(function(t){
 
-    const s = document.getElementById('sel-'+t);
-    if(!s) return;
+const s=document.getElementById('sel-'+t);
+if(!s) return;
 
-    C.filter(function(c){
+C.filter(function(c){
 
-      if(t === 'antrian') return c.status === 'Antrian';
+if(t==='antrian') return c.status==='Antrian';
 
-      if(t === 'pelunasan') return c.status === 'Menunggu Pelunasan';
+if(t==='pelunasan') return c.status==='Menunggu Pelunasan';
 
-      if(t === 'pendampingan') return c.status === 'Pendampingan';
+if(t==='pendampingan') return c.status==='Pendampingan';
 
-      if(t === 'selesai') return c.status === 'Selesai';
+if(t==='selesai') return c.status==='Selesai';
 
-      return false;
+return false;
 
-    }).forEach(function(c){
+}).forEach(function(c){
 
-      const o = document.createElement('option');
-      o.value = c.nama;
-      o.textContent = c.nama + ' - ' + c.nim;
+const o=document.createElement('option');
 
-      s.appendChild(o);
+o.value=c.nama;
 
-    });
+o.textContent=c.nama+" - "+c.nim;
 
-  });
+s.appendChild(o);
 
-})
-.catch(()=>{});
+});
+
+});
+
+});
 
 </script>
 
