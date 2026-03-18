@@ -60,7 +60,6 @@ module.exports = async function handler(req, res) {
       }).filter(function(c){ return c.nama; });
       res.setHeader("Content-Type", "application/json");
       res.setHeader("Access-Control-Allow-Origin", "*");
-      res.setHeader("Cache-Control", "s-maxage=60");
       res.status(200).json(clients);
     } catch(e) {
       res.status(200).json([]);
@@ -68,70 +67,54 @@ module.exports = async function handler(req, res) {
     return;
   }
 
-  // --- HTML UI DENGAN DARK MODE ---
-  var html = `<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  // --- HTML UI DUA KOLOM (ULTRA COMPACT) ---
+  var html = `<!DOCTYPE html><html><head><meta charset="utf-8">
 <style>
   *{box-sizing:border-box;margin:0;padding:0}
-  html,body{background:#191919;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#d3d3d3; overflow:hidden} /* Hidden overflow prevent scroll */
-  body{padding:0.75rem}
+  html,body{background:#191919;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#d3d3d3; overflow:hidden}
+  body{padding:10px}
   
-  .tabs{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:0.75rem}
-  .tab{font-size:11px;padding:4px 10px;border-radius:5px;border:1px solid #333;color:#888;cursor:pointer;background:transparent;transition: 0.2s}
-  .tab.active{background:#232323;color:#fff;border-color:#378ADD;font-weight:500}
+  .tabs{display:flex;gap:4px;margin-bottom:10px}
+  .tab{font-size:11px;padding:4px 10px;border-radius:5px;border:1px solid #333;color:#888;cursor:pointer;background:transparent}
+  .tab.active{background:#232323;color:#fff;border-color:#378ADD}
   
-  .guide{border-left:4px solid;border-radius:0 8px 8px 0;padding:12px 15px;display:none;background:#202020}
-  .guide.active{display:flex; gap:20px; align-items: flex-start} /* Flex row layout */
+  .guide{border-left:4px solid;border-radius:0 8px 8px 0;padding:12px 15px;display:none;background:#202020; gap:20px; align-items: flex-start}
+  .guide.active{display:flex}
   
-  /* Kolom Kiri: Instruksi */
-  .col-info{flex: 1; min-width: 250px}
-  .todo{display:flex;align-items:flex-start;gap:8px;font-size:12px;line-height:1.4;margin-bottom:6px;color:#aaa}
-  .box{width:13px;height:13px;border-radius:3px;border:1.5px solid currentColor;flex-shrink:0;margin-top:2px;opacity:.5}
-  
-  /* Kolom Kanan: Generator */
+  .col-info{flex: 1; min-width: 200px}
   .col-gen{flex: 1.2; border-left: 1px solid #333; padding-left: 20px}
-  .lbl{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px;color:#666}
   
-  .inp{width:100%;background:#252525;border:1px solid #444;border-radius:5px;font-size:12px;padding:7px 10px;outline:none;margin-bottom:8px;color:#eee}
-  .row{display:flex;gap:6px;margin-bottom:8px}
-  .row .inp{margin-bottom:0}
+  .todo{display:flex;gap:8px;font-size:12px;margin-bottom:5px;color:#aaa}
+  .box{width:12px;height:12px;border:1.5px solid currentColor;margin-top:2px;opacity:.5}
   
-  .prev{background:#151515;border:1px solid #333;border-radius:6px;padding:10px;margin-bottom:8px;max-height:80px;overflow-y:auto;font-size:12px;line-height:1.5;color:#888;font-style:italic}
-  .prev.on{font-style:normal;color:#ddd;border-color:#444}
+  .lbl{font-size:9px;font-weight:700;text-transform:uppercase;margin-bottom:8px;color:#666}
+  .inp{width:100%;background:#252525;border:1px solid #444;border-radius:5px;font-size:12px;padding:6px 10px;color:#eee;outline:none;margin-bottom:8px}
+  .prev{background:#151515;border:1px solid #333;border-radius:6px;padding:10px;height:70px;overflow-y:auto;font-size:12px;line-height:1.4;color:#888;white-space:pre-wrap;margin-bottom:8px}
+  .prev.on{color:#ddd;font-style:normal}
   
-  .btn{width:100%;padding:8px;background:#252525;border:1px solid #444;border-radius:5px;font-size:11px;font-weight:600;cursor:pointer;color:#eee;transition:0.2s}
+  .btn{width:100%;padding:8px;background:#252525;border:1px solid #444;border-radius:5px;font-size:11px;font-weight:600;cursor:pointer;color:#eee}
   .btn.ok{background:#0f3d1f!important;border-color:#27500A!important}
-  
-  /* Hide scrollbar for Chrome, Safari and Opera */
-  .prev::-webkit-scrollbar { display: none; }
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
 </style>
 </head>
 <body>
 <div class="tabs">
   <div class="tab active" onclick="sw('review',this)">Review</div>
   <div class="tab" onclick="sw('antrian',this)">Antrian</div>
-  <div class="tab" onclick="sw('overdue',this)">Overdue</div>
-  <div class="tab" onclick="sw('diproses',this)">Diproses</div>
   <div class="tab" onclick="sw('pelunasan',this)">Pelunasan</div>
-  <div class="tab" onclick="sw('pendampingan',this)">Pendampingan</div>
   <div class="tab" onclick="sw('selesai',this)">Selesai</div>
 </div>
 
 <div id="g-review" class="guide active" style="border-color:#378ADD">
   <div class="col-info">
-    <div style="font-size:10px;font-weight:700;color:#378ADD;margin-bottom:2px">TAHAP 2</div>
-    <div style="font-size:14px;font-weight:600;margin-bottom:10px;color:#eee">Pastikan Data Benar</div>
-    <div class="todo"><div class="box"></div><span>Cek Paket, Layanan, & Aplikasi</span></div>
-    <div class="todo"><div class="box"></div><span>Set Antrian & isi Tanggal DP</span></div>
+    <div style="font-size:13px;font-weight:600;margin-bottom:8px">Pastikan Data Benar</div>
+    <div class="todo"><div class="box"></div><span>Cek Paket & Layanan</span></div>
+    <div class="todo"><div class="box"></div><span>Set Status ke Antrian</span></div>
   </div>
   <div class="col-gen">
     <div class="lbl">Generator Pesan</div>
-    <div class="row">
-      <input id="inp-nama" class="inp" type="text" placeholder="Nama..." oninput="gR()">
-      <select id="inp-kat" class="inp" onchange="gR()" style="flex:0 0 100px">
-        <option value="kerjasama">Kerjasama</option>
-        <option value="umum">Umum</option>
-      </select>
-    </div>
+    <div style="display:flex;gap:5px"><input id="inp-nama" class="inp" placeholder="Nama..." oninput="gR()"><select id="inp-kat" class="inp" onchange="gR()" style="width:100px"><option value="kerjasama">Kerja</option><option value="umum">Umum</option></select></div>
     <div id="prev-review" class="prev">Ketik nama...</div>
     <button class="btn" id="btn-review" onclick="cp('review')">📋 Copy Pesan</button>
   </div>
@@ -139,8 +122,8 @@ module.exports = async function handler(req, res) {
 
 <div id="g-antrian" class="guide" style="border-color:#639922">
   <div class="col-info">
-    <div style="font-size:14px;font-weight:600;margin-bottom:10px">DP Masuk</div>
-    <div class="todo"><div class="box"></div><span>Konfirmasi registrasi client</span></div>
+    <div style="font-size:13px;font-weight:600;margin-bottom:8px">DP Masuk</div>
+    <div class="todo"><div class="box"></div><span>Kirim akses portal</span></div>
   </div>
   <div class="col-gen">
     <div class="lbl">Generator Pesan</div>
@@ -149,6 +132,79 @@ module.exports = async function handler(req, res) {
     <button class="btn" id="btn-antrian" onclick="cp('antrian')">📋 Copy Pesan</button>
   </div>
 </div>
+
+<div id="g-pelunasan" class="guide" style="border-color:#D85A30">
+  <div class="col-info">
+    <div style="font-size:13px;font-weight:600;margin-bottom:8px">Hasil Selesai</div>
+    <div class="todo"><div class="box"></div><span>Minta Pelunasan</span></div>
+  </div>
+  <div class="col-gen">
+    <div class="lbl">Generator Pesan</div>
+    <select id="sel-pelunasan" class="inp" onchange="gM('pelunasan',this.value)"><option value="">Pilih client...</option></select>
+    <div id="prev-pelunasan" class="prev">Pilih client...</div>
+    <button class="btn" id="btn-pelunasan" onclick="cp('pelunasan')">📋 Copy Pesan</button>
+  </div>
+</div>
+
+<div id="g-selesai" class="guide" style="border-color:#1D9E75">
+  <div class="col-info">
+    <div style="font-size:13px;font-weight:600;margin-bottom:8px">Project Selesai</div>
+    <div class="todo"><div class="box"></div><span>Minta Testimoni</span></div>
+  </div>
+  <div class="col-gen">
+    <div class="lbl">Generator Pesan</div>
+    <select id="sel-selesai" class="inp" onchange="gM('selesai',this.value)"><option value="">Pilih client...</option></select>
+    <div id="prev-selesai" class="prev">Pilih client...</div>
+    <button class="btn" id="btn-selesai" onclick="cp('selesai')">📋 Copy Pesan</button>
+  </div>
+</div>
+
+<script>
+var M={"review_kerjasama": "Halo {nama} 👋\\n\\n🙏Terima kasih sudah menggunakan jasa kami\\n✅Pembayaran DP sudah kami terima\\n🔗 Registrasi: https://tally.so/r/jaBkzY?kh=khk", "review_umum": "Halo {nama} 👋\\n\\n🙏Terima kasih sudah menggunakan jasa kami\\n✅Pembayaran DP sudah kami terima\\n🔗 Registrasi: https://tally.so/r/MeOabY?kh=khu", "antrian": "Halo {nama} 👋\\n\\nBerikut info portal:\\n🔑 Kode: {kodeAkses}\\n🔗 https://amkobar-portal.vercel.app", "pelunasan": "Halo {nama} 👋\\n\\nProject selesai! 🎉\\n💰 Sisa: Rp {sisa}\\nSilahkan pelunasan untuk buka akses download.", "selesai": "Halo {nama} 👋\\n\\nTerima kasih! Sesi selesai.\\nMohon testimoninya: ⭐ [LINK]"};
+var C=[],R={};
+
+fetch('?action=clients').then(r=>r.json()).then(d=>{
+  C=d;
+  ['antrian','pelunasan','selesai'].forEach(t=>{
+    var s=document.getElementById('sel-'+t); if(!s)return;
+    var mapStatus={antrian:"Antrian",pelunasan:"Menunggu Pelunasan",selesai:"Selesai"};
+    C.forEach(c=>{
+      if((c.status||'').toLowerCase().includes(mapStatus[t].toLowerCase())){
+        var o=document.createElement('option'); o.value=c.nama; o.textContent=c.nama; s.appendChild(o);
+      }
+    });
+  });
+});
+
+function sw(k,el){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.guide').forEach(g=>g.classList.remove('active'));
+  el.classList.add('active'); document.getElementById('g-'+k).classList.add('active');
+}
+
+function gR(){
+  var n=document.getElementById('inp-nama').value;
+  var k=document.getElementById('inp-kat').value;
+  var p=document.getElementById('prev-review');
+  var msg=M['review_'+k].replace('{nama}',n||'...');
+  R.review=msg; p.textContent=msg; p.classList.add('on');
+}
+
+function gM(tab,nama){
+  var c=C.find(x=>x.nama===nama); if(!c) return;
+  var sisa=typeof c.sisa==='number'?c.sisa.toLocaleString('id-ID'):c.sisa;
+  var msg=M[tab].replace('{nama}',c.nama).replace('{kodeAkses}',c.kodeAkses).replace('{sisa}',sisa);
+  R[tab]=msg; var p=document.getElementById('prev-'+tab); p.textContent=msg; p.classList.add('on');
+}
+
+function cp(tab){
+  var msg=R[tab]; if(!msg) return;
+  var btn=document.getElementById('btn-'+tab);
+  navigator.clipboard.writeText(msg).then(()=>{
+    var old=btn.textContent; btn.textContent='✓ Tersalin!'; btn.classList.add('ok');
+    setTimeout(()=>{btn.textContent=old; btn.classList.remove('ok')},1500);
+  });
+}
 </script></body></html>`;
 
   res.setHeader("Content-Type", "text/html");
