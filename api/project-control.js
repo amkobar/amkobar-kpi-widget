@@ -46,16 +46,17 @@ module.exports = async function handler(req, res) {
         if (!data.has_more) break;
         cursor = data.next_cursor;
       }
-      var clients = all.map(function(p) {
-        return {
-          nama: getProp(p, "Nama Client"),
-          nim: getProp(p, "NIM/NPM"),
-          jenis: getProp(p, "Jenis Layanan"),
-          aplikasi: getProp(p, "Aplikasi"),
-          kodeAkses: getProp(p, "Kode Akses"),
-          sisa: getProp(p, "Sisa Pembayaran"),
-        };
-      }).filter(function(c){ return c.nama; });
+    var clients = all.map(function(p) {
+  return {
+    nama: getProp(p, "Nama Client"),
+    nim: getProp(p, "NIM/NPM"),
+    jenis: getProp(p, "Jenis Layanan"),
+    aplikasi: getProp(p, "Aplikasi"),
+    kodeAkses: getProp(p, "Kode Akses"),
+    sisa: getProp(p, "Sisa Pembayaran"),
+    status: getProp(p, "Status Project")
+  };
+}).filter(function(c){ return c.nama; });
       res.setHeader("Content-Type", "application/json");
       res.setHeader("Access-Control-Allow-Origin", "*");
       res.setHeader("Cache-Control", "s-maxage=60");
