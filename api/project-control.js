@@ -102,7 +102,7 @@ var M={
   "review_umum": "Halo {nama} 👋\\n\\nTerima kasih, DP sudah diterima. Silakan registrasi: https://tally.so/r/MeOabY?kh=khu",
   "antrian": "Halo {nama} 👋\\n\\nInfo portal: {kodeAkses}\\n🔗 https://amkobar-portal.vercel.app",
   "pelunasan": "Halo {nama} 👋\\n\\nProject selesai! 🎉\\n💰 Sisa: Rp {sisa}\\nSilakan pelunasan untuk download.",
-  "selesai": "Halo {nama} 👋\\n\\nTerima kasih! Mohon testimoninya: ⭐ [LINK]"
+  "selesai": "Halo {nama} 👋\\n\\nSesi pendampingan kita sudah selesai! 🙏\\n\\nAkun Portal AMKOBAR Anda saat ini berstatus *4/5 (Akses Terbatas)*. Untuk mengubahnya menjadi *Akses Permanen* dan membuka kunci Video Tutorial CBH, mohon kesediaannya memberikan rating singkat di sini:\\n\\n⭐ https://tally.so/r/yPD7rg?NIM/NPM={nim}\\n\\nSetelah mengisi, status akun otomatis berubah menjadi 5/5. Sukses terus untuk sidangnya! 💪🎓\\n\\nSalam, Tim AMKOBAR"
 };
 var C=[],R={};
 
@@ -146,7 +146,7 @@ function gM(tab,nama){
   
   if(warn) warn.style.display='none';
   var sisa=typeof c.sisa==='number'?c.sisa.toLocaleString('id-ID'):c.sisa;
-  var msg=M[tab].replace('{nama}',c.nama).replace('{kodeAkses}',c.kodeAkses).replace('{sisa}',sisa);
+  var msg=M[tab].replace('{nama}',c.nama).replace('{kodeAkses}',c.kodeAkses).replace('{sisa}',sisa).replace('{nim}',c.nim);
   R[tab]=msg; p.textContent=msg; p.classList.add('on');
 }
 
