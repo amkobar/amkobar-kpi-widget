@@ -47,6 +47,8 @@ module.exports = async function handler(req, res) {
         cursor = data.next_cursor;
       }
       var clients = all.map(function(p) {
+        var kat = getProp(p, "Kategori Harga").toLowerCase();
+        var dp = kat === "kerjasama" ? getProp(p, "DP Kerjasama") : getProp(p, "DP Umum");
         return {
           nama: getProp(p, "Nama Client"),
           nim: getProp(p, "NIM/NPM"),
@@ -54,6 +56,7 @@ module.exports = async function handler(req, res) {
           aplikasi: getProp(p, "Aplikasi"),
           kodeAkses: getProp(p, "Kode Akses"),
           sisa: getProp(p, "Sisa Pembayaran"),
+          dp: dp,
           status: getProp(p, "Status Project")
         };
       }).filter(function(c){ return c.nama; });
@@ -66,33 +69,16 @@ module.exports = async function handler(req, res) {
     return;
   }
 
-  var html = `<!DOCTYPE html><html><head><meta charset="utf-8"><style>*{box-sizing:border-box;margin:0;padding:0}html,body{background:#191919;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#d3d3d3;overflow:hidden}body{padding:12px}.tabs{display:flex;gap:4px;margin-bottom:12px;flex-wrap:wrap}.tab{font-size:11px;padding:5px 12px;border-radius:5px;border:1px solid #333;color:#888;cursor:pointer;background:transparent;transition:0.2s}.tab:hover{background:#252525}.tab.active{background:#232323;color:#fff;border-color:#378ADD;font-weight:500}.guide{border-left:4px solid;border-radius:0 8px 8px 0;padding:15px 20px;display:none;background:#202020;gap:25px;align-items:flex-start}.guide.active{display:flex}.col-info{flex:1.1;min-width:240px}.col-gen{flex:1;border-left:1px solid #333;padding-left:20px}.todo{display:flex;gap:10px;font-size:12.5px;margin-bottom:8px;color:#aaa;line-height:1.4}.box{width:14px;height:14px;border:1.5px solid currentColor;border-radius:3px;margin-top:2px;flex-shrink:0;opacity:.5}.lbl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:10px;color:#666}.inp{width:100%;background:#252525;border:1px solid #444;border-radius:5px;font-size:12px;padding:7px 10px;color:#eee;outline:none;margin-bottom:8px}.row{display:flex;gap:6px}.prev{background:#151515;border:1px solid #333;border-radius:6px;padding:12px;height:90px;overflow-y:auto;font-size:12px;line-height:1.5;color:#888;white-space:pre-wrap;margin-bottom:10px}.prev.on{color:#ddd;border-color:#444}.btn{width:100%;padding:9px;background:#252525;border:1px solid #444;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;color:#eee;transition:0.2s}.btn:hover{background:#333}.btn.ok{background:#0f3d1f!important;border-color:#27500A!important}.warning{color:#f08c00;font-size:11px;margin-bottom:6px;display:none}.tip{font-size:12px;color:#666;line-height:1.6;margin-top:4px}::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:#333;border-radius:10px}</style></head><body><div class="tabs"><div class="tab active" onclick="sw('review',this)">Menunggu Review</div><div class="tab" onclick="sw('antrian',this)">Antrian</div><div class="tab" onclick="sw('overdue',this)">Overdue</div><div class="tab" onclick="sw('diproses',this)">Diproses</div><div class="tab" onclick="sw('pelunasan',this)">Menunggu Pelunasan</div><div class="tab" onclick="sw('pendampingan',this)">Pendampingan</div><div class="tab" onclick="sw('selesai',this)">Selesai</div></div>
-
-<div id="g-review" class="guide active" style="border-color:#378ADD"><div class="col-info"><div style="font-size:10px;font-weight:700;color:#378ADD;margin-bottom:4px">TAHAP 2</div><div style="font-size:15px;font-weight:600;margin-bottom:12px;color:#eee">Pastikan Data Benar</div><div class="todo"><div class="box"></div><span>Pastikan kolom Paket, Jenis Layanan, Aplikasi sudah terisi</span></div><div class="todo"><div class="box"></div><span>Ganti Status Project ke Antrian dan isi Tanggal DP</span></div><div class="todo"><div class="box"></div><span>Kirim WA menggunakan Generator di samping</span></div></div><div class="col-gen"><div class="lbl">Generator Pesan - Sebelum Registrasi</div><div class="row"><input id="inp-nama" class="inp" placeholder="Ketik nama client..." oninput="gR()"><select id="inp-kat" class="inp" onchange="gR()" style="width:110px"><option value="kerjasama">Kerjasama</option><option value="umum">Umum</option></select></div><div id="prev-review" class="prev">Ketik nama client untuk generate pesan...</div><button class="btn" id="btn-review" onclick="cp('review')">📋 Copy Pesan</button></div></div>
-
-<div id="g-antrian" class="guide" style="border-color:#639922"><div class="col-info"><div style="font-size:10px;font-weight:700;color:#639922;margin-bottom:4px">TAHAP 3</div><div style="font-size:15px;font-weight:600;margin-bottom:12px;color:#eee">DP Masuk / Registrasi</div><div class="todo"><div class="box"></div><span>Kirim akses portal ke client</span></div><div class="todo"><div class="box"></div><span>Pastikan client bisa login ke portal</span></div></div><div class="col-gen"><div class="lbl">Generator Pesan - Akses Portal</div><select id="sel-antrian" class="inp" onchange="gM('antrian',this.value)"><option value="">Pilih client...</option></select><div id="prev-antrian" class="prev">Pilih client untuk generate pesan...</div><button class="btn" id="btn-antrian" onclick="cp('antrian')">📋 Copy Pesan</button></div></div>
-
-<div id="g-overdue" class="guide" style="border-color:#888"><div class="col-info"><div style="font-size:10px;font-weight:700;color:#888;margin-bottom:4px">PERHATIAN</div><div style="font-size:15px;font-weight:600;margin-bottom:12px;color:#eee">Project Terlambat</div><div class="todo"><div class="box"></div><span>Cek penyebab keterlambatan</span></div><div class="todo"><div class="box"></div><span>Update Tanggal Selesai jika perlu</span></div><div class="todo"><div class="box"></div><span>Hubungi client jika ada kendala dari mereka</span></div></div></div>
-
-<div id="g-diproses" class="guide" style="border-color:#BA7517"><div class="col-info"><div style="font-size:10px;font-weight:700;color:#BA7517;margin-bottom:4px">TAHAP 4</div><div style="font-size:15px;font-weight:600;margin-bottom:12px;color:#eee">Sedang Diproses</div><div class="todo"><div class="box"></div><span>Kerjakan sesuai paket yang dipilih client</span></div><div class="todo"><div class="box"></div><span>Setelah selesai, ganti status ke Menunggu Pelunasan</span></div><div class="todo"><div class="box"></div><span>Kirim WA tagihan menggunakan tab Menunggu Pelunasan</span></div></div></div>
-
-<div id="g-pelunasan" class="guide" style="border-color:#D85A30"><div class="col-info"><div style="font-size:10px;font-weight:700;color:#D85A30;margin-bottom:4px">TAHAP 5</div><div style="font-size:15px;font-weight:600;margin-bottom:12px;color:#eee">Menunggu Pelunasan</div><div class="todo"><div class="box"></div><span>Kirim informasi sisa pembayaran ke client</span></div><div class="todo"><div class="box"></div><span>Setelah lunas, upload file ke folder Hasil Final</span></div><div class="todo"><div class="box"></div><span>Ganti status ke Pendampingan atau Selesai</span></div></div><div class="col-gen"><div class="lbl">Generator Pesan - Tagihan</div><div id="warn-lunas" class="warning">⚠️ Client sudah lunas!</div><select id="sel-pelunasan" class="inp" onchange="gM('pelunasan',this.value)"><option value="">Pilih client...</option></select><div id="prev-pelunasan" class="prev">Pilih client...</div><button class="btn" id="btn-pelunasan" onclick="cp('pelunasan')">📋 Copy Pesan</button></div></div>
-
-<div id="g-pendampingan" class="guide" style="border-color:#7F77DD"><div class="col-info"><div style="font-size:10px;font-weight:700;color:#7F77DD;margin-bottom:4px">TAHAP 6</div><div style="font-size:15px;font-weight:600;margin-bottom:12px;color:#eee">Sesi Pendampingan</div><div class="todo"><div class="box"></div><span>Pastikan client sudah bergabung di grup WA</span></div><div class="todo"><div class="box"></div><span>Posting jadwal sesi di grup WA</span></div><div class="todo"><div class="box"></div><span>Minta client konfirmasi kehadiran di grup</span></div><div class="todo"><div class="box"></div><span>Setelah sesi selesai, ganti status ke Selesai</span></div></div><div class="col-gen"><div class="lbl">Generator Pesan - Info Pendampingan</div><select id="sel-pendampingan" class="inp" onchange="gM('pendampingan',this.value)"><option value="">Pilih client...</option></select><div id="prev-pendampingan" class="prev">Pilih client untuk generate pesan...</div><button class="btn" id="btn-pendampingan" onclick="cp('pendampingan')">📋 Copy Pesan</button></div></div>
-
-<div id="g-selesai" class="guide" style="border-color:#1D9E75"><div class="col-info"><div style="font-size:10px;font-weight:700;color:#1D9E75;margin-bottom:4px">TAHAP 7</div><div style="font-size:15px;font-weight:600;margin-bottom:12px;color:#eee">Project Selesai</div><div class="todo"><div class="box"></div><span>Pastikan semua file sudah diupload ke folder Hasil Final</span></div><div class="todo"><div class="box"></div><span>Kirim WA ke client via Generator di samping</span></div><div class="todo"><div class="box"></div><span>Minta client beri rating di portal untuk aktifkan Akses Permanen</span></div></div><div class="col-gen"><div class="lbl">Generator Pesan - Selesai</div><select id="sel-selesai" class="inp" onchange="gM('selesai',this.value)"><option value="">Pilih client...</option></select><div id="prev-selesai" class="prev">Pilih client untuk generate pesan...</div><button class="btn" id="btn-selesai" onclick="cp('selesai')">📋 Copy Pesan</button></div></div>
-
-<script>
+  var html = `<!DOCTYPE html><html><head><meta charset="utf-8"><style>*{box-sizing:border-box;margin:0;padding:0}html,body{background:#191919;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#d3d3d3;overflow:hidden}body{padding:12px}.tabs{display:flex;gap:4px;margin-bottom:12px;flex-wrap:wrap}.tab{font-size:11px;padding:5px 12px;border-radius:5px;border:1px solid #333;color:#888;cursor:pointer;background:transparent;transition:0.2s}.tab:hover{background:#252525}.tab.active{background:#232323;color:#fff;border-color:#378ADD;font-weight:500}.guide{border-left:4px solid;border-radius:0 8px 8px 0;padding:15px 20px;display:none;background:#202020;gap:25px;align-items:flex-start}.guide.active{display:flex}.col-info{flex:1.1;min-width:240px}.col-gen{flex:1;border-left:1px solid #333;padding-left:20px}.todo{display:flex;gap:10px;font-size:12.5px;margin-bottom:8px;color:#aaa;line-height:1.4}.box{width:14px;height:14px;border:1.5px solid currentColor;border-radius:3px;margin-top:2px;flex-shrink:0;opacity:.5}.lbl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:10px;color:#666}.inp{width:100%;background:#252525;border:1px solid #444;border-radius:5px;font-size:12px;padding:7px 10px;color:#eee;outline:none;margin-bottom:8px}.row{display:flex;gap:6px}.prev{background:#151515;border:1px solid #333;border-radius:6px;padding:12px;height:110px;overflow-y:auto;font-size:12px;line-height:1.5;color:#888;white-space:pre-wrap;margin-bottom:10px}.prev.on{color:#ddd;border-color:#444}.btn{width:100%;padding:9px;background:#252525;border:1px solid #444;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;color:#eee;transition:0.2s}.btn:hover{background:#333}.btn.ok{background:#0f3d1f!important;border-color:#27500A!important}.warning{color:#f08c00;font-size:11px;margin-bottom:6px;display:none}::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:#333;border-radius:10px}</style></head><body><div class="tabs"><div class="tab active" onclick="sw('review',this)">Menunggu Review</div><div class="tab" onclick="sw('antrian',this)">Antrian</div><div class="tab" onclick="sw('overdue',this)">Overdue</div><div class="tab" onclick="sw('diproses',this)">Diproses</div><div class="tab" onclick="sw('pelunasan',this)">Menunggu Pelunasan</div><div class="tab" onclick="sw('pendampingan',this)">Pendampingan</div><div class="tab" onclick="sw('selesai',this)">Selesai</div></div><div id="g-review" class="guide active" style="border-color:#378ADD"><div class="col-info"><div style="font-size:10px;font-weight:700;color:#378ADD;margin-bottom:4px">TAHAP 2</div><div style="font-size:15px;font-weight:600;margin-bottom:12px;color:#eee">Pastikan Data Benar</div><div class="todo"><div class="box"></div><span>Pastikan kolom Paket, Jenis Layanan, Aplikasi sudah terisi</span></div><div class="todo"><div class="box"></div><span>Ganti Status Project ke Antrian dan isi Tanggal DP</span></div><div class="todo"><div class="box"></div><span>Kirim WA menggunakan Generator di samping</span></div></div><div class="col-gen"><div class="lbl">Generator Pesan - Sebelum Registrasi</div><div class="row"><input id="inp-nama" class="inp" placeholder="Ketik nama client..." oninput="gR()"><select id="inp-kat" class="inp" onchange="gR()" style="width:110px"><option value="kerjasama">Kerjasama</option><option value="umum">Umum</option></select></div><div id="prev-review" class="prev">Ketik nama client untuk generate pesan...</div><button class="btn" id="btn-review" onclick="cp('review')">📋 Copy Pesan</button></div></div><div id="g-antrian" class="guide" style="border-color:#639922"><div class="col-info"><div style="font-size:10px;font-weight:700;color:#639922;margin-bottom:4px">TAHAP 3</div><div style="font-size:15px;font-weight:600;margin-bottom:12px;color:#eee">DP Masuk / Registrasi</div><div class="todo"><div class="box"></div><span>Kirim akses portal ke client</span></div><div class="todo"><div class="box"></div><span>Pastikan client bisa login ke portal</span></div></div><div class="col-gen"><div class="lbl">Generator Pesan - Akses Portal</div><select id="sel-antrian" class="inp" onchange="gM('antrian',this.value)"><option value="">Pilih client...</option></select><div id="prev-antrian" class="prev">Pilih client untuk generate pesan...</div><button class="btn" id="btn-antrian" onclick="cp('antrian')">📋 Copy Pesan</button></div></div><div id="g-overdue" class="guide" style="border-color:#888"><div class="col-info"><div style="font-size:10px;font-weight:700;color:#888;margin-bottom:4px">PERHATIAN</div><div style="font-size:15px;font-weight:600;margin-bottom:12px;color:#eee">Project Terlambat</div><div class="todo"><div class="box"></div><span>Cek penyebab keterlambatan</span></div><div class="todo"><div class="box"></div><span>Update Tanggal Selesai jika perlu</span></div><div class="todo"><div class="box"></div><span>Hubungi client jika ada kendala dari mereka</span></div></div></div><div id="g-diproses" class="guide" style="border-color:#BA7517"><div class="col-info"><div style="font-size:10px;font-weight:700;color:#BA7517;margin-bottom:4px">TAHAP 4</div><div style="font-size:15px;font-weight:600;margin-bottom:12px;color:#eee">Sedang Diproses</div><div class="todo"><div class="box"></div><span>Kerjakan sesuai paket yang dipilih client</span></div><div class="todo"><div class="box"></div><span>Setelah selesai, ganti status ke Menunggu Pelunasan</span></div><div class="todo"><div class="box"></div><span>Kirim WA tagihan menggunakan tab Menunggu Pelunasan</span></div></div></div><div id="g-pelunasan" class="guide" style="border-color:#D85A30"><div class="col-info"><div style="font-size:10px;font-weight:700;color:#D85A30;margin-bottom:4px">TAHAP 5</div><div style="font-size:15px;font-weight:600;margin-bottom:12px;color:#eee">Menunggu Pelunasan</div><div class="todo"><div class="box"></div><span>Kirim informasi tagihan ke client via Generator</span></div><div class="todo"><div class="box"></div><span>Setelah lunas, buka akses folder Hasil Final di Drive</span></div><div class="todo"><div class="box"></div><span>Ganti status ke Pendampingan atau Selesai</span></div></div><div class="col-gen"><div class="lbl">Generator Pesan - Tagihan</div><div id="warn-lunas" class="warning">⚠️ Client sudah lunas!</div><select id="sel-pelunasan" class="inp" onchange="gM('pelunasan',this.value)"><option value="">Pilih client...</option></select><div id="prev-pelunasan" class="prev">Pilih client...</div><button class="btn" id="btn-pelunasan" onclick="cp('pelunasan')">📋 Copy Pesan</button></div></div><div id="g-pendampingan" class="guide" style="border-color:#7F77DD"><div class="col-info"><div style="font-size:10px;font-weight:700;color:#7F77DD;margin-bottom:4px">TAHAP 6</div><div style="font-size:15px;font-weight:600;margin-bottom:12px;color:#eee">Sesi Pendampingan</div><div class="todo"><div class="box"></div><span>Pastikan client sudah bergabung di grup WA</span></div><div class="todo"><div class="box"></div><span>Posting jadwal sesi di grup WA</span></div><div class="todo"><div class="box"></div><span>Minta client konfirmasi kehadiran di grup</span></div><div class="todo"><div class="box"></div><span>Setelah sesi selesai, ganti status ke Selesai</span></div></div><div class="col-gen"><div class="lbl">Generator Pesan - Info Pendampingan</div><select id="sel-pendampingan" class="inp" onchange="gM('pendampingan',this.value)"><option value="">Pilih client...</option></select><div id="prev-pendampingan" class="prev">Pilih client untuk generate pesan...</div><button class="btn" id="btn-pendampingan" onclick="cp('pendampingan')">📋 Copy Pesan</button></div></div><div id="g-selesai" class="guide" style="border-color:#1D9E75"><div class="col-info"><div style="font-size:10px;font-weight:700;color:#1D9E75;margin-bottom:4px">TAHAP 7</div><div style="font-size:15px;font-weight:600;margin-bottom:12px;color:#eee">Project Selesai</div><div class="todo"><div class="box"></div><span>Pastikan semua file sudah diupload ke folder Hasil Final</span></div><div class="todo"><div class="box"></div><span>Kirim WA ke client via Generator di samping</span></div><div class="todo"><div class="box"></div><span>Minta client beri rating di portal untuk aktifkan Akses Permanen</span></div></div><div class="col-gen"><div class="lbl">Generator Pesan - Selesai</div><select id="sel-selesai" class="inp" onchange="gM('selesai',this.value)"><option value="">Pilih client...</option></select><div id="prev-selesai" class="prev">Pilih client untuk generate pesan...</div><button class="btn" id="btn-selesai" onclick="cp('selesai')">📋 Copy Pesan</button></div></div><script>
 var M={
   "review_kerjasama":"Halo {nama} 👋\\n\\n🙏 Terima kasih sudah menggunakan jasa kami\\n✅ Pembayaran DP sudah kami terima\\n🔗 Silakan registrasi di: https://tally.so/r/jaBkzY?kh=khk",
   "review_umum":"Halo {nama} 👋\\n\\n🙏 Terima kasih sudah menggunakan jasa kami\\n✅ Pembayaran DP sudah kami terima\\n🔗 Silakan registrasi di: https://tally.so/r/MeOabY?kh=khu",
   "antrian":"Halo {nama} 👋\\n\\nBerikut info portal AMKOBAR kamu:\\n🔑 Kode Akses: {kodeAkses}\\n🔗 https://amkobar-portal.vercel.app\\n\\nLogin untuk pantau progress project kamu ya!",
-  "pelunasan":"Halo {nama} 👋\\n\\nProject kamu sudah selesai dikerjakan! 🎉\\n\\n💰 Sisa pembayaran: Rp {sisa}\\n\\nSilakan lakukan pelunasan untuk mengakses file hasil. Terima kasih!",
+  "pelunasan":"Halo {nama} 👋\\n\\nProject kamu sudah selesai dikerjakan! 🎉\\n\\n📦 {jenis} - {aplikasi}\\n💳 DP sudah diterima: Rp {dp}\\n💰 Sisa pembayaran: Rp {sisa}\\n\\nSilakan lakukan pelunasan. Setelah lunas, akses file hasil tersedia di portal:\\n🔑 Kode Akses: {kodeAkses}\\n🔗 https://amkobar-portal.vercel.app\\n\\nTerima kasih!",
   "pendampingan":"Halo {nama} 👋\\n\\nProject kamu sudah masuk tahap *Pendampingan* 🎓\\n\\nKamu akan mendapat jadwal sesi belajar via grup WA AMKOBAR. Pastikan kamu sudah tergabung di grup ya.\\n\\nPantau status di portal:\\n🔑 Kode Akses: {kodeAkses}\\n🔗 https://amkobar-portal.vercel.app",
   "selesai":"Halo {nama} 👋\\n\\nTerima kasih! Sesi pendampingan kita sudah selesai 🙏\\n\\nUntuk mengaktifkan *Akses Permanen* ke file project kamu, mohon berikan rating singkat melalui portal:\\n\\n🔑 Kode Akses: {kodeAkses}\\n🔗 https://amkobar-portal.vercel.app\\n\\nSetelah rating diisi, akses file kamu otomatis jadi permanen. Sukses untuk sidangnya! 💪🎓"
 };
 var C=[],R={};
-
 fetch('?action=clients').then(function(r){return r.json();}).then(function(d){
   C=d;
   var map={antrian:"Antrian",pelunasan:"Menunggu Pelunasan",pendampingan:"Pendampingan",selesai:"Selesai"};
@@ -105,13 +91,11 @@ fetch('?action=clients').then(function(r){return r.json();}).then(function(d){
     });
   });
 });
-
 function sw(k,el){
   document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active');});
   document.querySelectorAll('.guide').forEach(function(g){g.classList.remove('active');});
   el.classList.add('active'); document.getElementById('g-'+k).classList.add('active');
 }
-
 function gR(){
   var n=document.getElementById('inp-nama').value;
   var k=document.getElementById('inp-kat').value;
@@ -119,7 +103,6 @@ function gR(){
   var msg=M['review_'+k].replace('{nama}',n||'...');
   R.review=msg; p.textContent=msg; p.classList.add('on');
 }
-
 function gM(tab,nama){
   var warn=document.getElementById('warn-lunas');
   if(warn) warn.style.display='none';
@@ -132,10 +115,17 @@ function gM(tab,nama){
     R[tab]=""; return;
   }
   var sisa=typeof c.sisa==='number'?c.sisa.toLocaleString('id-ID'):c.sisa;
-  var msg=(M[tab]||"").replace('{nama}',c.nama).replace('{kodeAkses}',c.kodeAkses).replace('{sisa}',sisa).replace('{nim}',c.nim);
+  var dp=typeof c.dp==='number'?c.dp.toLocaleString('id-ID'):c.dp;
+  var msg=(M[tab]||"")
+    .replace('{nama}',c.nama)
+    .replace('{kodeAkses}',c.kodeAkses||'-')
+    .replace('{sisa}',sisa||'0')
+    .replace('{dp}',dp||'0')
+    .replace('{jenis}',c.jenis||'-')
+    .replace('{aplikasi}',c.aplikasi||'-')
+    .replace('{nim}',c.nim||'');
   R[tab]=msg; p.textContent=msg; p.classList.add('on');
 }
-
 function fallbackCopy(text){
   var ta=document.createElement("textarea");
   ta.value=text; ta.style.position="fixed"; ta.style.left="-9999px"; ta.style.top="-9999px";
@@ -143,21 +133,14 @@ function fallbackCopy(text){
   try{ document.execCommand('copy'); }catch(e){}
   document.body.removeChild(ta);
 }
-
 function cp(tab){
   var msg=R[tab]; if(!msg) return;
-  var btnId='btn-'+tab;
-  var btn=document.getElementById(btnId); if(!btn) return;
+  var btn=document.getElementById('btn-'+tab); if(!btn) return;
   var old=btn.textContent;
-  function onDone(){
-    btn.textContent='✓ Tersalin!'; btn.classList.add('ok');
-    setTimeout(function(){btn.textContent=old; btn.classList.remove('ok');},1500);
-  }
+  function onDone(){btn.textContent='✓ Tersalin!'; btn.classList.add('ok'); setTimeout(function(){btn.textContent=old; btn.classList.remove('ok');},1500);}
   if(navigator.clipboard&&navigator.clipboard.writeText){
     navigator.clipboard.writeText(msg).then(onDone).catch(function(){fallbackCopy(msg);onDone();});
-  } else {
-    fallbackCopy(msg); onDone();
-  }
+  } else {fallbackCopy(msg); onDone();}
 }
 </script></body></html>`;
 
