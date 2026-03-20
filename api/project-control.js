@@ -1,119 +1,186 @@
 module.exports = async function handler(req, res) {
 
-  // --- BAGIAN API NOTION (TETAP SAMA) ---
   if (req.query && req.query.action === 'clients') {
     var notionToken = process.env.NOTION_TOKEN;
     var projectDbId = "310efe1d-1acf-80ad-861f-ecc7567b10c9";
-    var headers = { Authorization: "Bearer " + notionToken, "Notion-Version": "2022-06-28", "Content-Type": "application/json" };
+    var headers = {
+      Authorization: "Bearer " + notionToken,
+      "Notion-Version": "2022-06-28",
+      "Content-Type": "application/json"
+    };
     function getProp(page, key) {
-      var p = page.properties[key]; if (!p) return "";
-      if (p.type === "title") return (p.title||[]).map(t=>t.plain_text).join("");
-      if (p.type === "rich_text") return (p.rich_text||[]).map(t=>t.plain_text).join("");
+      var p = page.properties[key];
+      if (!p) return "";
+      if (p.type === "title") return (p.title||[]).map(function(t){return t.plain_text;}).join("") || "";
+      if (p.type === "rich_text") return (p.rich_text||[]).map(function(t){return t.plain_text;}).join("") || "";
       if (p.type === "select") return (p.select && p.select.name) || "";
       if (p.type === "status") return (p.status && p.status.name) || ""; 
       if (p.type === "number") return p.number != null ? p.number : 0;
+      if (p.type === "checkbox") return p.checkbox || false;
+      if (p.type === "date") return (p.date && p.date.start) || "";
+      if (p.type === "formula") {
+        var f = p.formula;
+        if (f.type === "number") return f.number != null ? f.number : 0;
+        if (f.type === "string") return f.string || "";
+      }
+      if (p.type === "rollup") {
+        var r = p.rollup;
+        if (r.type === "number") return r.number != null ? r.number : 0;
+        if (r.type === "array" && r.array && r.array[0]) {
+          var first = r.array[0];
+          if (first.type === "select") return (first.select && first.select.name) || "";
+          if (first.type === "number") return first.number != null ? first.number : 0;
+        }
+      }
       return "";
     }
     try {
       var all = [], cursor;
       while (true) {
-        var body = {page_size: 100}; if (cursor) body.start_cursor = cursor;
-        var resp = await fetch("https://api.notion.com/v1/databases/" + projectDbId + "/query", { method: "POST", headers: headers, body: JSON.stringify(body) });
-        var data = await resp.json(); all = all.concat(data.results || []);
-        if (!data.has_more) break; cursor = data.next_cursor;
+        var body = {page_size: 100};
+        if (cursor) body.start_cursor = cursor;
+        var resp = await fetch("https://api.notion.com/v1/databases/" + projectDbId + "/query", {
+          method: "POST", headers: headers, body: JSON.stringify(body)
+        });
+        var data = await resp.json();
+        all = all.concat(data.results || []);
+        if (!data.has_more) break;
+        cursor = data.next_cursor;
       }
-      var clients = all.map(p => ({
-        nama: getProp(p, "Nama Client"), nim: getProp(p, "NIM/NPM"),
-        jenis: getProp(p, "Jenis Layanan"), aplikasi: getProp(p, "Aplikasi"),
-        kodeAkses: getProp(p, "Kode Akses"), sisa: getProp(p, "Sisa Pembayaran"),
-        status: getProp(p, "Status Project")
-      })).filter(c => c.nama);
-      res.setHeader("Access-Control-Allow-Origin", "*"); res.status(200).json(clients);
-    } catch(e) { res.status(200).json([]); }
+      var clients = all.map(function(p) {
+        return {
+          nama: getProp(p, "Nama Client"),
+          nim: getProp(p, "NIM/NPM"),
+          jenis: getProp(p, "Jenis Layanan"),
+          aplikasi: getProp(p, "Aplikasi"),
+          kodeAkses: getProp(p, "Kode Akses"),
+          sisa: getProp(p, "Sisa Pembayaran"),
+          status: getProp(p, "Status Project"),
+        };
+      }).filter(function(c){ return c.nama; });
+      res.setHeader("Content-Type", "application/json");
+      res.setHeader("Access-Control-Allow-Origin", "*");
+      res.status(200).json(clients);
+    } catch(e) {
+      res.status(200).json([]);
+    }
     return;
   }
 
-  // --- HTML UI DENGAN LOGIKA PROTEKSI (ANTI-ERROR) ---
+  // --- HTML UI DENGAN INSTRUKSI ASLI ---
   var html = `<!DOCTYPE html><html><head><meta charset="utf-8">
 <style>
   *{box-sizing:border-box;margin:0;padding:0}
   html,body{background:#191919;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#d3d3d3; overflow:hidden}
-  body{padding:10px}
-  .tabs{display:flex;gap:4px;margin-bottom:10px;flex-wrap:wrap}
-  .tab{font-size:11px;padding:4px 10px;border-radius:5px;border:1px solid #333;color:#888;cursor:pointer;background:transparent}
-  .tab.active{background:#232323;color:#fff;border-color:#378ADD}
-  .guide{border-left:4px solid;border-radius:0 8px 8px 0;padding:12px 15px;display:none;background:#202020; gap:20px; align-items: flex-start}
+  body{padding:12px}
+  
+  .tabs{display:flex;gap:4px;margin-bottom:12px;flex-wrap:wrap}
+  .tab{font-size:11px;padding:5px 12px;border-radius:5px;border:1px solid #333;color:#888;cursor:pointer;background:transparent;transition:0.2s}
+  .tab:hover{background:#252525}
+  .tab.active{background:#232323;color:#fff;border-color:#378ADD;font-weight:500}
+  
+  .guide{border-left:4px solid;border-radius:0 8px 8px 0;padding:15px 20px;display:none;background:#202020; gap:25px; align-items: flex-start}
   .guide.active{display:flex}
-  .col-info{flex: 1; min-width: 220px}
-  .col-gen{flex: 1.2; border-left: 1px solid #333; padding-left: 20px}
-  .todo{display:flex;gap:8px;font-size:12px;margin-bottom:5px;color:#aaa}
-  .box{width:12px;height:12px;border:1.5px solid currentColor;border-radius:2px;margin-top:2px;opacity:.5}
-  .lbl{font-size:9px;font-weight:700;text-transform:uppercase;margin-bottom:8px;color:#666}
-  .inp{width:100%;background:#252525;border:1px solid #444;border-radius:5px;font-size:12px;padding:6px 10px;color:#eee;outline:none;margin-bottom:8px}
-  .prev{background:#151515;border:1px solid #333;border-radius:6px;padding:10px;height:85px;overflow-y:auto;font-size:12px;line-height:1.4;color:#888;white-space:pre-wrap;margin-bottom:8px}
+  
+  .col-info{flex: 1.1; min-width: 280px}
+  .col-gen{flex: 1; border-left: 1px solid #333; padding-left: 20px}
+  
+  .todo{display:flex;gap:10px;font-size:12.5px;margin-bottom:8px;color:#aaa;line-height:1.4}
+  .box{width:14px;height:14px;border:1.5px solid currentColor;border-radius:3px;margin-top:2px;flex-shrink:0;opacity:.5}
+  
+  .lbl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:10px;color:#666}
+  .inp{width:100%;background:#252525;border:1px solid #444;border-radius:5px;font-size:12px;padding:7px 10px;color:#eee;outline:none;margin-bottom:8px}
+  .row{display:flex;gap:6px}
+  
+  .prev{background:#151515;border:1px solid #333;border-radius:6px;padding:12px;height:90px;overflow-y:auto;font-size:12px;line-height:1.5;color:#888;white-space:pre-wrap;margin-bottom:10px}
   .prev.on{color:#ddd; border-color:#444}
-  .btn{width:100%;padding:8px;background:#252525;border:1px solid #444;border-radius:5px;font-size:11px;font-weight:600;cursor:pointer;color:#eee}
+  
+  .btn{width:100%;padding:9px;background:#252525;border:1px solid #444;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;color:#eee;transition:0.2s}
+  .btn:hover{background:#333}
   .btn.ok{background:#0f3d1f!important;border-color:#27500A!important}
-  .warning{color:#f08c00; font-size:11px; margin-bottom:5px; display:none}
+  
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
 </style>
 </head>
 <body>
 <div class="tabs">
-  <div class="tab active" onclick="sw('review',this)">Review</div>
+  <div class="tab active" onclick="sw('review',this)">Menunggu Review</div>
   <div class="tab" onclick="sw('antrian',this)">Antrian</div>
-  <div class="tab" onclick="sw('pelunasan',this)">Pelunasan</div>
+  <div class="tab" onclick="sw('overdue',this)">Overdue</div>
+  <div class="tab" onclick="sw('diproses',this)">Diproses</div>
+  <div class="tab" onclick="sw('pelunasan',this)">Menunggu Pelunasan</div>
+  <div class="tab" onclick="sw('pendampingan',this)">Pendampingan</div>
   <div class="tab" onclick="sw('selesai',this)">Selesai</div>
 </div>
 
 <div id="g-review" class="guide active" style="border-color:#378ADD">
   <div class="col-info">
-    <div style="font-size:13px;font-weight:600;margin-bottom:8px">1. Review Data</div>
-    <div class="todo"><div class="box"></div><span>Cek Paket & Layanan</span></div>
-    <div class="todo"><div class="box"></div><span>Set Antrian & Isi DP</span></div>
+    <div style="font-size:10px;font-weight:700;color:#378ADD;margin-bottom:4px">TAHAP 2</div>
+    <div style="font-size:15px;font-weight:600;margin-bottom:12px;color:#eee">Pastikan Data Benar</div>
+    <div class="todo"><div class="box"></div><span>Pastikan kolom Paket, Jenis Layanan, Aplikasi sudah terisi</span></div>
+    <div class="todo"><div class="box"></div><span>Jika sudah benar ganti Status Project ke Antrian dan isi Tanggal DP</span></div>
+    <div class="todo"><div class="box"></div><span>Kirim WA menggunakan Generator di samping</span></div>
   </div>
   <div class="col-gen">
-    <div class="lbl">Generator Registrasi</div>
-    <div style="display:flex;gap:5px"><input id="inp-nama" class="inp" placeholder="Nama..." oninput="gR()"><select id="inp-kat" class="inp" onchange="gR()" style="width:100px"><option value="kerjasama">Kerja</option><option value="umum">Umum</option></select></div>
-    <div id="prev-review" class="prev">Ketik nama...</div>
+    <div class="lbl">Generator Pesan - Sebelum Registrasi</div>
+    <div class="row"><input id="inp-nama" class="inp" placeholder="Ketik nama client..." oninput="gR()"><select id="inp-kat" class="inp" onchange="gR()" style="width:110px"><option value="kerjasama">Kerjasama</option><option value="umum">Umum</option></select></div>
+    <div id="prev-review" class="prev">Ketik nama client untuk generate pesan...</div>
     <button class="btn" id="btn-review" onclick="cp('review')">📋 Copy Pesan</button>
+  </div>
+</div>
+
+<div id="g-antrian" class="guide" style="border-color:#639922">
+  <div class="col-info">
+    <div style="font-size:10px;font-weight:700;color:#639922;margin-bottom:4px">TAHAP 3</div>
+    <div style="font-size:15px;font-weight:600;margin-bottom:12px;color:#eee">DP Masuk / Registrasi</div>
+    <div class="todo"><div class="box"></div><span>Kirim akses portal dan konfirmasi antrian</span></div>
+  </div>
+  <div class="col-gen">
+    <div class="lbl">Generator Pesan - Akses Portal</div>
+    <select id="sel-antrian" class="inp" onchange="gM('antrian',this.value)"><option value="">Pilih client...</option></select>
+    <div id="prev-antrian" class="prev">Pilih client untuk generate pesan...</div>
+    <button class="btn" id="btn-antrian" onclick="cp('antrian')">📋 Copy Pesan</button>
   </div>
 </div>
 
 <div id="g-pelunasan" class="guide" style="border-color:#D85A30">
   <div class="col-info">
-    <div style="font-size:13px;font-weight:600;margin-bottom:8px">2. Tagih Pelunasan</div>
-    <div class="todo"><div class="box"></div><span>Hanya untuk sisa > 0</span></div>
+    <div style="font-size:10px;font-weight:700;color:#D85A30;margin-bottom:4px">TAHAP 5</div>
+    <div style="font-size:15px;font-weight:600;margin-bottom:12px;color:#eee">Menunggu Pelunasan</div>
+    <div class="todo"><div class="box"></div><span>Kirim informasi sisa pembayaran dan file hasil</span></div>
   </div>
   <div class="col-gen">
-    <div class="lbl">Generator Tagihan</div>
-    <div id="warn-lunas" class="warning">⚠️ Client sudah lunas!</div>
+    <div class="lbl">Generator Pesan - Tagihan</div>
     <select id="sel-pelunasan" class="inp" onchange="gM('pelunasan',this.value)"><option value="">Pilih client...</option></select>
     <div id="prev-pelunasan" class="prev">Pilih client...</div>
     <button class="btn" id="btn-pelunasan" onclick="cp('pelunasan')">📋 Copy Pesan</button>
   </div>
 </div>
 
-<div id="g-antrian" class="guide" style="border-color:#639922"><div class="col-info"><h3>Antrian</h3></div><div class="col-gen"><select id="sel-antrian" class="inp" onchange="gM('antrian',this.value)"><option value="">Pilih...</option></select><div id="prev-antrian" class="prev"></div><button class="btn" onclick="cp('antrian')">📋 Copy</button></div></div>
-<div id="g-selesai" class="guide" style="border-color:#1D9E75"><div class="col-info"><h3>Selesai</h3></div><div class="col-gen"><select id="sel-selesai" class="inp" onchange="gM('selesai',this.value)"><option value="">Pilih...</option></select><div id="prev-selesai" class="prev"></div><button class="btn" onclick="cp('selesai')">📋 Copy</button></div></div>
+<div id="g-overdue" class="guide" style="border-color:#888"><div class="col-info"><h3>Overdue</h3><p>Follow up project terlambat.</p></div></div>
+<div id="g-diproses" class="guide" style="border-color:#BA7517"><div class="col-info"><h3>Diproses</h3><p>Update progress pengerjaan.</p></div></div>
+<div id="g-pendampingan" class="guide" style="border-color:#7F77DD"><div class="col-info"><h3>Pendampingan</h3><p>Informasi jadwal belajar.</p></div></div>
+<div id="g-selesai" class="guide" style="border-color:#1D9E75"><div class="col-info"><h3>Selesai</h3><p>Minta review bintang 5.</p></div></div>
 
 <script>
 var M={
-  "review_kerjasama": "Halo {nama} 👋\\n\\nTerima kasih, DP sudah diterima. Silakan registrasi: https://tally.so/r/jaBkzY?kh=khk",
-  "review_umum": "Halo {nama} 👋\\n\\nTerima kasih, DP sudah diterima. Silakan registrasi: https://tally.so/r/MeOabY?kh=khu",
-  "antrian": "Halo {nama} 👋\\n\\nInfo portal: {kodeAkses}\\n🔗 https://amkobar-portal.vercel.app",
-  "pelunasan": "Halo {nama} 👋\\n\\nProject selesai! 🎉\\n💰 Sisa: Rp {sisa}\\nSilakan pelunasan untuk download.",
-  "selesai": "Halo {nama} 👋\\n\\nSesi pendampingan kita sudah selesai! 🙏\\n\\nAkun Portal AMKOBAR Anda saat ini berstatus *4/5 (Akses Terbatas)*. Untuk mengubahnya menjadi *Akses Permanen* dan membuka kunci Video Tutorial CBH, mohon kesediaannya memberikan rating singkat di sini:\\n\\n⭐ https://tally.so/r/yPD7rg?NIM/NPM={nim}\\n\\nSetelah mengisi, status akun otomatis berubah menjadi 5/5. Sukses terus untuk sidangnya! 💪🎓\\n\\nSalam, Tim AMKOBAR"
+  "review_kerjasama": "Halo {nama} 👋\\n\\n🙏Terima kasih sudah menggunakan jasa kami\\n✅Pembayaran DP sudah kami terima\\n🔗 Silakan registrasi di: https://tally.so/r/jaBkzY?kh=khk",
+  "review_umum": "Halo {nama} 👋\\n\\n🙏Terima kasih sudah menggunakan jasa kami\\n✅Pembayaran DP sudah kami terima\\n🔗 Silakan registrasi di: https://tally.so/r/MeOabY?kh=khu",
+  "antrian": "Halo {nama} 👋\\n\\nBerikut info portal:\\n🔑 Kode Akses: {kodeAkses}\\n🔗 https://amkobar-portal.vercel.app",
+  "pelunasan": "Halo {nama} 👋\\n\\nProject selesai! 🎉\\n💰 Sisa: Rp {sisa}\\nSilakan pelunasan untuk akses download.",
+  "selesai": "Halo {nama} 👋\\n\\nTerima kasih! Mohon testimoninya ya ⭐"
 };
 var C=[],R={};
 
 fetch('?action=clients').then(r=>r.json()).then(d=>{
   C=d;
-  ['antrian','pelunasan','selesai'].forEach(t=>{
+  ['antrian','pelunasan'].forEach(t=>{
     var s=document.getElementById('sel-'+t); if(!s)return;
-    var map={antrian:"Antrian",pelunasan:"Menunggu Pelunasan",selesai:"Selesai"};
+    var map={antrian:"Antrian",pelunasan:"Menunggu Pelunasan"};
     C.forEach(c=>{
       if((c.status||'').toLowerCase().includes(map[t].toLowerCase())){
-        var o=document.createElement('option'); o.value=c.nama; o.textContent=c.nama + (t==='pelunasan'?' (Rp '+c.sisa.toLocaleString()+')':''); s.appendChild(o);
+        var o=document.createElement('option'); o.value=c.nama; o.textContent=c.nama; s.appendChild(o);
       }
     });
   });
@@ -135,34 +202,21 @@ function gR(){
 
 function gM(tab,nama){
   var c=C.find(x=>x.nama===nama); if(!c) return;
-  var p=document.getElementById('prev-'+tab);
-  var warn=document.getElementById('warn-lunas');
-  
-  if(tab==='pelunasan' && c.sisa <= 0){
-    p.textContent="❌ Client sudah LUNAS.\\nTidak perlu kirim tagihan.";
-    p.classList.remove('on'); if(warn) warn.style.display='block';
-    R[tab]=""; return;
-  }
-  
-  if(warn) warn.style.display='none';
   var sisa=typeof c.sisa==='number'?c.sisa.toLocaleString('id-ID'):c.sisa;
-  var msg=M[tab].replace('{nama}',c.nama).replace('{kodeAkses}',c.kodeAkses).replace('{sisa}',sisa).replace('{nim}',c.nim);
-  R[tab]=msg; p.textContent=msg; p.classList.add('on');
+  var msg=(M[tab]||"").replace('{nama}',c.nama).replace('{kodeAkses}',c.kodeAkses).replace('{sisa}',sisa);
+  R[tab]=msg; var p=document.getElementById('prev-'+tab); p.textContent=msg; p.classList.add('on');
 }
 
 function cp(tab){
   var msg=R[tab]; if(!msg) return;
   var btn=document.getElementById('btn-'+tab);
-  var ta=document.createElement("textarea"); ta.value=msg; ta.style.position="fixed"; ta.style.left="-999px";
-  document.body.appendChild(ta); ta.select();
-  try {
-    document.execCommand('copy');
+  navigator.clipboard.writeText(msg).then(()=>{
     var old=btn.textContent; btn.textContent='✓ Tersalin!'; btn.classList.add('ok');
     setTimeout(()=>{btn.textContent=old; btn.classList.remove('ok')},1500);
-  } catch(e){}
-  document.body.removeChild(ta);
+  });
 }
 </script></body></html>`;
 
-  res.setHeader("Content-Type", "text/html"); res.status(200).send(html);
+  res.setHeader("Content-Type", "text/html");
+  res.status(200).send(html);
 };
