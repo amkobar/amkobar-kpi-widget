@@ -100,7 +100,7 @@ fetch('?action=clients').then(function(r){return r.json();}).then(function(d){
   });
 });
 function toggleBox(box){var done=box.dataset.done==='1';if(!done){box.dataset.done='1';box.style.background='#0f3d1f';box.style.borderColor='#27500A';box.style.opacity='1';box.innerHTML='<svg width="9" height="9" viewBox="0 0 9 9" fill="none"><polyline points="1,4.5 3.5,7 8,2" stroke="#4ade80" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';box.nextElementSibling.style.textDecoration='line-through';box.nextElementSibling.style.color='#555';}else{box.dataset.done='0';box.style.background='';box.style.borderColor='';box.style.opacity='.5';box.innerHTML='';box.nextElementSibling.style.textDecoration='';box.nextElementSibling.style.color='';}}
-function toggleT1(){var body=document.getElementById('t1-body');var open=body.style.display==='none';body.style.display=open?'block':'none';document.getElementById('t1-hint').textContent=open?'(klik untuk tutup)':'(klik untuk buka)';}
+function toggleT1(){var body=document.getElementById('t1-body');var open=body.style.display==='none';body.style.display=open?'block':'none';document.getElementById('t1-hint').textContent=open?'(klik untuk tutup)':'(klik untuk buka)';document.body.style.height=open?'auto':'auto';window.dispatchEvent(new Event('resize'));document.documentElement.style.height=document.body.scrollHeight+'px';}
 function sw(k,el){
   document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active');});
   document.querySelectorAll('.guide').forEach(function(g){g.classList.remove('active');});
