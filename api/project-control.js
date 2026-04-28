@@ -143,7 +143,7 @@ html,body{background:#191919;font-family:-apple-system,BlinkMacSystemFont,"Segoe
 <div class="collapse-hdr" id="t1-hdr" onclick="toggleT1()">
   <div class="collapse-left">
     <div class="c-dot" style="background:#378ADD"></div>
-    <span class="c-lbl">Tahap 1 — Sebelum Registrasi</span>
+    <span class="c-lbl">Tahap 1 -- Sebelum Registrasi</span>
     <span class="c-hint">(klik untuk buka)</span>
   </div>
   <span class="c-arrow" id="t1-arrow">&#9660;</span>
@@ -154,7 +154,7 @@ html,body{background:#191919;font-family:-apple-system,BlinkMacSystemFont,"Segoe
       <div class="slbl">Langkah konfirmasi</div>
       <div class="step-r"><div class="snum">1</div><div class="stxt">Verifikasi DP sudah masuk dari bukti transfer client</div></div>
       <div class="step-r"><div class="snum">2</div><div class="stxt">Generate pesan WA di kanan, copy & kirim ke client</div></div>
-      <div class="step-r"><div class="snum">3</div><div class="stxt">Tunggu client isi form — data akan muncul otomatis di tab Menunggu Review di bawah</div></div>
+      <div class="step-r"><div class="snum">3</div><div class="stxt">Tunggu client isi form -- data akan muncul otomatis di tab Menunggu Review di bawah</div></div>
     </div>
     <div class="col-gen">
       <div class="slbl">Generator Pesan WA</div>
@@ -173,7 +173,7 @@ html,body{background:#191919;font-family:-apple-system,BlinkMacSystemFont,"Segoe
 
 <!-- TAHAP 2 -->
 <div class="t2-hdr">
-  <div class="t2-badge">&#9654; Tahap 2 — Setelah Registrasi</div>
+  <div class="t2-badge">&#9654; Tahap 2 -- Setelah Registrasi</div>
 </div>
 
 <div class="tabs">
@@ -197,12 +197,12 @@ html,body{background:#191919;font-family:-apple-system,BlinkMacSystemFont,"Segoe
 
 <script>
 var M={
-  "review_kerjasama":"Halo {nama} 👋\n\n🙏 Terima kasih sudah menggunakan jasa kami\n✅ Pembayaran DP sudah kami terima\n🔗 Silakan registrasi di: https://tally.so/r/jaBkzY?kh=khk",
-  "review_umum":"Halo {nama} 👋\n\n🙏 Terima kasih sudah menggunakan jasa kami\n✅ Pembayaran DP sudah kami terima\n🔗 Silakan registrasi di: https://tally.so/r/MeOabY?kh=khu",
-  "antrian":"Halo {nama} 👋\n\nBerikut info portal AMKOBAR kamu:\n🔑 Kode Akses: {kodeAkses}\n🔗 https://amkobar-portal.vercel.app\n\nLogin untuk pantau progress project kamu ya!",
-  "pelunasan":"Halo {nama} 👋\n\nProject kamu sudah selesai dikerjakan! 🎉\n\n📦 {jenis} - {aplikasi}\n💳 DP sudah diterima: Rp {dp}\n💰 Sisa pembayaran: Rp {sisa}\n\nSilakan lakukan pelunasan. Setelah lunas, akses file hasil tersedia di portal:\n🔑 Kode Akses: {kodeAkses}\n🔗 https://amkobar-portal.vercel.app\n\nTerima kasih!",
-  "pendampingan":"Halo {nama} 👋\n\nProject kamu sudah masuk tahap *Pendampingan* 🎓\n\nKamu akan mendapat jadwal sesi belajar via grup WA AMKOBAR. Pastikan kamu sudah tergabung di grup ya.\n\nPantau status di portal:\n🔑 Kode Akses: {kodeAkses}\n🔗 https://amkobar-portal.vercel.app",
-  "selesai":"Halo {nama} 👋\n\nTerima kasih! Sesi pendampingan kita sudah selesai 🙏\n\nUntuk mengaktifkan *Akses Permanen* ke file project kamu, mohon berikan rating singkat melalui portal:\n\n🔑 Kode Akses: {kodeAkses}\n🔗 https://amkobar-portal.vercel.app\n\nSetelah rating diisi, akses file kamu otomatis jadi permanen. Sukses untuk sidangnya! 💪🎓"
+  "review_kerjasama":"Halo {nama}\n\nTerima kasih sudah menggunakan jasa kami\nPembayaran DP sudah kami terima\nSilakan registrasi di: https://tally.so/r/jaBkzY?kh=khk",
+  "review_umum":"Halo {nama}\n\nTerima kasih sudah menggunakan jasa kami\nPembayaran DP sudah kami terima\nSilakan registrasi di: https://tally.so/r/MeOabY?kh=khu",
+  "antrian":"Halo {nama}\n\nBerikut info portal AMKOBAR kamu:\nKode Akses: {kodeAkses}\nhttps://amkobar-portal.vercel.app\n\nLogin untuk pantau progress project kamu ya!",
+  "pelunasan":"Halo {nama}\n\nProject kamu sudah selesai dikerjakan!\n\n{jenis} - {aplikasi}\nDP sudah diterima: Rp {dp}\nSisa pembayaran: Rp {sisa}\n\nSilakan lakukan pelunasan. Setelah lunas, akses file hasil tersedia di portal:\nKode Akses: {kodeAkses}\nhttps://amkobar-portal.vercel.app\n\nTerima kasih!",
+  "pendampingan":"Halo {nama}\n\nProject kamu sudah masuk tahap Pendampingan\n\nKamu akan mendapat jadwal sesi belajar via grup WA AMKOBAR. Pastikan kamu sudah tergabung di grup ya.\n\nPantau status di portal:\nKode Akses: {kodeAkses}\nhttps://amkobar-portal.vercel.app",
+  "selesai":"Halo {nama}\n\nTerima kasih! Sesi pendampingan kita sudah selesai\n\nUntuk mengaktifkan Akses Permanen ke file project kamu, mohon berikan rating singkat melalui portal:\n\nKode Akses: {kodeAkses}\nhttps://amkobar-portal.vercel.app\n\nSetelah rating diisi, akses file kamu otomatis jadi permanen. Sukses untuk sidangnya!"
 };
 var MSG = M;
 
@@ -230,7 +230,7 @@ var TABS = {
     guide: "Project sudah melewati deadline. Segera tindak lanjuti dan informasikan ke client.",
     checks: [
       "Cek penyebab keterlambatan",
-      "Hubungi client via WA — informasikan kondisi terkini",
+      "Hubungi client via WA -- informasikan kondisi terkini",
       "Update Deadline baru di Notion jika perlu"
     ],
     gen: null
@@ -274,10 +274,10 @@ var TABS = {
 };
 
 var GEN_LABELS = {
-  antrian: "Generator Pesan — Akses Portal",
-  pelunasan: "Generator Pesan — Tagihan",
-  pendampingan: "Generator Pesan — Info Pendampingan",
-  selesai: "Generator Pesan — Project Selesai"
+  antrian: "Generator Pesan -- Akses Portal",
+  pelunasan: "Generator Pesan -- Tagihan",
+  pendampingan: "Generator Pesan -- Info Pendampingan",
+  selesai: "Generator Pesan -- Project Selesai"
 };
 
 var C = [], R = {};
