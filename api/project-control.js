@@ -196,14 +196,15 @@ html,body{background:#191919;font-family:-apple-system,BlinkMacSystemFont,"Segoe
 </div>
 
 <script>
-var MSG = {
-  review_kerjasama: "Halo {nama} \uD83D\uDC4B\n\n\uD83D\uDE4F Terima kasih sudah menggunakan jasa kami\n\u2705 Pembayaran DP sudah kami terima\n\uD83D\uDD17 Silakan registrasi di: https://tally.so/r/jaBkzY?kh=khk",
-  review_umum: "Halo {nama} \uD83D\uDC4B\n\n\uD83D\uDE4F Terima kasih sudah menggunakan jasa kami\n\u2705 Pembayaran DP sudah kami terima\n\uD83D\uDD17 Silakan registrasi di: https://tally.so/r/MeOabY?kh=khu",
-  antrian: "Halo {nama} \uD83D\uDC4B\n\nBerikut info portal AMKOBAR kamu:\n\uD83D\uDD11 Kode Akses: {kodeAkses}\n\uD83D\uDD17 https://amkobar-portal.vercel.app\n\nLogin untuk pantau progress project kamu ya!",
-  pelunasan: "Halo {nama} \uD83D\uDC4B\n\nProject kamu sudah selesai dikerjakan! \uD83C\uDF89\n\n\uD83D\uDCE6 {jenis} - {aplikasi}\n\uD83D\uDCB3 DP sudah diterima: Rp {dp}\n\uD83D\uDCB0 Sisa pembayaran: Rp {sisa}\n\nSilakan lakukan pelunasan. Setelah lunas, akses file hasil tersedia di portal:\n\uD83D\uDD11 Kode Akses: {kodeAkses}\n\uD83D\uDD17 https://amkobar-portal.vercel.app\n\nTerima kasih!",
-  pendampingan: "Halo {nama} \uD83D\uDC4B\n\nProject kamu sudah masuk tahap *Pendampingan* \uD83C\uDF93\n\nKamu akan mendapat jadwal sesi belajar via grup WA AMKOBAR. Pastikan kamu sudah tergabung di grup ya.\n\nPantau status di portal:\n\uD83D\uDD11 Kode Akses: {kodeAkses}\n\uD83D\uDD17 https://amkobar-portal.vercel.app",
-  selesai: "Halo {nama} \uD83D\uDC4B\n\nTerima kasih! Sesi pendampingan kita sudah selesai \uD83D\uDE4F\n\nUntuk mengaktifkan *Akses Permanen* ke file project kamu, mohon berikan rating singkat melalui portal:\n\n\uD83D\uDD11 Kode Akses: {kodeAkses}\n\uD83D\uDD17 https://amkobar-portal.vercel.app\n\nSetelah rating diisi, akses file kamu otomatis jadi permanen. Sukses untuk sidangnya! \uD83D\uDCAA\uD83C\uDF93"
+var M={
+  "review_kerjasama":"Halo {nama} 👋\n\n🙏 Terima kasih sudah menggunakan jasa kami\n✅ Pembayaran DP sudah kami terima\n🔗 Silakan registrasi di: https://tally.so/r/jaBkzY?kh=khk",
+  "review_umum":"Halo {nama} 👋\n\n🙏 Terima kasih sudah menggunakan jasa kami\n✅ Pembayaran DP sudah kami terima\n🔗 Silakan registrasi di: https://tally.so/r/MeOabY?kh=khu",
+  "antrian":"Halo {nama} 👋\n\nBerikut info portal AMKOBAR kamu:\n🔑 Kode Akses: {kodeAkses}\n🔗 https://amkobar-portal.vercel.app\n\nLogin untuk pantau progress project kamu ya!",
+  "pelunasan":"Halo {nama} 👋\n\nProject kamu sudah selesai dikerjakan! 🎉\n\n📦 {jenis} - {aplikasi}\n💳 DP sudah diterima: Rp {dp}\n💰 Sisa pembayaran: Rp {sisa}\n\nSilakan lakukan pelunasan. Setelah lunas, akses file hasil tersedia di portal:\n🔑 Kode Akses: {kodeAkses}\n🔗 https://amkobar-portal.vercel.app\n\nTerima kasih!",
+  "pendampingan":"Halo {nama} 👋\n\nProject kamu sudah masuk tahap *Pendampingan* 🎓\n\nKamu akan mendapat jadwal sesi belajar via grup WA AMKOBAR. Pastikan kamu sudah tergabung di grup ya.\n\nPantau status di portal:\n🔑 Kode Akses: {kodeAkses}\n🔗 https://amkobar-portal.vercel.app",
+  "selesai":"Halo {nama} 👋\n\nTerima kasih! Sesi pendampingan kita sudah selesai 🙏\n\nUntuk mengaktifkan *Akses Permanen* ke file project kamu, mohon berikan rating singkat melalui portal:\n\n🔑 Kode Akses: {kodeAkses}\n🔗 https://amkobar-portal.vercel.app\n\nSetelah rating diisi, akses file kamu otomatis jadi permanen. Sukses untuk sidangnya! 💪🎓"
 };
+var MSG = M;
 
 var TABS = {
   review: {
