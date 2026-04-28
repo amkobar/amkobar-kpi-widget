@@ -105,6 +105,8 @@ function sw(k,el){
   document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active');});
   document.querySelectorAll('.guide').forEach(function(g){g.classList.remove('active');});
   el.classList.add('active'); document.getElementById('g-'+k).classList.add('active');
+  var hasSel=['antrian','pelunasan','pendampingan','selesai'];
+  if(hasSel.indexOf(k)>-1){var map={antrian:"Antrian",pelunasan:"Menunggu Pelunasan",pendampingan:"Pendampingan",selesai:"Selesai"};fetch('?action=clients').then(function(r){return r.json();}).then(function(d){C=d;var s=document.getElementById('sel-'+k);if(!s)return;while(s.options.length>1)s.remove(1);C.forEach(function(c){if((c.status||'').toLowerCase().includes(map[k].toLowerCase())){var o=document.createElement('option');o.value=c.nama;o.textContent=c.nama;s.appendChild(o);}});});}
 }
 function gR(){
   var n=document.getElementById('inp-nama').value;
