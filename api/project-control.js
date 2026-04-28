@@ -75,8 +75,7 @@ module.exports = async function handler(req, res) {
 <meta charset="utf-8">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-html,body{background:#191919;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#d3d3d3}
-body{padding:12px}
+html,body{background:#191919;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#d3d3d3;padding:12px;min-height:300px}
 
 .collapse-hdr{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;cursor:pointer;background:#141414;border:1px solid #2a2a2a;border-radius:8px;margin-bottom:6px;transition:background .15s;user-select:none}
 .collapse-hdr:hover{background:#1a1a1a}
@@ -404,7 +403,7 @@ function cp(tab) {
   } else { fallbackCopy(msg); onDone(); }
 }
 
-sw('review', document.querySelector('.tab.active'));
+window.onload = function(){ sw('review', document.querySelector('.tab.active')); };
 </script>
 </body>
 </html>`;
