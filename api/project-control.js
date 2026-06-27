@@ -124,7 +124,11 @@ function gR(){
 function gM(tab,nama){
   var warn=document.getElementById('warn-lunas');
   if(warn) warn.style.display='none';
-  var nama=nama?nama.trim():''; var c=C.find(function(x){return x.nama&&x.nama.trim()===nama;}); if(!c) return;
+  var nama=nama?nama.trim():'';
+  var el=document.getElementById('antrian-kontak');
+  if(!nama){if(el)el.style.display='none';return;}
+  var c=C.find(function(x){return x.nama&&x.nama.trim()===nama;});
+  if(!c){if(el)el.style.display='none';return;}
   var p=document.getElementById('prev-'+tab);
   if(tab==='pelunasan'&&c.sisa<=0){
     p.textContent="❌ Client sudah LUNAS.\\nTidak perlu kirim tagihan.";
@@ -144,6 +148,7 @@ function gM(tab,nama){
     .replace('{nim}',c.nim||'');
   R[tab]=msg; p.textContent=msg; p.classList.add('on');
   if(tab==='antrian'){
+    console.log('[DEBUG gM antrian]', JSON.stringify({nama:c.nama,kat:c.kategoriHarga,jenis:c.jenis,bidang:c.bidang,tanggalDP:c.tanggalDP}));
     var namaFmt=formatNamaKontak(c.nama);
     var simbol=(c.kategoriHarga||'').toLowerCase()==='khk'?'🔷':'🔶';
     var nd=simbol+' '+namaFmt+' · '+singkatJenis(c.jenis)+' · '+singkatBidang(c.bidang)+(c.tanggalDP?' · '+c.tanggalDP.substring(2,4):'');
