@@ -148,7 +148,6 @@ function gM(tab,nama){
     .replace('{nim}',c.nim||'');
   R[tab]=msg; p.textContent=msg; p.classList.add('on');
   if(tab==='antrian'){
-    console.log('[DEBUG gM antrian]', JSON.stringify({nama:c.nama,kat:c.kategoriHarga,jenis:c.jenis,bidang:c.bidang,tanggalDP:c.tanggalDP}));
     var namaFmt=formatNamaKontak(c.nama);
     var simbol=(c.kategoriHarga||'').toLowerCase()==='khk'?'🔷':'🔶';
     var nd=simbol+' '+namaFmt+' · '+singkatJenis(c.jenis)+' · '+singkatBidang(c.bidang)+(c.tanggalDP?' · '+c.tanggalDP.substring(2,4):'');
@@ -160,10 +159,10 @@ function gM(tab,nama){
     if(el&&elD&&elB){elD.textContent=nd;elB.textContent=nb?(nb+' ·'):'';el.style.display='block';}
   }
 }
-function formatNamaKontak(n){var k=n.trim().split(/\s+/);if(k.length===1)return k[0];var isAw=function(x){return x.length<=2||/^(dr|ir|hj?|prof|drs?)\\.?$/i.test(x);};var h,m;if(isAw(k[0])){h=k[0]+' '+(k[1]||'');m=2;}else{h=k[0];m=1;}for(var i=m;i<k.length;i++)h+='.'+k[i][0].toUpperCase();return h;}
+function formatNamaKontak(n){var k=n.trim().split(/\s+/).filter(function(x){return x.length>0;});if(k.length===1)return k[0];var isAw=function(x){return x.length<=2||/^(dr|ir|hj?|prof|drs?)\\.?$/i.test(x);};var h,m;if(isAw(k[0])){h=k[0]+' '+(k[1]||'');m=2;}else{h=k[0];m=1;}for(var i=m;i<k.length;i++)h+='.'+k[i][0].toUpperCase();return h;}
 function singkatJenis(j){var mp={'BAB IV':'BAB IV','BAB IV-V':'BAB IV-V','BAB IV–V':'BAB IV-V','FULL BAB (I-V)':'FULL BAB','FULL BAB (I–V)':'FULL BAB','Olahdata Only':'OD'};return mp[j]||j;}
 function singkatUniv(u){return(u||'').replace(' BANDUNG','').replace(' University','').replace(' Riau','')||u;}
-function singkatBidang(b){var mp={'Manajemen Pemasaran':'MP','Manajemen Keuangan':'MK','Manajemen Bisnis':'MB','Manajemen SDM':'MSDM','Manajemen Industri':'MI','Manajemen Syariah':'MS','Manajemen D3':'MD3','Akuntansi Keuangan':'AK','Keuangan':'KEU','No Spesialisasi':'-'};return mp[b]||b;}
+function singkatBidang(b){var mp={'Manajemen Pemasaran':'MP','Manajemen Keuangan':'MK','Manajemen Bisnis':'MB','Manajemen SDM':'MSDM','Manajemen Industri':'MI','Manajemen Syariah':'MS','Manajemen D3':'MD3','Akuntansi Keuangan':'AK','Akuntansi (No Spesialisasi)':'AKT','Keuangan':'KEU','MSDM':'MSDM','Bisnis':'BIS','Pemasaran':'PMS','No Spesialisasi':'-'};return mp[b]||b;}
 function cpKontakAll(){var d=R['kontak-depan'];var b=R['kontak-belakang'];if(!d)return;var t=d;var btn=document.getElementById('btn-kontak-all');if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).catch(function(){fallbackCopy(t);});}else{fallbackCopy(t);}if(btn){var o=btn.textContent;btn.textContent='✓ Tersalin!';btn.style.color='#4ade80';setTimeout(function(){btn.textContent=o;btn.style.color='#eee';},1500);}}
 function fallbackCopy(text){
   var ta=document.createElement("textarea");
